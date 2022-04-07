@@ -132,6 +132,7 @@ h3 {
   cursor: pointer;
 }
 .pet-card:hover {
+  background-color: #FFFFFF;
   box-shadow: 0px 2px 35px 14px rgba(13, 13, 13, 0.04);
 }
 .pet-card:hover .button-secondary {
