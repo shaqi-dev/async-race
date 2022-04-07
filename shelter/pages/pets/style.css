@@ -240,7 +240,7 @@ h3 {
   justify-content: space-between;
 }
 
-.footer-info-block {
+.info-block {
   height: 234px;
   width: 300px;
   display: flex;
@@ -249,11 +249,11 @@ h3 {
   margin-top: 16px;
 }
 
-.footer-info-block_contacts {
+.info-block_contacts {
   width: 280px;
 }
 
-.footer-info-block__title {
+.info-block__title {
   font-family: Georgia, serif;
   font-size: 35px;
   line-height: 130%;
@@ -261,13 +261,13 @@ h3 {
   color: #FFFFFF;
 }
 
-.footer-info-item a {
+.info-block__item a {
   display: flex;
   gap: 20px;
   align-items: center;
 }
 
-.footer-info-item__label {
+.info-block__label {
   font-family: Georgia, serif;
   font-size: 20px;
   line-height: 115%;

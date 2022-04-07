@@ -129,9 +129,9 @@ h2 {
 }
 
 .button-primary {
+  display: inline-block;
   padding: 15px 45px;
-  width: 208px;
-  height: 52px;
+  text-align: center;
   background: #F1CDB3;
   border-radius: 100px;
   border: none;
@@ -149,6 +149,10 @@ h2 {
 .start-screeen__image {
   position: absolute;
   right: 0px;
+}
+
+.start-screen__button {
+  width: 118px;
 }
 
 .about {
@@ -293,7 +297,7 @@ h3 {
 }
 
 .our-friends__button {
-  width: 260px;
+  width: 172px;
 }
 
 .help {
@@ -434,7 +438,7 @@ h4 {
   justify-content: space-between;
 }
 
-.footer-info-block {
+.info-block {
   height: 234px;
   width: 300px;
   display: flex;
@@ -443,11 +447,11 @@ h4 {
   margin-top: 16px;
 }
 
-.footer-info-block_contacts {
+.info-block_contacts {
   width: 280px;
 }
 
-.footer-info-block__title {
+.info-block__title {
   font-family: Georgia, serif;
   font-size: 35px;
   line-height: 130%;
@@ -455,13 +459,13 @@ h4 {
   color: #FFFFFF;
 }
 
-.footer-info-item a {
+.info-block__item a {
   display: flex;
   gap: 20px;
   align-items: center;
 }
 
-.footer-info-item__label {
+.info-block__label {
   font-family: Georgia, serif;
   font-size: 20px;
   line-height: 115%;
