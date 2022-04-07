@@ -1,6 +1,5 @@
 @import url("http://fonts.cdnfonts.com/css/georgia");
 @import url("http://fonts.cdnfonts.com/css/arial");
-@import '../../_normalize.css';
 .inner-wrapper {
   position: relative;
   max-width: 1200px;
