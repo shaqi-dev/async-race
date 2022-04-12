@@ -1,0 +1,58 @@
+.navigation
+    list-style: none
+    display: flex
+    gap: 36px
+    padding-left: 0px
+    @include transition
+    @include media-tablet
+        padding-right: 30px
+    @include media-mobile
+        display: none   
+
+.navigation__item
+    a
+        font-family: $font-stack-arial
+        font-size: 1.5rem
+        line-height: 220%
+        color: $color-dark-s
+        cursor: pointer
+        @include transition
+        @include media-mobile
+            font-size: 3.2rem
+            line-height: 5.1rem
+        &:hover
+            color: $color-light-s
+
+.navigation__item_dark
+    a
+        line-height: 170%
+        color: $color-dark-l
+        &:hover
+            color: $color-dark-3xl
+
+.navigation__item_active
+    a   
+        color: $color-light-s
+        &:hover
+            color: $color-light-s
+        &::after
+            content: ''
+            display: block
+            margin-top: -3px
+            height: 3px
+            width: 100%
+            background-color: $color-primary
+
+.navigation__item_dark-active
+    a
+        line-height: 170%
+        color: $color-dark-3xl
+        &:hover
+            color: $color-dark-3xl
+        &::after
+            content: ''
+            display: block
+            margin-top: -3px
+            height: 3px
+            width: 100%
+            background-color: $color-primary

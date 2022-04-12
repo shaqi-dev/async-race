@@ -1,0 +1,72 @@
+@import '../base/normalize'
+@import '../base/base'  
+@import '../abstract/variables'
+@import '../abstract/fonts'
+@import '../abstract/mixins'
+@import '../layouts/wrapper'
+@import '../layouts/navigation'
+@import '../layouts/hamburger'
+@import '../layouts/logo'
+@import '../layouts/buttons'
+@import '../layouts/headers'
+@import '../components/header'
+@import '../components/pet-card'
+@import '../components/paginator'  
+@import '../components/footer'  
+
+// Header 
+
+.header
+    position: sticky
+    background-color: $color-light-xl
+    height: 120px
+    margin: 0 auto
+    top: 0
+    z-index: 10
+    .wrapper
+        height: 100%
+        display: flex
+        justify-content: space-between
+        align-items: center
+
+// Our Friends
+
+.our-friends
+    padding: 80px 0 100px 0
+    background-color: $color-light-l
+    @include media-tablet
+        padding: 80px 0 76px 0
+    @include media-mobile
+        padding: 42px 0
+    .wrapper
+        display: flex
+        flex-direction: column
+        align-items: center
+    h3
+        max-width: 400px
+        text-align: center
+        max-height: 90px
+        margin-bottom: 60px
+        @include media-tablet
+            margin-bottom: 30px
+        @include media-mobile
+            max-width: 100%
+            padding: 0 3.13vw
+            margin-bottom: 42px
+        
+.our-friends__cards
+    display: flex
+    gap: 30px 40px
+    flex-wrap: wrap
+    justify-content: center
+    @include media-tablet
+        padding: 0 12.24vw
+        column-gap: 5.21vw
+        .pet-card:nth-last-child(-n+2)
+            display: none 
+    @include media-mobile
+        max-width: 300px
+        .pet-card:nth-last-child(-n+5)
+                display: none 
+    .pet-card
+        @include media-tablet

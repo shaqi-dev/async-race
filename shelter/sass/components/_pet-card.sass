@@ -1,0 +1,32 @@
+.pet-card
+    height: 435px
+    overflow: hidden
+    background-color: $color-light-s
+    border-radius: 9px
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 30px
+    cursor: pointer
+    @include transition
+    &:hover
+        box-shadow: 0 2px 35px 14px rgba(13, 13, 13, 0.04)
+        background-color: $color-light-xl
+        .button
+            border-color: $color-primary-light
+            background-color: $color-primary-light
+
+.pet-card__image
+    width: 270px
+    height: 270px
+
+.pet-card__name
+    font-family: $font-stack-georgia
+    font-size: 2rem
+    line-height: 2.3rem
+    letter-spacing: 0.1rem
+    color: $color-dark-l
+ 
+.button_pet-card
+    width: 188px
+    line-height: 100%

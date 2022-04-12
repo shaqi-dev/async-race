@@ -1,0 +1,76 @@
+.hamburger
+    height: 100%
+    padding-right: 53px
+    display: none
+    @include media-mobile
+        display: flex
+        align-items: center
+
+.hamburger__button
+    position: relative
+    width: 30px
+    height: 30px
+    padding: 0
+    border: none
+    background: none
+    outline: none
+    span
+        position: absolute
+        display: block
+        width: 30px
+        height: 2px
+        top: 14px
+        background-color: $color-primary
+        transition: all 0.45s ease-in-out
+        &::before
+            content: ''
+            position: absolute
+            top: -10px
+            display: block
+            width: 30px
+            height: 2px
+            background-color: $color-primary
+            transition: all 0.45s ease-in-out
+        &::after
+            content: ''
+            position: absolute
+            top: 10px
+            display: block
+            width: 30px
+            height: 2px
+            background-color: $color-primary
+            transition: all 0.45s ease-in-out    
+    &_dark
+        span
+            background-color: #000000
+            &::before
+                background-color: #000000
+            &::after
+                background-color: #000000
+                
+.hamburger__menu
+    position: absolute
+    width: 100%
+
+.hamburger__menu-list
+    list-style: none
+
+.menu_active
+    display: flex
+    flex-direction: row
+    justify-content: start
+    align-items: center
+    gap: 40px
+    position: fixed
+    z-index: -1
+    right: 0
+    top: 0
+    width: 320px
+    height: 823px
+    margin: 0
+    background-color: $color-dark-3xl
+    .hamburger__button
+        transform: rotate(90deg)
+    
+    
+    
