@@ -769,7 +769,7 @@ h5 {
 }
 
 .footer {
-  background-image: url("../../assets/images/footer-gradient-background.jpg");
+  background-image: url("../assets/images/footer-gradient-background.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -972,7 +972,7 @@ h5 {
 }
 
 .start-screen {
-  background-image: url("../../assets/images/start-screen-gradient-background.jpg");
+  background-image: url("../assets/images/start-screen-gradient-background.jpg");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   padding-top: 40px;
