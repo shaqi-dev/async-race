@@ -5,7 +5,7 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="stylesheet" href="../../css/main.css" />
+		<link rel="stylesheet" href="../../css/main.css" />	
 	</head>
 	<body>
 		<header class="header header_main">
@@ -16,24 +16,29 @@
 				</a>
 				<nav class="header__navigation">
 					<div class="hamburger">
-						<button type="button" class="hamburger__button">
-							<span></span>
-						</button>
-                    </div>
-					<ul class="navigation">
-						<li class="navigation__item navigation__item_active">
-							<a href="#">About the shelter</a>
-						</li>
-						<li class="navigation__item">
-							<a href="../pets/">Our pets</a>
-						</li>
-						<li class="navigation__item">
-							<a href="#help">Help the shelter</a>
-						</li>
-						<li class="navigation__item">
-							<a href="#footer">Contacts</a>
-						</li>
-					</ul>
+						<input type="checkbox" class="hamburger__button">
+						<div class="hamburger__line"></div>
+						<div class="hamburger__layout">
+							<a href="#" class="logo">
+								<h1 class="logo__title">Cozy House</h1>
+								<span class="logo__subtitle">Shelter for pets in Boston</span>
+							</a>
+						</div>
+						<ul class="navigation">
+							<li class="navigation__item navigation__item_active">
+								<a href="#">About the shelter</a>
+							</li>
+							<li class="navigation__item">
+								<a href="../pets/">Our pets</a>
+							</li>
+							<li class="navigation__item">
+								<a href="#help">Help the shelter</a>
+							</li>
+							<li class="navigation__item">
+								<a href="#footer">Contacts</a>
+							</li>
+						</ul>
+					</div>
 				</nav>
 			</div>
 		</header>
@@ -44,22 +49,19 @@
 						<h2>Not only people need&nbspa&nbsphouse</h2>
 						<p>
 							We offer to give a chance to a little and nice puppy with an
-							extremely wide and open heart. He&nbspor&nbspshe will love you more than
-							anybody else in the world, you will see!
+							extremely wide and open heart. He&nbspor&nbspshe will love you
+							more than anybody else in the world, you will see!
 						</p>
 					</div>
-					<a href='#our-friends' class="button button_primary">
+					<a href="#our-friends" class="button button_primary">
 						Make a friend
 					</a>
 				</div>
-				<img
-					src="../../assets/images/start-screen-puppy.png"
-					alt="pet image"
-				/>
+				<img src="../../assets/images/start-screen-puppy.png" alt="pet image" />
 			</div>
 		</section>
 		<section class="about">
-			<div class="wrapper ">
+			<div class="wrapper">
 				<img src="../../assets/images/about-pets.png" alt="pet image" />
 				<div class="about__content">
 					<h3>About the shelter “Cozy&nbspHouse”</h3>
@@ -82,9 +84,7 @@
 		</section>
 		<section id="our-friends" class="our-friends">
 			<div class="wrapper">
-				<h3>
-					Our friends who are&nbsplooking for a house
-				</h3>
+				<h3>Our friends who are&nbsplooking for a house</h3>
 				<div class="slider">
 					<button type="button" class="slider__button slider__button_left">
 						<img
@@ -92,37 +92,8 @@
 							class="slider__button_arrow"
 						/>
 					</button>
-					<div class="slider__items">
-						<div class="pet-card">
-							<img
-								src="../../assets/images/pets-katrine.png"
-								class="pet-card__image"
-								alt="pet card image"
-							/>
-							<span class="pet-card__name">Katrine</span>
-							<button type="button" class="button button_secondary button_pet-card">
-								Learn more
-							</button>
-						</div>
-						<div class="pet-card">
-							<img src="../../assets/images/pets-jennifer.png""
-							class="pet-card__image" alt="pet card image">
-							<span class="pet-card__name">Jennifer</span>
-							<button type="button" class="button button_secondary button_pet-card">
-								Learn more
-							</button>
-						</div>
-						<div class="pet-card">
-							<img
-								src="../../assets/images/pets-woody.png"
-								class="pet-card__image"
-								alt="pet card image"
-							/>
-							<span class="pet-card__name">Woody</span>
-							<button type="button" class="button button_secondary button_pet-card">
-								Learn more
-							</button>
-						</div>
+					<div class="slider__wrapper">
+						<div class="slider__items"></div>
 					</div>
 					<button type="button" class="slider__button slider__button_right">
 						<img
@@ -132,26 +103,32 @@
 					</button>
 				</div>
 				<div class="slider__mobile-buttons-wrapper">
-					<button type="button" class="slider__button slider__button_mobile slider__button_left">
+					<button
+						type="button"
+						class="slider__button slider__button_mobile slider__button_left"
+					>
 						<img
 							src="../../assets/icons/icon-arrow-left.svg"
 							class="slider__button_arrow"
 						/>
 					</button>
-					<button type="button" class="slider__button slider__button_mobile slider__button_right">
+					<button
+						type="button"
+						class="slider__button slider__button_mobile slider__button_right"
+					>
 						<img
 							src="../../assets/icons/icon-arrow-right.svg"
 							class="slider__button_arrow"
 						/>
 					</button>
 				</div>
-				<a href='../pets/' class="button button_primary button_our-friends">
+				<a href="../pets/" class="button button_primary button_our-friends">
 					Get to know the rest
 				</a>
 			</div>
 		</section>
 		<section id="help" class="help">
-			<div class="wrapper ">
+			<div class="wrapper">
 				<h3>How you&nbspcan help our shelter</h3>
 				<ul class="help__list">
 					<li class="help-item">
@@ -241,7 +218,10 @@
 					<h5>Name of the bank / Type of bank account</h5>
 					<div class="credit-card">
 						<a href="#">
-							<img src="../../assets/icons/icon-credit-card.svg" alt="credit card icon">
+							<img
+								src="../../assets/icons/icon-credit-card.svg"
+								alt="credit card icon"
+							/>
 							<h4>8380 2880 8028 8791 7435</h4>
 						</a>
 					</div>
@@ -321,5 +301,17 @@
 				/>
 			</div>
 		</footer>
+		<div id="pet-modal" class="pet-modal hide">
+			<div class="pet-modal__overlay">
+				<div class="wrapper">
+					<button class="pet-modal__close-button" data-dismiss="modal">
+						<img src="../../assets/icons/icon-cross.svg" alt="cross icon">
+					</button>
+				</div>
+			</div>
+			<div class="wrapper wrapper_modal"></div>
+		</div>
+
+		<script type="module" src="./script.js"></script>
 	</body>
 </html>

@@ -7,7 +7,18 @@
     @include media-tablet
         padding-right: 30px
     @include media-mobile
-        display: none   
+        position: absolute
+        opacity: 0
+        top: 188px
+        transform: translateX(125px)
+        z-index: 10
+        transition: all 0.4s ease
+        flex-direction: column
+        font-size: 3.2rem
+        line-height: 5.1rem
+        width: max-content
+        gap: 40.5px
+        text-align: center
 
 .navigation__item
     a
@@ -18,17 +29,25 @@
         cursor: pointer
         @include transition
         @include media-mobile
+            display: inline-block
             font-size: 3.2rem
             line-height: 5.1rem
         &:hover
             color: $color-light-s
 
 .navigation__item_dark
-    a
-        line-height: 170%
-        color: $color-dark-l
-        &:hover
-            color: $color-dark-3xl
+    @include media-desktop
+        a
+            line-height: 170%
+            color: $color-dark-l
+            &:hover
+                color: $color-dark-3xl
+    @include media-tablet
+        a
+            line-height: 170%
+            color: $color-dark-l
+            &:hover
+                color: $color-dark-3xl
 
 .navigation__item_active
     a   
@@ -44,15 +63,41 @@
             background-color: $color-primary
 
 .navigation__item_dark-active
-    a
-        line-height: 170%
-        color: $color-dark-3xl
-        &:hover
+    @include media-desktop
+        a
+            line-height: 170%
             color: $color-dark-3xl
-        &::after
-            content: ''
-            display: block
-            margin-top: -3px
-            height: 3px
-            width: 100%
-            background-color: $color-primary
+            &:hover
+                color: $color-dark-3xl
+            &::after
+                content: ''
+                display: block
+                margin-top: -3px
+                height: 3px
+                width: 100%
+                background-color: $color-primary
+    @include media-tablet
+        a
+            line-height: 170%
+            color: $color-dark-3xl
+            &:hover
+                color: $color-dark-3xl
+            &::after
+                content: ''
+                display: block
+                margin-top: -3px
+                height: 3px
+                width: 100%
+                background-color: $color-primary
+    @include media-mobile
+        a   
+            color: $color-light-s
+            &:hover
+                color: $color-light-s
+            &::after
+                content: ''
+                display: block
+                margin-top: -3px
+                height: 3px
+                width: 100%
+                background-color: $color-primary

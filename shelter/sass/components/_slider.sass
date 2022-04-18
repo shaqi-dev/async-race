@@ -2,6 +2,7 @@
     display: flex
     justify-content: center
     gap: 53px
+    align-items: center
     @include media-tablet
         gap: 1.56vw
 
@@ -13,7 +14,6 @@
         width: 57.5vw
         max-width: 220px
         margin-top: -23px 
-
 
 .slider__button
     position: relative
@@ -39,16 +39,35 @@
     &:hover
         border-color: $color-primary-light
         background-color: $color-primary-light
+
+.slider__wrapper
+    position: relative
+    overflow: hidden
+    height: 555px
+    width: 990px
+    @include media-tablet
+        width: 580px
+    @include media-mobile
+        height: 435px
+        width: 270px
+
+.content-wrapper
+    max-height: 500px
         
 .slider__items
+    position: absolute
     display: flex
+    align-items: center
+    height: 555px
+    margin: auto
+    width: 2160px
     gap: 90px
     @include media-tablet
-        gap: 5.21vw
-        .pet-card:nth-last-child(-n+1)
-            display: none
+        gap: 40px
     @include media-mobile
-        gap: 5.21vw
-        .pet-card:nth-last-child(-n+2)
-            display: none
+        height: auto
+        gap: 40px
+    &_shifting
+        pointer-events: none
+        transition: 0.5s all
         

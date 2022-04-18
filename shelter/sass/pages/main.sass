@@ -13,7 +13,8 @@
 @import '../components/header'
 @import '../components/slider'
 @import '../components/pet-card'
-@import '../components/footer'  
+@import '../components/footer'
+@import '../components/modal'
 
 // Header
 
@@ -28,6 +29,9 @@
             padding-top: 30px 
         @include media-mobile
             padding-top: 30px
+    .header__navigation
+        @include media-mobile
+            padding-top: 15px
     
 // Start Screen
 
@@ -131,7 +135,7 @@
             width: 81.25vw
             max-width: 300px
             height: 110.5vw
-            max-width: 408px
+            max-height: 408px
     
 .about__content
     display: flex
@@ -171,7 +175,6 @@
     .wrapper
         display: flex
         flex-direction: column
-        gap: 60px
         align-items: center
         @include media-mobile
             gap: 42px
@@ -182,7 +185,6 @@
         @include media-mobile
             max-width: 100%
     .slider
-        height: 435px
         width: 100%
         @include media-tablet
             padding: 0 3.91vw        

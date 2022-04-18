@@ -24,7 +24,7 @@
         gap: 7.81vw
     @include media-mobile
         flex-direction: column
-        gap: 7.81vw
+        gap: 25px
 
 .info-block
     height: 234px
@@ -46,11 +46,11 @@
 
 .info-block_locations
     @include media-mobile
-        align-items: flex-start
-        gap: 39px
-    .info-block__item
-        @include media-mobile
+        gap: 40px
+        .info-block__item
             padding: 0 10px
+            &:last-child
+                padding: 0px 42px 0px 10px
 
 
 .info-block__title

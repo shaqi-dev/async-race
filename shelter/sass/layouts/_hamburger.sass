@@ -1,12 +1,12 @@
 .hamburger
+    overflow: hidden
+    position: relative
     height: 100%
     padding-right: 53px
-    display: none
-    @include media-mobile
-        display: flex
-        align-items: center
+    top: 4px
 
 .hamburger__button
+    display: none
     position: relative
     width: 30px
     height: 30px
@@ -14,32 +14,51 @@
     border: none
     background: none
     outline: none
-    span
-        position: absolute
+    z-index: 5
+    opacity: 0
+    @include media-mobile
         display: block
+
+.hamburger__layout
+    display: none
+    opacity: 0
+    transform: translateX(320px)
+    position: absolute
+    z-index: 1
+    right: 0
+    top: -49px
+    width: 320px
+    height: 100vh
+    min-height: 823px
+    margin: 0
+    background-color: $color-dark-3xl
+    transition: all 0.4s ease
+    @include media-mobile
+        display: block
+    .logo
+        padding-top: 30px
+        
+.hamburger__line
+    display: none
+    position: absolute
+    width: 30px
+    height: 2px
+    top: 10px
+    z-index: 10
+    background-color: $color-primary
+    transition: all 0.4s ease
+    @include media-mobile
+        display: block
+    &::before, &::after
+        content: ''
+        position: absolute
+        top: -10px
         width: 30px
         height: 2px
-        top: 14px
         background-color: $color-primary
-        transition: all 0.45s ease-in-out
-        &::before
-            content: ''
-            position: absolute
-            top: -10px
-            display: block
-            width: 30px
-            height: 2px
-            background-color: $color-primary
-            transition: all 0.45s ease-in-out
-        &::after
-            content: ''
-            position: absolute
-            top: 10px
-            display: block
-            width: 30px
-            height: 2px
-            background-color: $color-primary
-            transition: all 0.45s ease-in-out    
+        transition: all 0.4s ease
+    &::after
+        top: 10px
     &_dark
         span
             background-color: #000000
@@ -69,8 +88,17 @@
     height: 823px
     margin: 0
     background-color: $color-dark-3xl
-    .hamburger__button
-        transform: rotate(90deg)
-    
+
+.header__navigation
+    .hamburger__button:checked + .hamburger__line
+        transform: rotate(-90deg)
+    .hamburger__button:checked ~ .hamburger__layout
+        opacity: 1
+        transform: translateX(320px)
+        transform: translateX(0px)
+    .hamburger__button:checked ~ .navigation
+        opacity: 1
+        transform: translateX(125px)
+        transform: translateX(-202px)
     
     
