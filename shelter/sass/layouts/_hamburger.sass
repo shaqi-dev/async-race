@@ -61,12 +61,9 @@
     &::after
         top: 10px
     &_dark
-        span
-            background-color: #000000
-            &::before
-                background-color: #000000
-            &::after
-                background-color: #000000
+        background-color: $color-dark-4xl
+        &::before, &::after
+            background-color: $color-dark-4xl
                 
 .hamburger__menu
     position: absolute
@@ -93,6 +90,10 @@
 .header__navigation
     .hamburger__button:checked + .hamburger__line
         transform: rotate(-90deg)
+    .hamburger__button:checked + .hamburger__line_dark
+        background-color: $color-primary
+        &::before, &::after
+            background-color: $color-primary
     .hamburger__button:checked ~ .hamburger__layout
         opacity: 1
         transform: translateX(320px)

@@ -280,15 +280,11 @@ html {
   top: 10px;
 }
 
-.hamburger__line_dark span {
+.hamburger__line_dark {
   background-color: #000000;
 }
 
-.hamburger__line_dark span::before {
-  background-color: #000000;
-}
-
-.hamburger__line_dark span::after {
+.hamburger__line_dark::before, .hamburger__line_dark::after {
   background-color: #000000;
 }
 
@@ -329,6 +325,14 @@ html {
 .header__navigation .hamburger__button:checked + .hamburger__line {
   -webkit-transform: rotate(-90deg);
           transform: rotate(-90deg);
+}
+
+.header__navigation .hamburger__button:checked + .hamburger__line_dark {
+  background-color: #F1CDB3;
+}
+
+.header__navigation .hamburger__button:checked + .hamburger__line_dark::before, .header__navigation .hamburger__button:checked + .hamburger__line_dark::after {
+  background-color: #F1CDB3;
 }
 
 .header__navigation .hamburger__button:checked ~ .hamburger__layout {
