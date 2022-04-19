@@ -1710,10 +1710,6 @@ h5 {
   }
 }
 
-.our-friends .slider {
-  width: 100%;
-}
-
 @media (min-width: 768px) and (max-width: 1279px) {
   .our-friends .slider {
     padding: 0 3.91vw;
