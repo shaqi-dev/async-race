@@ -1290,6 +1290,19 @@ h5 {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .our-friends .wrapper {
+    width: 580px;
+  }
+}
+
+@media (max-width: 767px) {
+  .our-friends .wrapper {
+    width: 300px;
+  }
 }
 
 .our-friends h3 {
@@ -1308,7 +1321,6 @@ h5 {
 @media (max-width: 767px) {
   .our-friends h3 {
     max-width: 100%;
-    padding: 0 3.13vw;
     margin-bottom: 42px;
   }
 }
@@ -1317,9 +1329,17 @@ h5 {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  max-height: 900px;
+  gap: 40px;
+  display: flex;
   gap: 30px 40px;
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
+  width: 1200px;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -1330,17 +1350,20 @@ h5 {
     padding: 0 94px;
     -webkit-column-gap: 40px;
             column-gap: 40px;
-  }
-  .our-friends__cards .pet-card:nth-last-child(-n+2) {
-    display: none;
+    width: 580px;
+    max-height: 1365px;
   }
 }
 
 @media (max-width: 767px) {
   .our-friends__cards {
-    max-width: 300px;
+    width: 270px;
+    max-height: 1365px;
   }
-  .our-friends__cards .pet-card:nth-last-child(-n+5) {
-    display: none;
-  }
+}
+
+.our-friends__cards_shifting {
+  pointer-events: none;
+  -webkit-transition: 0.5s all;
+  transition: 0.5s all;
 }

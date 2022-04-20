@@ -3,6 +3,7 @@
 import disableClickEvent from "../../scripts/disableClickEvent.js";
 import handleOpenHamburger from "../../scripts/handleOpenHamburger.js";
 import PetsService from "../../pets-service.js";
+import paginator from "../../scripts/paginator.js";
 import modal from "../../scripts/modal.js";
 
 const navigationItems = document.querySelectorAll('.navigation__item');
@@ -18,9 +19,7 @@ const petsService = new PetsService(),
 
 const cardsWrapper = document.querySelector('.our-friends__cards');
 
-petCards.forEach(card => {
-    cardsWrapper.append(card)
-});
-
+paginator('.our-friends__cards', '.paginator__item', petCards)
 modal('.pet-modal', '.pet-modal__overlay', '.wrapper_modal', '.pet-modal__close-button', '.our-friends__cards', pets);
+
 

@@ -43,6 +43,11 @@
         display: flex
         flex-direction: column
         align-items: center
+        overflow: hidden
+        @include media-tablet
+            width: 580px
+        @include media-mobile
+            width: 300px
     h3
         max-width: 400px
         text-align: center
@@ -52,22 +57,27 @@
             margin-bottom: 30px
         @include media-mobile
             max-width: 100%
-            padding: 0 3.13vw
             margin-bottom: 42px
         
 .our-friends__cards
     display: flex
+    flex-direction: column
+    max-height: 900px
+    gap: 40px
+    display: flex
     gap: 30px 40px
     flex-wrap: wrap
+    width: 1200px
     justify-content: center
     @include media-tablet
         padding: 0 94px
         column-gap: 40px
-        .pet-card:nth-last-child(-n+2)
-            display: none 
+        width: 580px
+        max-height: 1365px
     @include media-mobile
-        max-width: 300px
-        .pet-card:nth-last-child(-n+5)
-            display: none 
-    .pet-card
-        @include media-tablet
+        width: 270px
+        max-height: 1365px
+    &_shifting
+        pointer-events: none
+        transition: 0.5s all
+    
