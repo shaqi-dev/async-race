@@ -8,8 +8,8 @@ import modal from "../../scripts/modal.js";
 
 const navigationItems = document.querySelectorAll('.navigation__item');
 
-// disableClickEvent(navigationItems[2]);
-// disableClickEvent(navigationItems[3]);
+disableClickEvent(navigationItems[2]);
+disableClickEvent(navigationItems[3]);
 
 handleOpenHamburger('.header .wrapper .logo', '.hamburger','.hamburger__button');
 

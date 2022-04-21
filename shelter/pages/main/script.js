@@ -9,8 +9,8 @@ import modal from "../../scripts/modal.js";
 const navigationItems = document.querySelectorAll('.navigation__item');
 const creditCard = document.querySelector('.credit-card');
 
-// disableClickEvent(navigationItems[2]);
-// disableClickEvent(navigationItems[3]);
+disableClickEvent(navigationItems[2]);
+disableClickEvent(navigationItems[3]);
 disableClickEvent(creditCard);
 
 handleOpenHamburger('.header .wrapper .logo', '.hamburger', '.hamburger__button');
