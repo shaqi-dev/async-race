@@ -49,32 +49,61 @@ export default function paginator(fieldSelector, buttonsSelector, cards) {
 
     // Unique cards initilization
 
-    function getUniqueCards(maxCardsCount) {
-        const res = [];
-        
-        for (let i = 0; i < maxCardsCount;) {
-            const randomCard = cards[Math.floor(Math.random() * 8)];
-    
-            if (!res.some(e => e.dataset.name === randomCard.dataset.name)) {
-                    res.push(randomCard.cloneNode(true));
-                i++;
+    function getUniqueArray() {
+        let res6 = [];
+        let res8 = [];
+
+        let set6 = new Set();
+        let set8 = new Set();
+
+        for (let i = 0; i < 7; i++) {
+            for (let k = 0; k < 8; k++) {
+
+                if (set6.size === 6) {
+                    res6 = [...res6, [...set6]];
+                    set6.clear()
+                }
+
+                if (set8.size === 8) {
+                    res8 = [...res8, [...set8]];
+                    set8.clear()
+                }
+
+                while (set8.size - 1 < k) {
+                    const randomNumber = Math.floor(Math.random() * 8);
+                    if (!set6.has(randomNumber) && !set8.has(randomNumber)) {
+                        set6.add(randomNumber);
+                        set8.add(randomNumber);
+                    } 
+                }
             }
         }
 
-        cardsArray.push(res);
+        const totalResult = [];
+        
+        res8.forEach(arr => totalResult.push(...arr));
+
+        return totalResult;
     }
 
-    function generateCardsPages(pagesCount) {
-        for (let i = 0; i < pagesCount; i++) {
-            getUniqueCards(8);
-        }
+    const uniqueNumbers = getUniqueArray();
+
+    function generateCards(numbersArray) {
+        const res = [];
+        
+        numbersArray.forEach(num => {
+            const currentCard = cards[num];
+            res.push(currentCard.cloneNode(true));
+        })  
+
+        cardsArray = [...res];
     }
 
-    generateCardsPages(6);
+    generateCards(uniqueNumbers);
 
     function renderPages() {
-        cardsArray.forEach((page, i) => {
-            field.append(...cardsArray[i]);
+        cardsArray.forEach(element => {
+            field.append(element);
         })
     }
 
@@ -102,20 +131,11 @@ export default function paginator(fieldSelector, buttonsSelector, cards) {
         shiftSlide(2);
     })
 
-    // Function to clear DOM from unused cards
+    // Function to control page number and paginator buttons
 
     function checkPage() {
         console.log(currentPage, pagesCount);
-        if (currentPage > pagesCount) {
-            buttonFirst.classList.remove('button-paginator__disabled');
-            buttonPrevious.classList.remove('button-paginator__disabled');
-            buttonNext.classList.add('button-paginator__disabled');
-            buttonLast.classList.add('button-paginator__disabled');
-            console.log('bug');
-            posCurrent = -parseInt(cardWidth + parseInt(window.getComputedStyle(field, null).columnGap)) * columnsCount * (pagesCount - 1);
-            field.style.transform = `translateX(${posCurrent}px)`;
-            currentPage = pagesCount;
-        } else if (currentPage === 1) {
+        if (currentPage === 1) {
             buttonFirst.classList.add('button-paginator__disabled');
             buttonPrevious.classList.add('button-paginator__disabled');
             buttonNext.classList.remove('button-paginator__disabled');
