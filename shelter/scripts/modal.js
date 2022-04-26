@@ -36,7 +36,7 @@ export default function modal(modalSelector, modalOverlaySelector, modalWrapperS
 
     function showModal(petName) {
         modalWrapper.append(getModalContent(petName));
-        modal.classList.remove('hide');
+        modal.classList.add('pet-modal_active');
         document.body.style.overflow = "hidden";
     };
 
@@ -47,7 +47,7 @@ export default function modal(modalSelector, modalOverlaySelector, modalWrapperS
     });
 
     function hideModal() {
-        modal.classList.add('hide');
+        modal.classList.remove('pet-modal_active');
         document.body.style.overflow = "";
         const nodesToRemove = [...modalWrapper.childNodes].filter(node => node.nodeName === "#text" || node.className === "content-wrapper")
         nodesToRemove.forEach(node => {

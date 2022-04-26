@@ -2,6 +2,7 @@
     overflow: hidden
     position: relative
     height: 100%
+    z-index: 25
     @include media-mobile
         padding-right: 53px
         top: 4px
@@ -17,6 +18,7 @@
     outline: none
     z-index: 5
     opacity: 0
+    cursor: pointer
     @include media-mobile
         display: block
 
@@ -45,9 +47,10 @@
     width: 30px
     height: 2px
     top: 10px
-    z-index: 10
+    z-index: 2
     background-color: $color-primary
     transition: all 0.4s ease
+    cursor: pointer
     @include media-mobile
         display: block
     &::before, &::after

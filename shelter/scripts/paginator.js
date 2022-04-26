@@ -50,6 +50,17 @@ export default function paginator(fieldSelector, buttonsSelector, cards) {
     // Unique cards initilization
 
     function getUniqueArray() {
+        const cardsCount = {
+            '0': 0,
+            '1': 0,
+            '2': 0,
+            '3': 0,
+            '4': 0,
+            '5': 0,
+            '6': 0,
+            '7': 0,
+        }
+
         let res6 = [];
         let res8 = [];
 
@@ -71,9 +82,10 @@ export default function paginator(fieldSelector, buttonsSelector, cards) {
 
                 while (set8.size - 1 < k) {
                     const randomNumber = Math.floor(Math.random() * 8);
-                    if (!set6.has(randomNumber) && !set8.has(randomNumber)) {
+                    if (cardsCount[`${randomNumber}`] < 7 && !set6.has(randomNumber) && !set8.has(randomNumber)) {
                         set6.add(randomNumber);
                         set8.add(randomNumber);
+                        cardsCount[`${randomNumber}`] += 1;
                     } 
                 }
             }
