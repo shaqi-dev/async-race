@@ -146,7 +146,6 @@ export default function paginator(fieldSelector, buttonsSelector, cards) {
     // Function to control page number and paginator buttons
 
     function checkPage() {
-        console.log(currentPage, pagesCount);
         if (currentPage === 1) {
             buttonFirst.classList.add('button-paginator__disabled');
             buttonPrevious.classList.add('button-paginator__disabled');
