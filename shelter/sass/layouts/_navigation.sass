@@ -9,14 +9,17 @@
     @include media-mobile
         position: absolute
         opacity: 0
-        top: 188px
+        top: 50%
+        margin-top: -72px
+        width: max-content
+        height: 100vh    
         transform: translateX(125px)
-        z-index: 10
+        z-index: 1
         transition: all 0.4s ease
         flex-direction: column
+        justify-content: center
         font-size: 3.2rem
         line-height: 5.1rem
-        width: max-content
         gap: 40.5px
         text-align: center
 
@@ -43,6 +46,12 @@
             &:hover
                 color: $color-dark-3xl
     @include media-tablet
+        a
+            line-height: 170%
+            color: $color-dark-l
+            &:hover
+                color: $color-dark-3xl
+    @include media-mobile
         a
             line-height: 170%
             color: $color-dark-l
@@ -91,9 +100,9 @@
                 background-color: $color-primary
     @include media-mobile
         a   
-            color: $color-light-s
+            color: $color-dark-3xl
             &:hover
-                color: $color-light-s
+                color: $color-dark-3xl
             &::after
                 content: ''
                 display: block

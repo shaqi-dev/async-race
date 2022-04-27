@@ -6,6 +6,10 @@
     @include media-mobile
         padding-right: 53px
         top: 4px
+    &_white
+        .hamburger__layout
+            background-color: $color-light-xl
+
 
 .hamburger__button
     display: none
@@ -93,10 +97,6 @@
 .header__navigation
     .hamburger__button:checked + .hamburger__line
         transform: rotate(-90deg)
-    .hamburger__button:checked + .hamburger__line_dark
-        background-color: $color-primary
-        &::before, &::after
-            background-color: $color-primary
     .hamburger__button:checked ~ .hamburger__layout
         opacity: 1
         transform: translateX(320px)
