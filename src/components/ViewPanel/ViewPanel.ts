@@ -9,18 +9,15 @@ interface ViewPanelObject {
 }
 
 const ViewPanel = (parentSelector?: string): ViewPanelObject => {
-  const viewPanelEl = appendParent(
-    document.createElement('div'),
-    parentSelector,
-  );
+  const container = appendParent(document.createElement('div'), parentSelector);
+  const rootSelector = `.${s.root}`;
+  container.classList.add(s.root || '');
 
-  viewPanelEl.classList.add(s.root);
-
-  const garageBtn = Button({ label: 'Garage' }, `.${s.root}`);
-  const winnersBtn = Button({ label: 'Winners' }, `.${s.root}`);
+  const garageBtn = Button({ label: 'Garage' }, rootSelector);
+  const winnersBtn = Button({ label: 'Winners' }, rootSelector);
 
   return {
-    container: viewPanelEl,
+    container,
     garageBtn,
     winnersBtn,
   };

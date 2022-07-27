@@ -1,0 +1,18 @@
+@use '../../scss/variables' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 80px;
+  color: $color-text-light;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title {
+  font-size: 6.4rem;
+}

@@ -3,6 +3,7 @@ import s from './Button.module.scss';
 
 export interface ButtonProps {
   label?: string;
+  type?: 'button' | 'submit' | 'reset';
   parentSelector?: string;
 }
 
@@ -10,16 +11,14 @@ const Button = (
   props: ButtonProps,
   parentSelector?: string,
 ): HTMLButtonElement => {
-  const buttonEl = appendParent(
-    document.createElement('button'),
-    parentSelector,
-  );
-  const { label } = props;
+  const button = appendParent(document.createElement('button'), parentSelector);
+  const { label, type } = props;
 
-  buttonEl.classList.add(s.root);
-  buttonEl.innerText = label || '';
+  button.classList.add(s.root || '');
+  button.type = type || 'button';
+  button.innerText = label || '';
 
-  return buttonEl;
+  return button;
 };
 
 export default Button;

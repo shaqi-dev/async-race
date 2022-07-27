@@ -1,5 +1,6 @@
 import appendParent from './utils/appendParent';
 import ViewPanel from './components/ViewPanel';
+import Garage from './components/Garage';
 
 interface AppObj {
   container: HTMLDivElement;
@@ -23,6 +24,9 @@ const App = (): AppObj => {
 
   viewPanel.garageBtn.addEventListener('click', () => console.log('Garage'));
   viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
+
+  // Garage
+  const garage = Garage('#main');
 
   return {
     container: app,
