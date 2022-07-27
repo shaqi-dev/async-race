@@ -11,8 +11,8 @@ interface AppObj {
 
 const App = async (): Promise<AppObj> => {
   // App container
-  const app = appendParent(document.createElement('div'), 'body');
-  app.id = 'app';
+  const container = appendParent(document.createElement('div'), 'body');
+  container.id = 'app';
 
   // Header & Main layouts
   const header = appendParent(document.createElement('header'), '#app');
@@ -22,7 +22,6 @@ const App = async (): Promise<AppObj> => {
 
   // Garage & Winners selectors panel
   const viewPanel = ViewPanel('#header');
-
   viewPanel.garageBtn.addEventListener('click', () => console.log('Garage'));
   viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
 
@@ -31,7 +30,7 @@ const App = async (): Promise<AppObj> => {
   const garage = Garage(garageData, '#main');
 
   return {
-    container: app,
+    container,
     header,
     main,
   };

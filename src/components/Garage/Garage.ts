@@ -23,7 +23,7 @@ const Garage = (garageData: GarageData | null, parentSelector?: string): GarageO
 
   const title = appendParent(document.createElement('h2'), mainSelector);
   title.classList.add(s.title || '');
-  title.innerText = 'Garage';
+  title.innerText = `Garage (${garageData?.count})`;
 
   garageData?.cars.map((car) => GarageSlot(car, mainSelector));
 
