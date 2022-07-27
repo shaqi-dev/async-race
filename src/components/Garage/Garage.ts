@@ -31,25 +31,6 @@ const handleCreateCar = async (
   }
 };
 
-const handleRemoveCar = async (
-  e: MouseEvent,
-  updateGarage: UpdateGarage,
-): Promise<void> => {
-  e.preventDefault();
-  let target = e.target as HTMLElement | null | undefined;
-  let id: string | undefined;
-
-  while (target && !id) {    
-    target = target?.parentElement;
-    id = target?.dataset.carId;
-  }
-
-  if (id) {
-    await removeCar(+id);
-    await updateGarage();
-  }
-};
-
 const Garage = async (parentSelector?: string): Promise<GarageObj> => {
   const container = appendParent(document.createElement('div'), parentSelector);
   const rootSelector = `.${s.root}`;
@@ -63,15 +44,11 @@ const Garage = async (parentSelector?: string): Promise<GarageObj> => {
   if (s.main) main.classList.add(s.main);
 
   const updateGarage = async (): Promise<void> => {
-    const data = await getCars(1, 20);
+    const data = await getCars(1, 10);
     title.innerText = `Garage (${data?.count})`;
     main.innerHTML = '';
-
-    const garageSlots = data?.cars.map((car) => GarageSlot(car, mainSelector));
-    garageSlots?.forEach((slot) =>
-      slot.removeBtn.addEventListener('click', (e) =>
-        handleRemoveCar(e, updateGarage),
-      ),
+    data?.cars.map((car) =>
+      GarageSlot({ car, garageSelector: mainSelector, updateGarage }),
     );
   };
 

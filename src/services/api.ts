@@ -12,20 +12,20 @@ const handleError = (e: unknown, message: string): void => {
   }
 };
 
-export type GetCarsReturnType = GarageData | null | void;
-
 export const getCars = async (
   page = 1,
   limit = 7,
-): Promise<GetCarsReturnType> => {
+): Promise<GarageData | null | void> => {
   try {
     const res = await fetch(`${API_BASE}/garage?_limit=${limit}&_page=${page}`);
-    const data: Car[] = await res.json();
 
     if (res.status === 200) {
+      const cars: Car[] = await res.json();
+      const count = res.headers.get('X-Total-Count') || '0'
+
       return {
-        cars: data,
-        count: res.headers.get('X-Total-Count') || '0',
+        cars,
+        count,
       };
     }
 
@@ -34,6 +34,21 @@ export const getCars = async (
     handleError(e, 'Cannot get garage data from server');
   }
 };
+
+export const getCar = async (id: number): Promise<Car | null | void> => {
+  try {
+    const res = await fetch(`${API_BASE}/garage/${id}`);
+
+    if (res.status === 200) {
+      const car: Car = await res.json();
+      return car;
+    }
+
+    return null;
+  } catch (e) {
+    handleError(e, `Cannot get car (id: ${id}) data from server`);
+  }
+}
 
 export const createCar = async (car: PostCar): Promise<void> => {
   try {
