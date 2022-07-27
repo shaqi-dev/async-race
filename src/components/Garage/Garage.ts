@@ -17,17 +17,22 @@ const handleCreateCar = async (
   updateGarage: UpdateGarage,
 ): Promise<void> => {
   e.preventDefault();
-  const form = e.target as HTMLFormElement | null;
-  const textInput = form?.querySelector(
-    'input[type="text"]',
-  ) as HTMLInputElement;
-  const colorInput = form?.querySelector(
-    'input[type="color"]',
-  ) as HTMLInputElement;
+  const createForm = e.target as HTMLFormElement | null;
 
-  if (textInput.value) {
-    await createCar({ name: textInput.value, color: colorInput.value });
-    await updateGarage();
+  if (createForm) {
+    const textInput = createForm.querySelector(
+      'input[type="text"]',
+    ) as HTMLInputElement;
+    const colorInput = createForm.querySelector(
+      'input[type="color"]',
+    ) as HTMLInputElement;
+
+    if (textInput.value) {
+      await createCar({ name: textInput.value, color: colorInput.value });
+      await updateGarage();
+
+      createForm.reset();
+    }
   }
 };
 
@@ -48,10 +53,12 @@ const handleUpdateCar = async (
     ) as HTMLInputElement;
 
     console.log(id);
-  
+
     if (id && textInput.value) {
       await updateCar(+id, { name: textInput.value, color: colorInput.value });
       await updateGarage();
+
+      updateForm.reset();
     }
   }
 };
