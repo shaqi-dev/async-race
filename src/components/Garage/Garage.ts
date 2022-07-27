@@ -53,14 +53,14 @@ const handleRemoveCar = async (
 const Garage = async (parentSelector?: string): Promise<GarageObj> => {
   const container = appendParent(document.createElement('div'), parentSelector);
   const rootSelector = `.${s.root}`;
-  container.classList.add(s.root || '');
+  if (s.root) container.classList.add(s.root);
 
   const title = appendParent(document.createElement('h2'), rootSelector);
-  title.classList.add(s.title || '');
+  if (s.title) title.classList.add(s.title);
 
   const main = appendParent(document.createElement('div'), rootSelector);
   const mainSelector = `.${s.main}`;
-  main.classList.add(s.main || '');
+  if (s.main) main.classList.add(s.main);
 
   const updateGarage = async (): Promise<void> => {
     const data = await getCars(1, 20);

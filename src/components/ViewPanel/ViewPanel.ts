@@ -11,7 +11,7 @@ interface ViewPanelObject {
 const ViewPanel = (parentSelector?: string): ViewPanelObject => {
   const container = appendParent(document.createElement('div'), parentSelector);
   const rootSelector = `.${s.root}`;
-  container.classList.add(s.root || '');
+  if (s.root) container.classList.add(s.root);
 
   const garageBtn = Button({ label: 'Garage' }, rootSelector);
   const winnersBtn = Button({ label: 'Winners' }, rootSelector);

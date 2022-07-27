@@ -14,7 +14,7 @@ const Button = (
   const button = appendParent(document.createElement('button'), parentSelector);
   const { label, type } = props;
 
-  button.classList.add(s.root || '');
+  if (s.root) button.classList.add(s.root);
   button.type = type || 'button';
   button.innerText = label || '';
 

@@ -67,14 +67,14 @@ const ControllPanel = (
     'prepend',
   );
   const rootSelector = `.${s.root}`;
-  container.classList.add(s.root || '');
+  if (s.root) container.classList.add(s.root);
 
   const createForm = ControllPanelForm(rootSelector, 'create-form', 'Create');
   const updateForm = ControllPanelForm(rootSelector, 'update-form', 'Update');
 
   const footer = appendParent(document.createElement('div'), rootSelector);
   const footerSelector = `.${s.footer}`;
-  footer.classList.add(s.footer || '');
+  if (s.footer) footer.classList.add(s.footer);
 
   const raceBtn = Button({ label: 'Race' }, footerSelector);
   const resetBtn = Button({ label: 'Reset' }, footerSelector);
