@@ -1,7 +1,6 @@
 import appendParent from './utils/appendParent';
 import ViewPanel from './components/ViewPanel';
 import Garage from './components/Garage';
-import { getCars } from './services/api';
 
 interface AppObj {
   container: HTMLDivElement;
@@ -26,8 +25,8 @@ const App = async (): Promise<AppObj> => {
   viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
 
   // Garage
-  const garageData = await getCars(1, 10);
-  const garage = Garage(garageData, '#main');
+
+  const garage = await Garage('#main');
 
   return {
     container,

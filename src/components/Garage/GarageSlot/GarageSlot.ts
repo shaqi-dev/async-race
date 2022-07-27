@@ -4,7 +4,7 @@ import Button from '../../Button';
 import type { Car } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
 
-interface GarageSlotObj {
+export interface GarageSlotObj {
   container: HTMLDivElement;
   selectBtn: HTMLButtonElement;
   resetBtn: HTMLButtonElement;
@@ -20,7 +20,6 @@ const GarageSlot = (car: Car, garageSelector: string): GarageSlotObj => {
 
   const header = appendParent(document.createElement('div'), containerSelector);
   const headerSelector = `${containerSelector} .${s.header}`;
-  console.log(headerSelector);
   if (s.header) header.classList.add(s.header);
 
   const selectBtn = Button({ label: 'Select', type: 'button' }, headerSelector);

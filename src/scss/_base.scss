@@ -16,4 +16,8 @@ body {
   font-family: $font-helvetica;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-};
+}
+
+main, header {
+  padding: 0 40px;
+}
