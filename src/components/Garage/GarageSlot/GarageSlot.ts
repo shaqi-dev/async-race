@@ -29,8 +29,13 @@ const GarageSlot = (car: Car, garageSelector: string): GarageSlotObj => {
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, headerSelector);
 
   const main = appendParent(document.createElement('div'), containerSelector);
+  const mainSelector = `${containerSelector} .${s.main}`;
   if (s.main) main.classList.add(s.main);
-  main.innerHTML = getCarSVG(car.color);
+
+  const carName = appendParent(document.createElement('span'), mainSelector);
+  carName.innerText = `${car.name}`;
+
+  main.innerHTML += getCarSVG(car.color);
 
   return {
     container,

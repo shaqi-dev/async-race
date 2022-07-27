@@ -1,4 +1,7 @@
 .root {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   border-bottom: 3px dashed #eaeaea;
 }
 
@@ -7,6 +10,13 @@
 }
 
 .main {
+  display: flex;
+  flex-direction: column;
+
+  span {
+    font-size: 3.2rem;
+  }
+
   svg {
     height: 100px;
     width: fit-content;
