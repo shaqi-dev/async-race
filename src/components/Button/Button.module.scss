@@ -1,0 +1,17 @@
+@use '../../scss/variables' as *;
+
+.root {
+  display: inline-block;
+  min-width: 120px;
+  padding: 15px 30px;
+  font-size: 2rem;
+  background: $color-button-primary-bg;
+  color: $color-button-primary-text;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: $transition-main;
+
+  &:hover {
+    background: $color-button-primary-bg--hover;
+  }
+}

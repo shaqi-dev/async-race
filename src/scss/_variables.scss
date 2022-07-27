@@ -1,5 +1,9 @@
 // Colors
-$color-bg-dark-blue: #121319;
+$color-bg-dark-blue: #060811;
+
+$color-button-primary-bg: #313d75;
+$color-button-primary-bg--hover: #3d497d;
+$color-button-primary-text: #dfdfdf;
 
 $color-text-light: #ffffff;
 
@@ -9,3 +13,6 @@ $font-helvetica: -apple-system, 'Helvetica Neue', 'Roboto', 'Segoe UI', 'Oxygen'
 
 $font-roboto: -apple-system, 'Roboto', 'Helvetica Neue', 'Segoe UI', 'Oxygen', 
 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', sans-serif;
+
+// Transition
+$transition-main: 80ms all ease-in-out;
