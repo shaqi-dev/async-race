@@ -1,7 +1,7 @@
 import appendParent from '../../../utils/appendParent';
 import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
-import type Car from '../../../interfaces/Car';
+import type { Car } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
 
 interface GarageSlotObj {

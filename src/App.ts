@@ -1,6 +1,7 @@
 import appendParent from './utils/appendParent';
 import ViewPanel from './components/ViewPanel';
 import Garage from './components/Garage';
+import { getCars } from './services/api';
 
 interface AppObj {
   container: HTMLDivElement;
@@ -8,20 +9,7 @@ interface AppObj {
   main: HTMLElement;
 }
 
-const garageTest = [
-  {
-    "name": "Tesla",
-    "color": "#e6e6fa",
-    "id": 1
-  },
-  {
-    "name": "Audi",
-    "color": "#e676fa",
-    "id": 2
-  }
-]
-
-const App = (): AppObj => {
+const App = async (): Promise<AppObj> => {
   // App container
   const app = appendParent(document.createElement('div'), 'body');
   app.id = 'app';
@@ -39,7 +27,8 @@ const App = (): AppObj => {
   viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
 
   // Garage
-  const garage = Garage(garageTest, '#main');
+  const garageData = await getCars(1, 10);
+  const garage = Garage(garageData, '#main');
 
   return {
     container: app,
