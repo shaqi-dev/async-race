@@ -7,7 +7,7 @@ import s from './GarageSlot.module.scss';
 export interface GarageSlotObj {
   container: HTMLDivElement;
   selectBtn: HTMLButtonElement;
-  resetBtn: HTMLButtonElement;
+  removeBtn: HTMLButtonElement;
   startBtn: HTMLButtonElement;
   stopBtn: HTMLButtonElement;
 }
@@ -15,6 +15,7 @@ export interface GarageSlotObj {
 const GarageSlot = (car: Car, garageSelector: string): GarageSlotObj => {
   const container = appendParent(document.createElement('div'), garageSelector);
   container.id = `car-${car.id}`;
+  container.dataset.carId = `${car.id}`;
   const containerSelector = `#car-${car.id}`;
   if (s.root) container.classList.add(s.root);
 
@@ -23,7 +24,7 @@ const GarageSlot = (car: Car, garageSelector: string): GarageSlotObj => {
   if (s.header) header.classList.add(s.header);
 
   const selectBtn = Button({ label: 'Select', type: 'button' }, headerSelector);
-  const resetBtn = Button({ label: 'Reset', type: 'reset' }, headerSelector);
+  const removeBtn = Button({ label: 'Remove', type: 'reset' }, headerSelector);
   const startBtn = Button({ label: 'Start', type: 'button' }, headerSelector);
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, headerSelector);
 
@@ -39,7 +40,7 @@ const GarageSlot = (car: Car, garageSelector: string): GarageSlotObj => {
   return {
     container,
     selectBtn,
-    resetBtn,
+    removeBtn,
     startBtn,
     stopBtn,
   };

@@ -10,7 +10,7 @@ const handleError = (e: unknown, message: string): void => {
   } else {
     throw new Error(message);
   }
-}
+};
 
 export type GetCarsReturnType = GarageData | null | void;
 
@@ -43,6 +43,16 @@ export const createCar = async (car: PostCar): Promise<void> => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(car),
+    });
+  } catch (e) {
+    handleError(e, 'Cannot create new car');
+  }
+};
+
+export const removeCar = async (id: number): Promise<void> => {
+  try {
+    await fetch(`${API_BASE}/garage/${id}`, {
+      method: 'DELETE',
     });
   } catch (e) {
     handleError(e, 'Cannot create new car');

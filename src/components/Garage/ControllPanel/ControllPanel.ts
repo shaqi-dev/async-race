@@ -1,7 +1,5 @@
 import appendParent from '../../../utils/appendParent';
 import Button from '../../Button';
-import { createCar } from '../../../services/api';
-import type { UpdateGarage } from '../Garage';
 import s from './ControllPanel.module.scss';
 
 export interface ControllPanelObj {
@@ -60,24 +58,7 @@ const ControllPanelForm = (
   };
 };
 
-const handleCreateCar = async (e: SubmitEvent, updateGarage: UpdateGarage): Promise<void> => {
-  e.preventDefault();
-  const form = e.target as HTMLFormElement | null;
-  const textInput = form?.querySelector(
-    'input[type="text"]',
-  ) as HTMLInputElement;
-  const colorInput = form?.querySelector(
-    'input[type="color"]',
-  ) as HTMLInputElement;
-
-  if (textInput.value) {
-    await createCar({ name: textInput.value, color: colorInput.value });
-    await updateGarage();
-  }
-};
-
 const ControllPanel = (
-  updateGarage: UpdateGarage,
   parentSelector?: string,
 ): ControllPanelObj => {
   const container = appendParent(
@@ -90,9 +71,6 @@ const ControllPanel = (
 
   const createForm = ControllPanelForm(rootSelector, 'create-form', 'Create');
   const updateForm = ControllPanelForm(rootSelector, 'update-form', 'Update');
-  createForm.container.addEventListener('submit', (e) =>
-    handleCreateCar(e, updateGarage),
-  );
 
   const footer = appendParent(document.createElement('div'), rootSelector);
   const footerSelector = `.${s.footer}`;
