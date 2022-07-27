@@ -19,15 +19,6 @@ const GarageSlot = (car: Car, garageSelector: string): GarageSlotObj => {
   const containerSelector = `#car-${car.id}`;
   if (s.root) container.classList.add(s.root);
 
-  const header = appendParent(document.createElement('div'), containerSelector);
-  const headerSelector = `${containerSelector} .${s.header}`;
-  if (s.header) header.classList.add(s.header);
-
-  const selectBtn = Button({ label: 'Select', type: 'button' }, headerSelector);
-  const removeBtn = Button({ label: 'Remove', type: 'reset' }, headerSelector);
-  const startBtn = Button({ label: 'Start', type: 'button' }, headerSelector);
-  const stopBtn = Button({ label: 'Stop', type: 'reset' }, headerSelector);
-
   const main = appendParent(document.createElement('div'), containerSelector);
   const mainSelector = `${containerSelector} .${s.main}`;
   if (s.main) main.classList.add(s.main);
@@ -36,6 +27,15 @@ const GarageSlot = (car: Car, garageSelector: string): GarageSlotObj => {
   carName.innerText = `${car.name}`;
 
   main.innerHTML += getCarSVG(car.color);
+
+  const footer = appendParent(document.createElement('div'), containerSelector);
+  const footerSelector = `${containerSelector} .${s.footer}`;
+  if (s.footer) footer.classList.add(s.footer);
+
+  const selectBtn = Button({ label: 'Select', type: 'button' }, footerSelector);
+  const removeBtn = Button({ label: 'Remove', type: 'reset' }, footerSelector);
+  const startBtn = Button({ label: 'Start', type: 'button' }, footerSelector);
+  const stopBtn = Button({ label: 'Stop', type: 'reset' }, footerSelector);
 
   return {
     container,

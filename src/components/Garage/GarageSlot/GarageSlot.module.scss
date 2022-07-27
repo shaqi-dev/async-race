@@ -2,16 +2,12 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  border-bottom: 3px dashed #eaeaea;
-}
-
-.header {
-  display: flex;
 }
 
 .main {
   display: flex;
   flex-direction: column;
+  border-bottom: 3px dashed #eaeaea;
 
   span {
     font-size: 3.2rem;
@@ -21,4 +17,8 @@
     height: 100px;
     width: fit-content;
   }
+}
+
+.footer {
+  display: flex;
 }
