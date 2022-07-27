@@ -1,5 +1,4 @@
 import './scss/style.scss';
-import Button from './components/Button';
+import App from './App';
 
-const garageBtn = Button({ label: 'Garage' }, 'body');
-const winnersBtn = Button({ label: 'Winners' }, 'body');
+window.addEventListener('DOMContentLoaded', () => App());

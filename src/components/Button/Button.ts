@@ -1,3 +1,4 @@
+import appendParent from '../../utils/appendParent';
 import s from './Button.module.scss';
 
 export interface ButtonProps {
@@ -5,16 +6,18 @@ export interface ButtonProps {
   parentSelector?: string;
 }
 
-const Button = (props: ButtonProps, parentSelector?: string): HTMLButtonElement => {
-  const buttonEl = document.createElement('button');
+const Button = (
+  props: ButtonProps,
+  parentSelector?: string,
+): HTMLButtonElement => {
+  const buttonEl = appendParent(
+    document.createElement('button'),
+    parentSelector,
+  );
   const { label } = props;
 
-  buttonEl.innerText = label || '';
   buttonEl.classList.add(s.root);
-
-  if (parentSelector) {
-    document.querySelector(parentSelector)?.append(buttonEl);
-  }
+  buttonEl.innerText = label || '';
 
   return buttonEl;
 };
