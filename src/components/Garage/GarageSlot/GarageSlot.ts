@@ -40,13 +40,12 @@ const handleSelectCar = async (
   if (updateForm) {
     const textInput = updateForm.querySelector('input[type="text"]') as HTMLInputElement;
     const colorInput = updateForm.querySelector('input[type="color"]') as HTMLInputElement;
-    const submitBtn = updateForm.querySelector('button[type="submit"]') as HTMLButtonElement;
     const car = await getCar(id);
 
     if (car) {
       textInput.value = car.name;
       colorInput.value = car.color;
-      submitBtn.dataset.carId = `${id}`;
+      updateForm.dataset.carId = `${id}`;
     }
   }
 };

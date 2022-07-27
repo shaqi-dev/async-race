@@ -1,4 +1,4 @@
-import type { GarageData, Car, PostCar } from '../interfaces/shared';
+import type { GarageData, Car, CarSettings } from '../interfaces/shared';
 
 const API_BASE = 'http://localhost:3000';
 
@@ -50,7 +50,7 @@ export const getCar = async (id: number): Promise<Car | null | void> => {
   }
 }
 
-export const createCar = async (car: PostCar): Promise<void> => {
+export const createCar = async (car: CarSettings): Promise<void> => {
   try {
     await fetch(`${API_BASE}/garage`, {
       method: 'POST',
@@ -71,5 +71,19 @@ export const removeCar = async (id: number): Promise<void> => {
     });
   } catch (e) {
     handleError(e, 'Cannot create new car');
+  }
+};
+
+export const updateCar = async (id: number, car: CarSettings): Promise<void> => {
+  try {
+    await fetch(`${API_BASE}/garage/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(car),
+    });
+  } catch (e) {
+    handleError(e, `Cannot update car (id: ${id})`);
   }
 };

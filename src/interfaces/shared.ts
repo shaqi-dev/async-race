@@ -4,7 +4,7 @@ export interface Car {
   id: number;
 }
 
-export interface PostCar {
+export interface CarSettings {
   name: string;
   color: string;
 }

@@ -1,7 +1,7 @@
 import appendParent from '../../utils/appendParent';
 import ControllPanel, { ControllPanelObj } from './ControllPanel';
 import GarageSlot from './GarageSlot';
-import { getCars, createCar, removeCar } from '../../services/api';
+import { getCars, createCar, updateCar } from '../../services/api';
 import s from './Garage.module.scss';
 
 export type UpdateGarage = () => Promise<void>;
@@ -31,10 +31,37 @@ const handleCreateCar = async (
   }
 };
 
+const handleUpdateCar = async (
+  e: SubmitEvent,
+  updateGarage: UpdateGarage,
+): Promise<void> => {
+  e.preventDefault();
+  const updateForm = e.target as HTMLFormElement | null;
+
+  if (updateForm) {
+    const id = updateForm.dataset.carId;
+    const textInput = updateForm.querySelector(
+      'input[type="text"]',
+    ) as HTMLInputElement;
+    const colorInput = updateForm.querySelector(
+      'input[type="color"]',
+    ) as HTMLInputElement;
+
+    console.log(id);
+  
+    if (id && textInput.value) {
+      await updateCar(+id, { name: textInput.value, color: colorInput.value });
+      await updateGarage();
+    }
+  }
+};
+
 const Garage = async (parentSelector?: string): Promise<GarageObj> => {
   const container = appendParent(document.createElement('div'), parentSelector);
   const rootSelector = `.${s.root}`;
   if (s.root) container.classList.add(s.root);
+
+  const controllPanel = ControllPanel(rootSelector);
 
   const title = appendParent(document.createElement('h2'), rootSelector);
   if (s.title) title.classList.add(s.title);
@@ -52,9 +79,11 @@ const Garage = async (parentSelector?: string): Promise<GarageObj> => {
     );
   };
 
-  const controllPanel = ControllPanel(rootSelector);
   controllPanel.createForm.container.addEventListener('submit', (e) =>
     handleCreateCar(e, updateGarage),
+  );
+  controllPanel.updateForm.container.addEventListener('submit', (e) =>
+    handleUpdateCar(e, updateGarage),
   );
 
   updateGarage();
