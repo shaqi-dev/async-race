@@ -1,0 +1,14 @@
+.root {
+  border-bottom: 3px dashed #eaeaea;
+}
+
+.header {
+  display: flex;
+}
+
+.main {
+  svg {
+    height: 100px;
+    width: fit-content;
+  }
+}

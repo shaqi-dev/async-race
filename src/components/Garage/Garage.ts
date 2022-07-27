@@ -1,5 +1,7 @@
 import appendParent from '../../utils/appendParent';
 import ControllPanel, { ControllPanelObj } from './ControllPanel';
+import GarageSlot from './GarageSlot';
+import type Car from '../../interfaces/Car';
 import s from './Garage.module.scss';
 
 export interface GarageObj {
@@ -8,7 +10,7 @@ export interface GarageObj {
   main: HTMLDivElement;
 }
 
-const Garage = (parentSelector?: string): GarageObj => {
+const Garage = (garage: Car[], parentSelector?: string): GarageObj => {
   const container = appendParent(document.createElement('div'), parentSelector);
   const rootSelector = `.${s.root}`;
   container.classList.add(s.root || '');
@@ -22,6 +24,8 @@ const Garage = (parentSelector?: string): GarageObj => {
   const title = appendParent(document.createElement('h2'), mainSelector);
   title.classList.add(s.title || '');
   title.innerText = 'Garage';
+
+  garage.map((car) => GarageSlot(car, mainSelector));
 
   return {
     container,

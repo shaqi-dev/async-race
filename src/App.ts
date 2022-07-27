@@ -8,6 +8,19 @@ interface AppObj {
   main: HTMLElement;
 }
 
+const garageTest = [
+  {
+    "name": "Tesla",
+    "color": "#e6e6fa",
+    "id": 1
+  },
+  {
+    "name": "Audi",
+    "color": "#e676fa",
+    "id": 2
+  }
+]
+
 const App = (): AppObj => {
   // App container
   const app = appendParent(document.createElement('div'), 'body');
@@ -26,7 +39,7 @@ const App = (): AppObj => {
   viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
 
   // Garage
-  const garage = Garage('#main');
+  const garage = Garage(garageTest, '#main');
 
   return {
     container: app,
