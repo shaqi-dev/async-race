@@ -1,6 +1,9 @@
 import Button from '../Button';
 import render from '../../utils/render';
+import store from '../../store';
+import { getWinners } from '../../services/api';
 import s from './ViewPanel.module.scss';
+
 
 export interface ViewPanelObj {
   container: HTMLDivElement;
@@ -8,12 +11,27 @@ export interface ViewPanelObj {
   winnersBtn: HTMLButtonElement;
 }
 
+const handleGarage = (): void => {
+  store.view = 'garage';
+ 
+  console.log(store.garage);
+}
+
+const handleWinners = async (): Promise<void> => {
+  store.view = 'winners';
+  const winners = await getWinners();
+
+  console.log(winners);
+}
+
 const ViewPanel = (parentSelector?: string): ViewPanelObj => {
   const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
 
   const garageBtn = Button({ label: 'Garage' }, rootSelector);
+  garageBtn.addEventListener('click', handleGarage);
   const winnersBtn = Button({ label: 'Winners' }, rootSelector);
+  winnersBtn.addEventListener('click', handleWinners);
 
   return {
     container,

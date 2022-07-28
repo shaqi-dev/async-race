@@ -15,5 +15,16 @@ export interface CarEngine {
 }
 export interface GarageData {
   cars: Car[];
-  count: string;
+  count: number;
+}
+
+export interface Winner {
+  id: number;
+  wins: number;
+  time: number;
+}
+
+export interface WinnersData {
+  winners: Winner[];
+  count: number;
 }

@@ -1,5 +1,5 @@
 import handleError from '../utils/handleError';
-import type { GarageData, Car, CarSettings, CarEngine } from '../interfaces/shared';
+import type { GarageData, Car, CarSettings, CarEngine, Winner, WinnersData } from '../interfaces/shared';
 
 const API_BASE = 'http://localhost:3000';
 
@@ -13,7 +13,7 @@ export const getCars = async (page = 1, limit = 7): Promise<GarageData | null | 
 
     if (res.status === 200) {
       const cars: Car[] = await res.json();
-      const count = res.headers.get('X-Total-Count') || '0';
+      const count = Number(res.headers.get('X-Total-Count')) || 0;
 
       return {
         cars,
@@ -116,5 +116,28 @@ export const setCarEngineToDrive = async (
     return null;
   } catch (e) {
     handleError(e, 'Cannot start driving');
+  }
+};
+
+export const getWinners = async (
+  page = 1,
+  limit = 10
+): Promise<WinnersData | null | void> => {
+  try {
+    const res = await fetch(`${API_WINNERS}?_limit=${limit}&_page=${page}`);
+
+    if (res.status === 200) {
+      const winners: Winner[] = await res.json();
+      const count = Number(res.headers.get('X-Total-Count')) || 0;
+
+      return {
+        winners,
+        count,
+      };
+    }
+
+    return null;
+  } catch (e) {
+    handleError(e, 'Cannot get winners data from server');
   }
 };
