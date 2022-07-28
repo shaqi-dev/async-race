@@ -16,6 +16,8 @@ interface ControllPanelFormObj {
   textInput: HTMLInputElement;
   colorInput: HTMLInputElement;
   submitBtn: HTMLButtonElement;
+  disable: () => void;
+  enable: () => void;
 }
 
 const ControllPanelForm = (
@@ -35,11 +37,27 @@ const ControllPanelForm = (
 
   const submitBtn = Button({ label: submitButtonLabel, type: 'submit' }, containerSelector);
 
+  const disable = (): void => {
+    container.reset();
+    textInput.disabled = true;
+    colorInput.disabled = true;
+    submitBtn.disabled = true;
+  };
+
+  const enable = (): void => {
+    container.reset();
+    textInput.disabled = false;
+    colorInput.disabled = false;
+    submitBtn.disabled = false;
+  };
+
   return {
     container,
     textInput,
     colorInput,
     submitBtn,
+    disable,
+    enable,
   };
 };
 
@@ -50,7 +68,9 @@ const ControllPanel = (parentSelector?: string): ControllPanelObj => {
   const createForm = ControllPanelForm(rootSelector, 'create-form', 'Create');
   const updateForm = ControllPanelForm(rootSelector, 'update-form', 'Update');
 
-  const footer = render<HTMLDivElement>('div', s.footer, rootSelector);
+  updateForm.disable();
+
+  render<HTMLDivElement>('div', s.footer, rootSelector);
   const footerSelector = `.${s.footer}`;
 
   const raceBtn = Button({ label: 'Race' }, footerSelector);

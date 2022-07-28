@@ -18,42 +18,34 @@ export interface GarageSlotObj {
 interface GarageSlotProps {
   car: Car;
   garageSelector: string;
-  garage: GarageObj
+  garage: GarageObj;
 }
 
-const handleRemoveCar = async (
-  e: MouseEvent,
-  id: number
-): Promise<void> => {
+const handleRemoveCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
   await removeCar(id);
   await store.garage?.update();
 };
 
-const handleSelectCar = async (
-  e: MouseEvent,
-  id: number,
-): Promise<void> => {
+const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
-  const updateForm = document.querySelector('#update-form') as HTMLFormElement | null;
+  const { controllPanel } = store;
 
-  if (updateForm) {
-    const textInput = updateForm.querySelector('input[type="text"]') as HTMLInputElement;
-    const colorInput = updateForm.querySelector('input[type="color"]') as HTMLInputElement;
+  if (controllPanel) {
+    const { container, textInput, colorInput, enable } = controllPanel.updateForm;
+
     const car = await getCar(id);
 
     if (car) {
+      enable();
       textInput.value = car.name;
       colorInput.value = car.color;
-      updateForm.dataset.carId = `${id}`;
+      container.dataset.carId = `${id}`;
     }
   }
 };
 
-const GarageSlot = ({
-  car,
-  garageSelector,
-}: GarageSlotProps): GarageSlotObj => {
+const GarageSlot = ({ car, garageSelector }: GarageSlotProps): GarageSlotObj => {
   const container = render<HTMLDivElement>('div', s.root, garageSelector);
   const containerSelector = `#car-${car.id}`;
   container.id = `car-${car.id}`;
@@ -67,7 +59,7 @@ const GarageSlot = ({
   carName.innerText = `${car.name}`;
   main.innerHTML += getCarSVG(car.color);
 
-  const footer = render<HTMLDivElement>('div', s.footer, containerSelector);
+  render<HTMLDivElement>('div', s.footer, containerSelector);
   const footerSelector = `${containerSelector} .${s.footer}`;
 
   const selectBtn = Button({ label: 'Select', type: 'button' }, footerSelector);
@@ -75,7 +67,7 @@ const GarageSlot = ({
 
   const removeBtn = Button({ label: 'Remove', type: 'reset' }, footerSelector);
   removeBtn.addEventListener('click', (e) => handleRemoveCar(e, car.id));
-  
+
   const startBtn = Button({ label: 'Start', type: 'button' }, footerSelector);
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footerSelector);
 

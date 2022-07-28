@@ -33,6 +33,11 @@
     outline: 1px $color-border-dark--focus solid;
     background-color: $color-input-bg-dark--focus;
   }
+
+  &:disabled {
+    background-color: $color-input-bg-dark--disabled;
+    pointer-events: none;
+  }
 }
 
 .color-input {
@@ -44,6 +49,10 @@
   background: none;
   border: none;
   cursor: pointer;
+
+  &:disabled {
+    pointer-events: none;
+  }
 }
 
 .footer {

@@ -17,40 +17,34 @@ export interface GarageObj {
 
 const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const createForm = e.target as HTMLFormElement | null;
+  const { controllPanel, garage } = store;
 
-  if (createForm) {
-    const textInput = createForm.querySelector('input[type="text"]') as HTMLInputElement;
-    const colorInput = createForm.querySelector('input[type="color"]') as HTMLInputElement;
+  if (controllPanel) {
+    const { container, textInput, colorInput } = controllPanel.createForm;
 
     if (textInput.value) {
       await createCar({ name: textInput.value, color: colorInput.value });
-      await store.garage?.update();
-
-      createForm.reset();
+      await garage?.update();
+      container.reset();
     }
   }
 };
 
 const handleUpdateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const updateForm = e.target as HTMLFormElement | null;
+  const { controllPanel, garage } = store;
 
-  if (updateForm) {
-    const id = updateForm.dataset.carId;
-    const textInput = updateForm.querySelector('input[type="text"]') as HTMLInputElement;
-    const colorInput = updateForm.querySelector('input[type="color"]') as HTMLInputElement;
-
-    console.log(id);
+  if (controllPanel) {
+    const { container, textInput, colorInput, disable } = controllPanel.updateForm;
+    const id = container.dataset.carId;
 
     if (id && textInput.value) {
       await updateCar(+id, {
         name: textInput.value,
         color: colorInput.value,
       });
-      await store.garage?.update();
-
-      updateForm.reset();
+      await garage?.update();
+      disable();
     }
   }
 };
@@ -106,7 +100,7 @@ const Garage = (parentSelector?: string): GarageObj => {
   const main = render<HTMLDivElement>('div', s.main, rootSelector);
   main.id = 'garage-main';
 
-  const footer = render<HTMLDivElement>('div', s.footer, rootSelector);
+  render<HTMLDivElement>('div', s.footer, rootSelector);
 
   const garage: GarageObj = {
     container,

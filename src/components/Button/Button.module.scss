@@ -14,4 +14,9 @@
   &:hover {
     background: $color-button-primary-bg--hover;
   }
+
+  &:disabled {
+    background: $color-button-primary--disabled;
+    pointer-events: none;
+  }
 }
