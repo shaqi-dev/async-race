@@ -2,13 +2,13 @@ import Button from '../Button';
 import appendParent from '../../utils/appendParent';
 import s from './ViewPanel.module.scss';
 
-interface ViewPanelObject {
+export interface ViewPanelObj {
   container: HTMLDivElement;
   garageBtn: HTMLButtonElement;
   winnersBtn: HTMLButtonElement;
 }
 
-const ViewPanel = (parentSelector?: string): ViewPanelObject => {
+const ViewPanel = (parentSelector?: string): ViewPanelObj => {
   const container = appendParent(document.createElement('div'), parentSelector);
   const rootSelector = `.${s.root}`;
   if (s.root) container.classList.add(s.root);

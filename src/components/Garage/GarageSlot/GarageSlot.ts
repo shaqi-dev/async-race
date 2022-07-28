@@ -23,12 +23,11 @@ interface GarageSlotProps {
 
 const handleRemoveCar = async (
   e: MouseEvent,
-  garage: GarageObj,
   id: number
 ): Promise<void> => {
   e.preventDefault();
   await removeCar(id);
-  await updateGarage(garage);
+  await updateGarage();
 };
 
 const handleSelectCar = async (
@@ -54,7 +53,6 @@ const handleSelectCar = async (
 const GarageSlot = ({
   car,
   garageSelector,
-  garage,
 }: GarageSlotProps): GarageSlotObj => {
   const container = appendParent(document.createElement('div'), garageSelector);
   container.id = `car-${car.id}`;
@@ -77,7 +75,7 @@ const GarageSlot = ({
   const selectBtn = Button({ label: 'Select', type: 'button' }, footerSelector);
   selectBtn.addEventListener('click', (e) => handleSelectCar(e, car.id));
   const removeBtn = Button({ label: 'Remove', type: 'reset' }, footerSelector);
-  removeBtn.addEventListener('click', (e) => handleRemoveCar(e, garage, car.id));
+  removeBtn.addEventListener('click', (e) => handleRemoveCar(e, car.id));
   const startBtn = Button({ label: 'Start', type: 'button' }, footerSelector);
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footerSelector);
 

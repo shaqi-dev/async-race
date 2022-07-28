@@ -1,6 +1,7 @@
 import appendParent from './utils/appendParent';
 import ViewPanel from './components/ViewPanel';
-import Garage from './components/Garage';
+import initGarage from './components/Garage';
+import store from './store';
 
 interface AppObj {
   container: HTMLDivElement;
@@ -20,13 +21,12 @@ const App = async (): Promise<AppObj> => {
   main.id = 'main';
 
   // Garage & Winners selectors panel
-  const viewPanel = ViewPanel('#header');
-  viewPanel.garageBtn.addEventListener('click', () => console.log('Garage'));
-  viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
+  store.viewPanel = ViewPanel('#header');
+  store.viewPanel.garageBtn.addEventListener('click', () => console.log('Garage'));
+  store.viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
 
   // Garage
-
-  const garage = await Garage('#main');
+  initGarage();
 
   return {
     container,

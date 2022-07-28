@@ -1,3 +1,4 @@
-import ViewPanel from './ViewPanel';
+import ViewPanel, { ViewPanelObj } from './ViewPanel';
 
 export default ViewPanel;
+export { ViewPanelObj };
