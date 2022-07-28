@@ -6,17 +6,33 @@ import { CarSettings } from '../../interfaces/shared';
 import { getCars, createCar, updateCar } from '../../services/api';
 import s from './Garage.module.scss';
 
-export type UpdateGarage = () => Promise<void>;
+export type UpdateGarage = (garage: GarageObj) => Promise<void>;
 export interface GarageObj {
   container: HTMLDivElement;
   controllPanel: ControllPanelObj;
+  title: HTMLHeadingElement;
   main: HTMLDivElement;
-  updateGarage: UpdateGarage;
+  // updateGarage: UpdateGarage;
 }
+
+export const updateGarage = async (garage: GarageObj): Promise<void> => {
+  const { title, main } = garage;
+  const data = await getCars(1);
+  title.innerText = `Garage (${data?.count})`;
+  main.innerHTML = '';
+  console.log(main.classList);
+  data?.cars.map((car) =>
+    GarageSlot({
+      car,
+      garageSelector: '#garage-main',
+      garage,
+    }),
+  );
+};
 
 const handleCreateCar = async (
   e: SubmitEvent,
-  updateGarage: UpdateGarage,
+  garage: GarageObj
 ): Promise<void> => {
   e.preventDefault();
   const createForm = e.target as HTMLFormElement | null;
@@ -31,7 +47,7 @@ const handleCreateCar = async (
 
     if (textInput.value) {
       await createCar({ name: textInput.value, color: colorInput.value });
-      await updateGarage();
+      await updateGarage(garage);
 
       createForm.reset();
     }
@@ -40,7 +56,7 @@ const handleCreateCar = async (
 
 const handleUpdateCar = async (
   e: SubmitEvent,
-  updateGarage: UpdateGarage,
+  garage: GarageObj
 ): Promise<void> => {
   e.preventDefault();
   const updateForm = e.target as HTMLFormElement | null;
@@ -58,34 +74,32 @@ const handleUpdateCar = async (
 
     if (id && textInput.value) {
       await updateCar(+id, { name: textInput.value, color: colorInput.value });
-      await updateGarage();
+      await updateGarage(garage);
 
       updateForm.reset();
     }
   }
 };
 
-const handleGenerateCars = async (
-  updateGarage: UpdateGarage,
-): Promise<void> => {
+const handleGenerateCars = async (garage: GarageObj): Promise<void> => {
   const cars: CarSettings[] = getRandomCars();
   const promise = cars.map((car) => createCar(car));
 
   await Promise.all(promise);
-  await updateGarage();
+  await updateGarage(garage);
 };
 
 const bindGarageListeners = (garage: GarageObj): void => {
-  const { controllPanel, updateGarage } = garage;
+  const { controllPanel } = garage;
 
   controllPanel.createForm.container.addEventListener('submit', (e) =>
-    handleCreateCar(e, updateGarage),
+    handleCreateCar(e, garage),
   );
   controllPanel.updateForm.container.addEventListener('submit', (e) =>
-    handleUpdateCar(e, updateGarage),
+    handleUpdateCar(e, garage),
   );
   controllPanel.generateCarsBtn.addEventListener('click', () =>
-    handleGenerateCars(updateGarage),
+    handleGenerateCars(garage),
   );
 };
 
@@ -100,27 +114,18 @@ const Garage = async (parentSelector?: string): Promise<GarageObj> => {
   if (s.title) title.classList.add(s.title);
 
   const main = appendParent(document.createElement('div'), rootSelector);
-  const mainSelector = `.${s.main}`;
+  main.id = 'garage-main';
   if (s.main) main.classList.add(s.main);
 
-  const updateGarage = async (): Promise<void> => {
-    const data = await getCars(1);
-    title.innerText = `Garage (${data?.count})`;
-    main.innerHTML = '';
-    data?.cars.map((car) =>
-      GarageSlot({ car, garageSelector: mainSelector, updateGarage }),
-    );
-  };
-
-  const garage = {
+  const garage: GarageObj = {
     container,
     controllPanel,
+    title,
     main,
-    updateGarage,
-  }
-  
+  };
+
   bindGarageListeners(garage);
-  updateGarage();
+  updateGarage(garage);
 
   return garage;
 };

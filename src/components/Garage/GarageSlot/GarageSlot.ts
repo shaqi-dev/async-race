@@ -1,7 +1,8 @@
 import appendParent from '../../../utils/appendParent';
 import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
-import { UpdateGarage } from '../Garage';
+import { GarageObj } from '../Garage';
+import { updateGarage } from '../Garage';
 import { removeCar, getCar } from '../../../services/api';
 import type { Car } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
@@ -17,17 +18,17 @@ export interface GarageSlotObj {
 interface GarageSlotProps {
   car: Car;
   garageSelector: string;
-  updateGarage: UpdateGarage
+  garage: GarageObj
 }
 
 const handleRemoveCar = async (
   e: MouseEvent,
-  updateGarage: UpdateGarage,
+  garage: GarageObj,
   id: number
 ): Promise<void> => {
   e.preventDefault();
   await removeCar(id);
-  await updateGarage();
+  await updateGarage(garage);
 };
 
 const handleSelectCar = async (
@@ -53,7 +54,7 @@ const handleSelectCar = async (
 const GarageSlot = ({
   car,
   garageSelector,
-  updateGarage,
+  garage,
 }: GarageSlotProps): GarageSlotObj => {
   const container = appendParent(document.createElement('div'), garageSelector);
   container.id = `car-${car.id}`;
@@ -76,7 +77,7 @@ const GarageSlot = ({
   const selectBtn = Button({ label: 'Select', type: 'button' }, footerSelector);
   selectBtn.addEventListener('click', (e) => handleSelectCar(e, car.id));
   const removeBtn = Button({ label: 'Remove', type: 'reset' }, footerSelector);
-  removeBtn.addEventListener('click', (e) => handleRemoveCar(e, updateGarage, car.id));
+  removeBtn.addEventListener('click', (e) => handleRemoveCar(e, garage, car.id));
   const startBtn = Button({ label: 'Start', type: 'button' }, footerSelector);
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footerSelector);
 
