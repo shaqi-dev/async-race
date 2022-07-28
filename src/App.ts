@@ -1,4 +1,4 @@
-import appendParent from './utils/appendParent';
+import render from './utils/render';
 import ViewPanel from './components/ViewPanel';
 import initGarage from './components/Garage';
 import store from './store';
@@ -11,19 +11,17 @@ interface AppObj {
 
 const App = async (): Promise<AppObj> => {
   // App container
-  const container = appendParent(document.createElement('div'), 'body');
+  const container = render<HTMLDivElement>('div', undefined, 'body');
   container.id = 'app';
 
   // Header & Main layouts
-  const header = appendParent(document.createElement('header'), '#app');
-  const main = appendParent(document.createElement('main'), '#app');
+  const header = render<HTMLElement>('header', undefined, '#app');
+  const main = render<HTMLElement>('main', undefined, '#app');
   header.id = 'header';
   main.id = 'main';
 
-  // Garage & Winners selectors panel
+  // Garage & Winners view panel
   store.viewPanel = ViewPanel('#header');
-  store.viewPanel.garageBtn.addEventListener('click', () => console.log('Garage'));
-  store.viewPanel.winnersBtn.addEventListener('click', () => console.log('Winners'));
 
   // Garage
   initGarage();

@@ -1,4 +1,4 @@
-import appendParent from '../../utils/appendParent';
+import render from '../../utils/render';
 import s from './Button.module.scss';
 
 export interface ButtonProps {
@@ -7,14 +7,11 @@ export interface ButtonProps {
   parentSelector?: string;
 }
 
-const Button = (
-  props: ButtonProps,
-  parentSelector?: string,
-): HTMLButtonElement => {
-  const button = appendParent(document.createElement('button'), parentSelector);
+const Button = (props: ButtonProps, parentSelector?: string): HTMLButtonElement => {
   const { label, type } = props;
 
-  if (s.root) button.classList.add(s.root);
+  const button = render<HTMLButtonElement>('button', s.root, parentSelector);
+
   button.type = type || 'button';
   button.innerText = label || '';
 

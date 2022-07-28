@@ -1,8 +1,12 @@
-const appendParent = <T extends HTMLElement>(
-  element: T,
+const render = <T extends HTMLElement>(
+  tag: string,
+  className?: string,
   parentSelector?: string,
 ): T => {
+  const element = document.createElement(tag) as T;
   let parent: HTMLElement;
+
+  if (className) element.classList.add(className);
 
   if (parentSelector && document.querySelector(parentSelector)) {
     parent = document.querySelector(parentSelector) as HTMLElement;
@@ -15,4 +19,4 @@ const appendParent = <T extends HTMLElement>(
   return element;
 };
 
-export default appendParent;
+export default render;

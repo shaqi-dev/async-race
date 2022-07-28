@@ -1,4 +1,4 @@
-import appendParent from '../../../utils/appendParent';
+import render from '../../../utils/render';
 import Button from '../../Button';
 import s from './ControllPanel.module.scss';
 
@@ -23,32 +23,17 @@ const ControllPanelForm = (
   formId: string,
   submitButtonLabel: string,
 ): ControllPanelFormObj => {
-  const container = appendParent(
-    document.createElement('form'),
-    parentSelector,
-  );
+  const container = render<HTMLFormElement>('form', s.form, parentSelector);
   const containerSelector = `#${formId}`;
-  container.classList.add(s.form || '');
   container.id = formId;
 
-  const textInput = appendParent(
-    document.createElement('input'),
-    containerSelector,
-  );
-  textInput.classList.add(s['text-input'] || '');
+  const textInput = render<HTMLInputElement>('input', s['text-input'], containerSelector);
   textInput.type = 'text';
 
-  const colorInput = appendParent(
-    document.createElement('input'),
-    containerSelector,
-  );
-  colorInput.classList.add(s['color-input'] || '');
+  const colorInput = render<HTMLInputElement>('input', s['color-input'], containerSelector);
   colorInput.type = 'color';
 
-  const submitBtn = Button(
-    { label: submitButtonLabel, type: 'submit' },
-    containerSelector,
-  );
+  const submitBtn = Button({ label: submitButtonLabel, type: 'submit' }, containerSelector);
 
   return {
     container,
@@ -58,22 +43,15 @@ const ControllPanelForm = (
   };
 };
 
-const ControllPanel = (
-  parentSelector?: string,
-): ControllPanelObj => {
-  const container = appendParent(
-    document.createElement('div'),
-    parentSelector,
-  );
+const ControllPanel = (parentSelector?: string): ControllPanelObj => {
+  const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
-  if (s.root) container.classList.add(s.root);
 
   const createForm = ControllPanelForm(rootSelector, 'create-form', 'Create');
   const updateForm = ControllPanelForm(rootSelector, 'update-form', 'Update');
 
-  const footer = appendParent(document.createElement('div'), rootSelector);
+  const footer = render<HTMLDivElement>('div', s.footer, rootSelector);
   const footerSelector = `.${s.footer}`;
-  if (s.footer) footer.classList.add(s.footer);
 
   const raceBtn = Button({ label: 'Race' }, footerSelector);
   const resetBtn = Button({ label: 'Reset' }, footerSelector);

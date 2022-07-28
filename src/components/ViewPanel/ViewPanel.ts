@@ -1,5 +1,5 @@
 import Button from '../Button';
-import appendParent from '../../utils/appendParent';
+import render from '../../utils/render';
 import s from './ViewPanel.module.scss';
 
 export interface ViewPanelObj {
@@ -9,9 +9,8 @@ export interface ViewPanelObj {
 }
 
 const ViewPanel = (parentSelector?: string): ViewPanelObj => {
-  const container = appendParent(document.createElement('div'), parentSelector);
+  const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
-  if (s.root) container.classList.add(s.root);
 
   const garageBtn = Button({ label: 'Garage' }, rootSelector);
   const winnersBtn = Button({ label: 'Winners' }, rootSelector);

@@ -1,4 +1,4 @@
-import appendParent from '../../utils/appendParent';
+import render from '../../utils/render';
 import ControllPanel, { ControllPanelObj } from './ControllPanel';
 import GarageSlot from './GarageSlot';
 import getRandomCars from '../../utils/getRandomCars';
@@ -15,7 +15,67 @@ export interface GarageObj {
   update: typeof updateGarage;
 }
 
-export const updateGarage = async (): Promise<void> => {
+const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
+  e.preventDefault();
+  const createForm = e.target as HTMLFormElement | null;
+
+  if (createForm) {
+    const textInput = createForm.querySelector('input[type="text"]') as HTMLInputElement;
+    const colorInput = createForm.querySelector('input[type="color"]') as HTMLInputElement;
+
+    if (textInput.value) {
+      await createCar({ name: textInput.value, color: colorInput.value });
+      await store.garage?.update();
+
+      createForm.reset();
+    }
+  }
+};
+
+const handleUpdateCar = async (e: SubmitEvent): Promise<void> => {
+  e.preventDefault();
+  const updateForm = e.target as HTMLFormElement | null;
+
+  if (updateForm) {
+    const id = updateForm.dataset.carId;
+    const textInput = updateForm.querySelector('input[type="text"]') as HTMLInputElement;
+    const colorInput = updateForm.querySelector('input[type="color"]') as HTMLInputElement;
+
+    console.log(id);
+
+    if (id && textInput.value) {
+      await updateCar(+id, {
+        name: textInput.value,
+        color: colorInput.value,
+      });
+      await store.garage?.update();
+
+      updateForm.reset();
+    }
+  }
+};
+
+const handleGenerateCars = async (): Promise<void> => {
+  const cars: CarSettings[] = getRandomCars();
+  const promise = cars.map((car) => createCar(car));
+
+  await Promise.all(promise);
+  await store.garage?.update();
+};
+
+const bindListeners = (): void => {
+  const { controllPanel } = store;
+
+  if (controllPanel) {
+    const { createForm, updateForm, generateCarsBtn } = controllPanel;
+
+    createForm.container.addEventListener('submit', handleCreateCar);
+    updateForm.container.addEventListener('submit', handleUpdateCar);
+    generateCarsBtn.addEventListener('click', handleGenerateCars);
+  }
+};
+
+const updateGarage = async (): Promise<void> => {
   const { garage } = store;
 
   if (garage) {
@@ -34,88 +94,19 @@ export const updateGarage = async (): Promise<void> => {
   }
 };
 
-const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
-  e.preventDefault();
-  const createForm = e.target as HTMLFormElement | null;
-
-  if (createForm) {
-    const textInput = createForm.querySelector(
-      'input[type="text"]',
-    ) as HTMLInputElement;
-    const colorInput = createForm.querySelector(
-      'input[type="color"]',
-    ) as HTMLInputElement;
-
-    if (textInput.value) {
-      await createCar({ name: textInput.value, color: colorInput.value });
-      await updateGarage();
-
-      createForm.reset();
-    }
-  }
-};
-
-const handleUpdateCar = async (e: SubmitEvent): Promise<void> => {
-  e.preventDefault();
-  const updateForm = e.target as HTMLFormElement | null;
-
-  if (updateForm) {
-    const id = updateForm.dataset.carId;
-    const textInput = updateForm.querySelector(
-      'input[type="text"]',
-    ) as HTMLInputElement;
-    const colorInput = updateForm.querySelector(
-      'input[type="color"]',
-    ) as HTMLInputElement;
-
-    console.log(id);
-
-    if (id && textInput.value) {
-      await updateCar(+id, {
-        name: textInput.value,
-        color: colorInput.value,
-      });
-      await updateGarage();
-
-      updateForm.reset();
-    }
-  }
-};
-
-const handleGenerateCars = async (): Promise<void> => {
-  const cars: CarSettings[] = getRandomCars();
-  const promise = cars.map((car) => createCar(car));
-
-  await Promise.all(promise);
-  await updateGarage();
-};
-
-const bindListeners = (): void => {
-  const { controllPanel } = store;
-
-  if (controllPanel) {
-    const { createForm, updateForm, generateCarsBtn } = controllPanel;
-    
-    createForm.container.addEventListener('submit', handleCreateCar);
-    updateForm.container.addEventListener('submit', handleUpdateCar);
-    generateCarsBtn.addEventListener('click', handleGenerateCars);
-  }
-};
-
 const Garage = (parentSelector?: string): GarageObj => {
-  const container = appendParent(document.createElement('div'), parentSelector);
+  const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
-  if (s.root) container.classList.add(s.root);
 
   const controllPanel = ControllPanel(rootSelector);
   store.controllPanel = controllPanel;
 
-  const title = appendParent(document.createElement('h2'), rootSelector);
-  if (s.title) title.classList.add(s.title);
+  const title = render<HTMLHeadingElement>('h2', s.title, rootSelector);
 
-  const main = appendParent(document.createElement('div'), rootSelector);
+  const main = render<HTMLDivElement>('div', s.main, rootSelector);
   main.id = 'garage-main';
-  if (s.main) main.classList.add(s.main);
+
+  const footer = render<HTMLDivElement>('div', s.footer, rootSelector);
 
   const garage: GarageObj = {
     container,
