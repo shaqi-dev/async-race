@@ -1,23 +1,18 @@
+import handleError from '../utils/handleError';
 import type { GarageData, Car, CarSettings } from '../interfaces/shared';
 
 const API_BASE = 'http://localhost:3000';
 
-const handleError = (e: unknown, message: string): void => {
-  if (e instanceof Error) {
-    throw new Error(e.message);
-  } else if (typeof e === 'string') {
-    throw new Error(e);
-  } else {
-    throw new Error(message);
-  }
-};
+const API_GARAGE = `${API_BASE}/garage`;
+const API_ENGINE = `${API_BASE}/engine`;
+const API_WINNERS = `${API_BASE}/winners`;
 
 export const getCars = async (
   page = 1,
   limit = 7,
 ): Promise<GarageData | null | void> => {
   try {
-    const res = await fetch(`${API_BASE}/garage?_limit=${limit}&_page=${page}`);
+    const res = await fetch(`${API_GARAGE}?_limit=${limit}&_page=${page}`);
 
     if (res.status === 200) {
       const cars: Car[] = await res.json();
@@ -37,7 +32,7 @@ export const getCars = async (
 
 export const getCar = async (id: number): Promise<Car | null | void> => {
   try {
-    const res = await fetch(`${API_BASE}/garage/${id}`);
+    const res = await fetch(`${API_GARAGE}/${id}`);
 
     if (res.status === 200) {
       const car: Car = await res.json();
@@ -52,7 +47,7 @@ export const getCar = async (id: number): Promise<Car | null | void> => {
 
 export const createCar = async (car: CarSettings): Promise<void> => {
   try {
-    await fetch(`${API_BASE}/garage`, {
+    await fetch(`${API_GARAGE}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -66,7 +61,7 @@ export const createCar = async (car: CarSettings): Promise<void> => {
 
 export const removeCar = async (id: number): Promise<void> => {
   try {
-    await fetch(`${API_BASE}/garage/${id}`, {
+    await fetch(`${API_GARAGE}/${id}`, {
       method: 'DELETE',
     });
   } catch (e) {
