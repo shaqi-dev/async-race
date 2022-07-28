@@ -2,9 +2,9 @@ import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
 import { GarageObj } from '../Garage';
-import { removeCar, getCar } from '../../../services/api';
+import { removeCar, getCar, setCarsEngine } from '../../../services/api';
 import store from '../../../store';
-import type { Car } from '../../../interfaces/shared';
+import type { Car, CarEngine } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
 
 export interface GarageSlotObj {
@@ -45,6 +45,24 @@ const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   }
 };
 
+const handleStartEngine = async (id: number): Promise<CarEngine | void> => {
+  const data = await setCarsEngine(id, 'started');
+
+  if (data) {
+    console.log(data);
+    return data;
+  }
+};
+
+const handleStopEngine = async (id: number): Promise<CarEngine | void> => {
+  const data = await setCarsEngine(id, 'stopped');
+
+  if (data) {
+    console.log(data);
+    return data;
+  }
+};
+
 const GarageSlot = ({ car, garageSelector }: GarageSlotProps): GarageSlotObj => {
   const container = render<HTMLDivElement>('div', s.root, garageSelector);
   const containerSelector = `#car-${car.id}`;
@@ -69,7 +87,10 @@ const GarageSlot = ({ car, garageSelector }: GarageSlotProps): GarageSlotObj => 
   removeBtn.addEventListener('click', (e) => handleRemoveCar(e, car.id));
 
   const startBtn = Button({ label: 'Start', type: 'button' }, footerSelector);
+  startBtn.addEventListener('click', () => handleStartEngine(car.id));
+
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footerSelector);
+  stopBtn.addEventListener('click', () => handleStopEngine(car.id));
 
   return {
     container,
