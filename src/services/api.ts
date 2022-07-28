@@ -1,5 +1,13 @@
 import handleError from '../utils/handleError';
-import type { GarageData, Car, CarSettings, CarEngine, Winner, WinnersData } from '../interfaces/shared';
+import type {
+  GarageData,
+  Car,
+  CarSettings,
+  CarEngine,
+  Winner,
+  WinnersData,
+  WinnerSettings,
+} from '../interfaces/shared';
 
 const API_BASE = 'http://localhost:3000';
 
@@ -119,10 +127,7 @@ export const setCarEngineToDrive = async (
   }
 };
 
-export const getWinners = async (
-  page = 1,
-  limit = 10
-): Promise<WinnersData | null | void> => {
+export const getWinners = async (page = 1, limit = 10): Promise<WinnersData | null | void> => {
   try {
     const res = await fetch(`${API_WINNERS}?_limit=${limit}&_page=${page}`);
 
@@ -139,5 +144,58 @@ export const getWinners = async (
     return null;
   } catch (e) {
     handleError(e, 'Cannot get winners data from server');
+  }
+};
+
+export const getWinner = async (id: number): Promise<Winner | null | void> => {
+  try {
+    const res = await fetch(`${API_WINNERS}/${id}`);
+
+    if (res.status === 200) {
+      const winner: Winner = await res.json();
+      return winner;
+    }
+
+    return null;
+  } catch (e) {
+    handleError(e, `Cannot get winner (id: ${id}) data from server`);
+  }
+};
+
+export const createWinner = async (winner: Winner): Promise<void> => {
+  try {
+    await fetch(`${API_WINNERS}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(winner),
+    });
+  } catch (e) {
+    handleError(e, 'Cannot create new winner');
+  }
+};
+
+export const removeWinner = async (id: number): Promise<void> => {
+  try {
+    await fetch(`${API_WINNERS}/${id}`, {
+      method: 'DELETE',
+    });
+  } catch (e) {
+    handleError(e, `Cannot delete winner ${id}`);
+  }
+};
+
+export const updateWinner = async (id: number, settings: WinnerSettings): Promise<void> => {
+  try {
+    await fetch(`${API_WINNERS}/${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(settings),
+    });
+  } catch (e) {
+    handleError(e, `Cannot delete winner ${id}`);
   }
 };
