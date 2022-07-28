@@ -1,6 +1,8 @@
 import appendParent from '../../utils/appendParent';
 import ControllPanel, { ControllPanelObj } from './ControllPanel';
 import GarageSlot from './GarageSlot';
+import getRandomCars from '../../utils/getRandomCars';
+import { CarSettings } from '../../interfaces/shared';
 import { getCars, createCar, updateCar } from '../../services/api';
 import s from './Garage.module.scss';
 
@@ -63,6 +65,30 @@ const handleUpdateCar = async (
   }
 };
 
+const handleGenerateCars = async (
+  updateGarage: UpdateGarage,
+): Promise<void> => {
+  const cars: CarSettings[] = getRandomCars();
+  const promise = cars.map((car) => createCar(car));
+
+  await Promise.all(promise);
+  await updateGarage();
+};
+
+const bindGarageListeners = (garage: GarageObj): void => {
+  const { controllPanel, updateGarage } = garage;
+
+  controllPanel.createForm.container.addEventListener('submit', (e) =>
+    handleCreateCar(e, updateGarage),
+  );
+  controllPanel.updateForm.container.addEventListener('submit', (e) =>
+    handleUpdateCar(e, updateGarage),
+  );
+  controllPanel.generateCarsBtn.addEventListener('click', () =>
+    handleGenerateCars(updateGarage),
+  );
+};
+
 const Garage = async (parentSelector?: string): Promise<GarageObj> => {
   const container = appendParent(document.createElement('div'), parentSelector);
   const rootSelector = `.${s.root}`;
@@ -78,7 +104,7 @@ const Garage = async (parentSelector?: string): Promise<GarageObj> => {
   if (s.main) main.classList.add(s.main);
 
   const updateGarage = async (): Promise<void> => {
-    const data = await getCars(1, 10);
+    const data = await getCars(1);
     title.innerText = `Garage (${data?.count})`;
     main.innerHTML = '';
     data?.cars.map((car) =>
@@ -86,21 +112,17 @@ const Garage = async (parentSelector?: string): Promise<GarageObj> => {
     );
   };
 
-  controllPanel.createForm.container.addEventListener('submit', (e) =>
-    handleCreateCar(e, updateGarage),
-  );
-  controllPanel.updateForm.container.addEventListener('submit', (e) =>
-    handleUpdateCar(e, updateGarage),
-  );
-
-  updateGarage();
-
-  return {
+  const garage = {
     container,
     controllPanel,
     main,
     updateGarage,
-  };
+  }
+  
+  bindGarageListeners(garage);
+  updateGarage();
+
+  return garage;
 };
 
 export default Garage;
