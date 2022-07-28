@@ -80,7 +80,7 @@ export const updateCar = async (id: number, car: CarSettings): Promise<void> => 
   }
 };
 
-export const setCarsEngine = async (
+export const setCarEngine = async (
   id: number,
   status: 'started' | 'stopped',
 ): Promise<CarEngine | null | void> => {
@@ -96,6 +96,25 @@ export const setCarsEngine = async (
 
     return null;
   } catch (e) {
-    handleError(e, 'Cannot create new car');
+    handleError(e, 'Cannot set car engine');
+  }
+};
+
+export const setCarEngineToDrive = async (
+  id: number,
+): Promise<{ success: boolean } | null | void> => {
+  try {
+    const res = await fetch(`${API_ENGINE}?id=${id}&status=drive`, {
+      method: 'PATCH',
+    });
+
+    if (res.status === 200) {
+      const data: { success: boolean } = await res.json();
+      return data;
+    }
+
+    return null;
+  } catch (e) {
+    handleError(e, 'Cannot start driving');
   }
 };

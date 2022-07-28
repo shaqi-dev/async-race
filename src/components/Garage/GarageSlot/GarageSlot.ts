@@ -2,7 +2,7 @@ import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
 import { GarageObj } from '../Garage';
-import { removeCar, getCar, setCarsEngine } from '../../../services/api';
+import { removeCar, getCar, setCarEngine, setCarEngineToDrive } from '../../../services/api';
 import store from '../../../store';
 import type { Car, CarEngine } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
@@ -45,17 +45,42 @@ const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   }
 };
 
-const handleStartEngine = async (id: number): Promise<CarEngine | void> => {
-  const data = await setCarsEngine(id, 'started');
+interface EngineHandlerProps {
+  id: number;
+  startBtn: HTMLButtonElement;
+  stopBtn: HTMLButtonElement;
+}
+
+const handleStartEngine = async ({
+  id,
+  startBtn,
+  stopBtn,
+}: EngineHandlerProps): Promise<CarEngine | void> => {
+  startBtn.disabled = true;
+  stopBtn.disabled = false;
+
+  const data = await setCarEngine(id, 'started');
 
   if (data) {
     console.log(data);
+    await setCarEngineToDrive(id);
+    
+    stopBtn.disabled = true;
+    startBtn.disabled = false;
+
     return data;
   }
 };
 
-const handleStopEngine = async (id: number): Promise<CarEngine | void> => {
-  const data = await setCarsEngine(id, 'stopped');
+const handleStopEngine = async ({
+  id,
+  startBtn,
+  stopBtn,
+}: EngineHandlerProps): Promise<CarEngine | void> => {
+  const data = await setCarEngine(id, 'stopped');
+
+  stopBtn.disabled = true;
+  startBtn.disabled = false;
 
   if (data) {
     console.log(data);
@@ -87,10 +112,10 @@ const GarageSlot = ({ car, garageSelector }: GarageSlotProps): GarageSlotObj => 
   removeBtn.addEventListener('click', (e) => handleRemoveCar(e, car.id));
 
   const startBtn = Button({ label: 'Start', type: 'button' }, footerSelector);
-  startBtn.addEventListener('click', () => handleStartEngine(car.id));
-
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footerSelector);
-  stopBtn.addEventListener('click', () => handleStopEngine(car.id));
+  startBtn.addEventListener('click', () => handleStartEngine({ id: car.id, startBtn, stopBtn }));
+  stopBtn.addEventListener('click', () => handleStopEngine({ id: car.id, startBtn, stopBtn }));
+  stopBtn.disabled = true;
 
   return {
     container,
