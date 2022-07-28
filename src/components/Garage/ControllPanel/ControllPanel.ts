@@ -64,7 +64,6 @@ const ControllPanel = (
   const container = appendParent(
     document.createElement('div'),
     parentSelector,
-    'prepend',
   );
   const rootSelector = `.${s.root}`;
   if (s.root) container.classList.add(s.root);

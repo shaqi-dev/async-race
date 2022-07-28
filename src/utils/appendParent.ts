@@ -1,7 +1,6 @@
-const appendParent = <T extends HTMLElement | HTMLElement[]>(
+const appendParent = <T extends HTMLElement>(
   element: T,
   parentSelector?: string,
-  type: 'append' | 'prepend' = 'append',
 ): T => {
   let parent: HTMLElement;
 
@@ -11,13 +10,7 @@ const appendParent = <T extends HTMLElement | HTMLElement[]>(
     parent = document.querySelector('body') as HTMLElement;
   }
 
-  if (element instanceof Array) {
-    if (type === 'append') element.forEach((el) => parent.append(el));
-    if (type === 'prepend') element.forEach((el) => parent.prepend(el));
-  } else {
-    if (type === 'append') parent.append(element);
-    if (type === 'prepend') parent.prepend(element);
-  }
+  parent.append(element);
 
   return element;
 };
