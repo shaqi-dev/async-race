@@ -4,29 +4,25 @@ import Button from '../../Button';
 import { GarageObj } from '../Garage';
 import { deleteCar, getCar, setCarEngine, setCarEngineToDrive } from '../../../services/api';
 import store from '../../../store';
-import type { Car, CarEngine } from '../../../interfaces/shared';
+import type { Car } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
 
 export interface GarageSlotObj {
   container: HTMLDivElement;
+  carName: HTMLSpanElement;
   selectBtn: HTMLButtonElement;
   removeBtn: HTMLButtonElement;
   startBtn: HTMLButtonElement;
   stopBtn: HTMLButtonElement;
-}
-
-interface GarageSlotProps {
-  car: Car;
-  garageSelector: string;
-  garage: GarageObj;
+  id: number;
 }
 
 const handleRemoveCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
   const error = await deleteCar(id);
-  
+
   if (error) {
-    console.error(error)
+    console.error(error);
   } else {
     await store.garage?.update();
   }
@@ -41,7 +37,7 @@ const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
     const [car, error] = await getCar(id);
 
     if (error) {
-      console.error(error)
+      console.error(error);
     } else {
       enable();
       textInput.value = car.name;
@@ -57,85 +53,82 @@ interface EngineHandlerProps {
   stopBtn: HTMLButtonElement;
 }
 
-const handleStartEngine = async ({
-  id,
-  startBtn,
-  stopBtn,
-}: EngineHandlerProps): Promise<CarEngine | void> => {
-  startBtn.disabled = true;
-  stopBtn.disabled = false;
-
-  const [data, error] = await setCarEngine(id, 'started');
+const handleStartDriving = async (props: EngineHandlerProps): Promise<void> => {
+  const { id, startBtn, stopBtn } = props;
+  const [, error] = await setCarEngineToDrive(id);
 
   if (error) {
-    console.error(error)
-  } else {
-    const [, driveError] = await setCarEngineToDrive(id);
-
-    if (driveError) {
-      console.error(driveError)
-    } else {
-      stopBtn.disabled = true;
-      startBtn.disabled = false;
-    }
-
-    return data;
-  }
-};
-
-const handleStopEngine = async ({
-  id,
-  startBtn,
-  stopBtn,
-}: EngineHandlerProps): Promise<CarEngine | void> => {
-  const [data, error] = await setCarEngine(id, 'stopped');
-
-  if (error) {
-    console.error(error)
+    console.error(error);
   } else {
     stopBtn.disabled = true;
     startBtn.disabled = false;
-    console.log(data);
-    return data;
   }
 };
 
-const GarageSlot = ({ car, garageSelector }: GarageSlotProps): GarageSlotObj => {
-  const container = render<HTMLDivElement>('div', s.root, garageSelector);
-  const containerSelector = `#car-${car.id}`;
-  container.id = `car-${car.id}`;
-  container.dataset.carId = `${car.id}`;
+const handleStartEngine = async (props: EngineHandlerProps): Promise<void> => {
+  const { id, startBtn, stopBtn } = props;
+  const [, error] = await setCarEngine(id, 'started');
 
-  const main = render<HTMLDivElement>('div', s.main, containerSelector);
-  const mainSelector = `${containerSelector} .${s.main}`;
-  if (s.main) main.classList.add(s.main);
+  if (error) {
+    console.error(error);
+  } else {
+    startBtn.disabled = true;
+    stopBtn.disabled = false;
 
-  const carName = render<HTMLSpanElement>('span', s.name, mainSelector);
-  carName.innerText = `${car.name}`;
+    await handleStartDriving(props);
+  }
+};
+
+const handleStopEngine = async (props: EngineHandlerProps): Promise<void> => {
+  const { id, startBtn, stopBtn } = props;
+  const [, error] = await setCarEngine(id, 'stopped');
+
+  if (error) {
+    console.error(error);
+  } else {
+    stopBtn.disabled = true;
+    startBtn.disabled = false;
+  }
+};
+
+const bindListeners = (garageSlot: GarageSlotObj): void => {
+  const { selectBtn, removeBtn, startBtn, stopBtn, id } = garageSlot;
+
+  selectBtn.addEventListener('click', (e) => handleSelectCar(e, id));
+  removeBtn.addEventListener('click', (e) => handleRemoveCar(e, id));
+  startBtn.addEventListener('click', () => handleStartEngine({ id, startBtn, stopBtn }));
+  stopBtn.addEventListener('click', () => handleStopEngine({ id, startBtn, stopBtn }));
+};
+
+const GarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
+  const container = render<HTMLDivElement>('div', s.root, garage.main);
+  const main = render<HTMLDivElement>('div', s.main, container);
+  const footer = render<HTMLDivElement>('div', s.footer, container);
+  const carName = render<HTMLSpanElement>('span', s.name, main, `${car.name}`);
+  const selectBtn = Button({ label: 'Select', type: 'button' }, footer);
+  const removeBtn = Button({ label: 'Remove', type: 'reset' }, footer);
+  const startBtn = Button({ label: 'Start', type: 'button' }, footer);
+  const stopBtn = Button({ label: 'Stop', type: 'reset' }, footer);
+
   main.innerHTML += getCarSVG(car.color);
-
-  render<HTMLDivElement>('div', s.footer, containerSelector);
-  const footerSelector = `${containerSelector} .${s.footer}`;
-
-  const selectBtn = Button({ label: 'Select', type: 'button' }, footerSelector);
-  selectBtn.addEventListener('click', (e) => handleSelectCar(e, car.id));
-
-  const removeBtn = Button({ label: 'Remove', type: 'reset' }, footerSelector);
-  removeBtn.addEventListener('click', (e) => handleRemoveCar(e, car.id));
-
-  const startBtn = Button({ label: 'Start', type: 'button' }, footerSelector);
-  const stopBtn = Button({ label: 'Stop', type: 'reset' }, footerSelector);
-  startBtn.addEventListener('click', () => handleStartEngine({ id: car.id, startBtn, stopBtn }));
-  stopBtn.addEventListener('click', () => handleStopEngine({ id: car.id, startBtn, stopBtn }));
-  stopBtn.disabled = true;
 
   return {
     container,
+    carName,
     selectBtn,
     removeBtn,
     startBtn,
     stopBtn,
+    id: car.id,
   };
 };
 
-export default GarageSlot;
+const initGarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
+  const garageSlot = GarageSlot(car, garage);
+  bindListeners(garageSlot);
+  garageSlot.stopBtn.disabled = true;
+
+  return garageSlot;
+};
+
+export default initGarageSlot;

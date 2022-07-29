@@ -1,4 +1,4 @@
-import ViewSettings, { ViewSettingsObj } from './ViewSettings';
+import initViewSettings, { ViewSettingsObj } from './ViewSettings';
 
-export default ViewSettings;
+export default initViewSettings;
 export { ViewSettingsObj };

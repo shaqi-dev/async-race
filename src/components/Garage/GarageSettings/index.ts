@@ -1,4 +1,4 @@
-import ControllPanel, { GarageSettingsObj } from './GarageSettings';
+import initGarageSettings, { GarageSettingsObj } from './GarageSettings';
 
-export default ControllPanel;
+export default initGarageSettings;
 export { GarageSettingsObj };

@@ -1,3 +1,4 @@
+import store from '../../../store';
 import render from '../../../utils/render';
 import Button from '../../Button';
 import s from './GarageSettings.module.scss';
@@ -21,22 +22,19 @@ interface GarageSettingsFormObj {
 }
 
 const GarageSettingsForm = (
-  parentSelector: string,
+  parent: string | HTMLElement,
   formId: string,
-  submitButtonLabel: string,
+  buttonLabel: string,
 ): GarageSettingsFormObj => {
-  const container = render<HTMLFormElement>('form', s.form, parentSelector);
-  const containerSelector = `#${formId}`;
+  const container = render<HTMLFormElement>('form', s.form, parent);
+  const textInput = render<HTMLInputElement>('input', s['text-input'], container);
+  const colorInput = render<HTMLInputElement>('input', s['color-input'], container);
+  const submitBtn = Button({ label: buttonLabel, type: 'submit' }, container);
+  
   container.id = formId;
-
-  const textInput = render<HTMLInputElement>('input', s['text-input'], containerSelector);
   textInput.type = 'text';
-
-  const colorInput = render<HTMLInputElement>('input', s['color-input'], containerSelector);
   colorInput.type = 'color';
   colorInput.defaultValue = '#000000';
-
-  const submitBtn = Button({ label: submitButtonLabel, type: 'submit' }, containerSelector);
 
   const disable = (): void => {
     container.reset();
@@ -44,6 +42,7 @@ const GarageSettingsForm = (
     colorInput.disabled = true;
     submitBtn.disabled = true;
   };
+
   const enable = (): void => {
     container.reset();
     textInput.disabled = false;
@@ -61,21 +60,14 @@ const GarageSettingsForm = (
   };
 };
 
-const GarageSettings = (parentSelector?: string): GarageSettingsObj => {
-  const container = render<HTMLDivElement>('div', s.root, parentSelector);
-  const rootSelector = `.${s.root}`;
-
-  const createForm = GarageSettingsForm(rootSelector, 'create-form', 'Create');
-  const updateForm = GarageSettingsForm(rootSelector, 'update-form', 'Update');
-
-  updateForm.disable();
-
-  render<HTMLDivElement>('div', s.footer, rootSelector);
-  const footerSelector = `.${s.footer}`;
-
-  const raceBtn = Button({ label: 'Race' }, footerSelector);
-  const resetBtn = Button({ label: 'Reset' }, footerSelector);
-  const generateCarsBtn = Button({ label: 'Generate Cars' }, footerSelector);
+const GarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
+  const container = render<HTMLDivElement>('div', s.root, parent);
+  const createForm = GarageSettingsForm(container, 'create-form', 'Create');
+  const updateForm = GarageSettingsForm(container, 'update-form', 'Update');
+  const footer = render<HTMLDivElement>('div', s.footer, container);
+  const raceBtn = Button({ label: 'Race' }, footer);
+  const resetBtn = Button({ label: 'Reset' }, footer);
+  const generateCarsBtn = Button({ label: 'Generate Cars' }, footer);
 
   return {
     container,
@@ -87,4 +79,11 @@ const GarageSettings = (parentSelector?: string): GarageSettingsObj => {
   };
 };
 
-export default GarageSettings;
+const initGarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
+  store.garageSettings = GarageSettings(parent);
+  store.garageSettings.updateForm.disable();
+
+  return store.garageSettings;
+};
+
+export default initGarageSettings;

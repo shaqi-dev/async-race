@@ -13,15 +13,15 @@
 
 .table {
   width: fit-content;
+  padding: 20px;
   border: $color-button-primary-bg--hover 2px dashed;
   border-radius: 16px;
+  text-align: center;
 }
 
 .head {
   &__item {
-    border-left: 2px solid $color-button-primary-bg--hover;
-    border-right: 2px solid $color-button-primary-bg--hover;
-    border-bottom: 2px solid $color-button-primary-bg--hover;
+    border: 2px solid $color-button-primary-bg--hover;
     padding: 10px 15px;
 
     &--wins, &--time {
@@ -38,8 +38,7 @@
 
 .item {
   td {
-    border-left: 2px solid $color-button-primary-bg--hover;
-    border-right: 2px solid $color-button-primary-bg--hover;
+    border: 2px solid $color-button-primary-bg--hover;
   }
 
   svg {

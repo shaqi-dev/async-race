@@ -1,8 +1,7 @@
 import render from './utils/render';
-import ViewSettings from './components/ViewSettings';
+import initViewSettings from './components/ViewSettings';
 import initGarage from './components/Garage';
 import initWinners from './components/Winners';
-import store from './store';
 
 interface AppObj {
   container: HTMLDivElement;
@@ -12,23 +11,21 @@ interface AppObj {
 
 const App = async (): Promise<AppObj> => {
   // App container
-  const container = render<HTMLDivElement>('div', undefined, 'body');
+  const container = render<HTMLDivElement>('div', null, 'body');
   container.id = 'app';
 
   // Header & Main layouts
-  const header = render<HTMLElement>('header', undefined, '#app');
-  const main = render<HTMLElement>('main', undefined, '#app');
-  header.id = 'header';
-  main.id = 'main';
+  const header = render<HTMLElement>('header', null, container);
+  const main = render<HTMLElement>('main', null, container);
 
   // Garage & Winners view panel
-  store.viewSettings = ViewSettings('#header');
+  initViewSettings(header);
 
   // Garage
-  initGarage();
+  initGarage(main);
 
   // Winners
-  initWinners();
+  initWinners(main);
 
   return {
     container,

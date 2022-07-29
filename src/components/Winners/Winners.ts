@@ -42,6 +42,7 @@ const renderWinner = async (
     const car = render('td', null, container);
     render('td', null, container, `${wins}`);
     render('td', null, container, `${time}`);
+    
     car.innerHTML = getCarSVG(color);
   }
 
@@ -88,13 +89,12 @@ const Winners = (parent: string | HTMLElement): WinnersObj => {
   const { winnersPage } = store;
 
   const container = render<HTMLDivElement>('div', s.root, parent);
-  const rootSelector = `.${s.root}`;
   container.style.display = 'none';
 
-  const title = ViewTitle('Winners', rootSelector);
+  const title = ViewTitle('Winners', container);
   const page = render<HTMLParagraphElement>('p', s.page, container, `Page #${winnersPage}`);
 
-  const table = WinnersTable(rootSelector);
+  const table = WinnersTable(container);
 
   return {
     container,
@@ -104,8 +104,8 @@ const Winners = (parent: string | HTMLElement): WinnersObj => {
   };
 };
 
-const initWinners = (): WinnersObj => {
-  store.winners = Winners('#main');
+const initWinners = (parent: string | HTMLElement): WinnersObj => {
+  store.winners = Winners(parent);
   store.winners.table.update();
 
   return store.winners;

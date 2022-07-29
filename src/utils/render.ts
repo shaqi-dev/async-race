@@ -1,10 +1,13 @@
 const render = <T extends HTMLElement>(
-  tag: string,
+  tag: keyof HTMLElementTagNameMap,
   className?: string | Array<string | undefined> | null,
   parent?: string | HTMLElement,
   innerText?: string,
 ): T => {
   const element = document.createElement(tag) as T;
+
+  if (innerText) element.innerText = innerText;
+
   if (className) {
     if (typeof className === 'string') {
       element.classList.add(className);
@@ -13,7 +16,6 @@ const render = <T extends HTMLElement>(
       if (actual.length > 0) element.classList.add(...actual);
     }
   }
-  if (innerText) element.innerText = innerText;
 
   let root: HTMLElement;
 

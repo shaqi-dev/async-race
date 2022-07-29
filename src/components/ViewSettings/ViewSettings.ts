@@ -3,7 +3,6 @@ import render from '../../utils/render';
 import store from '../../store';
 import s from './ViewSettings.module.scss';
 
-
 export interface ViewSettingsObj {
   container: HTMLDivElement;
   garageBtn: HTMLButtonElement;
@@ -18,7 +17,7 @@ const handleGarage = (): void => {
     winners.container.style.display = 'none';
     garage.container.style.display = 'flex';
   }
-}
+};
 
 const handleWinners = async (): Promise<void> => {
   const { winners, garage } = store;
@@ -28,16 +27,19 @@ const handleWinners = async (): Promise<void> => {
     winners.container.style.display = 'flex';
     garage.container.style.display = 'none';
   }
-}
+};
 
-const ViewSettings = (parentSelector?: string): ViewSettingsObj => {
-  const container = render<HTMLDivElement>('div', s.root, parentSelector);
-  const rootSelector = `.${s.root}`;
+const bindListeners = (viewSettings: ViewSettingsObj): void => {
+  const { garageBtn, winnersBtn } = viewSettings;
 
-  const garageBtn = Button({ label: 'Garage' }, rootSelector);
   garageBtn.addEventListener('click', handleGarage);
-  const winnersBtn = Button({ label: 'Winners' }, rootSelector);
   winnersBtn.addEventListener('click', handleWinners);
+};
+
+const ViewSettings = (parent: string | HTMLElement): ViewSettingsObj => {
+  const container = render<HTMLDivElement>('div', s.root, parent);
+  const garageBtn = Button({ label: 'Garage' }, container);
+  const winnersBtn = Button({ label: 'Winners' }, container);
 
   return {
     container,
@@ -46,4 +48,11 @@ const ViewSettings = (parentSelector?: string): ViewSettingsObj => {
   };
 };
 
-export default ViewSettings;
+const initViewSettings = (parent: string | HTMLElement): ViewSettingsObj => {
+  store.viewSettings = ViewSettings(parent);
+  bindListeners(store.viewSettings);
+
+  return store.viewSettings;
+};
+
+export default initViewSettings;

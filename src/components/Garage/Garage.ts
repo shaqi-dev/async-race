@@ -1,6 +1,6 @@
 import render from '../../utils/render';
-import GarageSettings, { GarageSettingsObj } from './GarageSettings';
-import GarageSlot from './GarageSlot';
+import initGarageSettings, { GarageSettingsObj } from './GarageSettings';
+import initGarageSlot from './GarageSlot';
 import ViewTitle from '../ViewTitle';
 import getRandomCars from '../../utils/getRandomCars';
 import { CarSettings } from '../../interfaces/shared';
@@ -12,67 +12,58 @@ export interface GarageObj {
   garageSettings: GarageSettingsObj;
   title: HTMLParagraphElement;
   main: HTMLDivElement;
-  bindListeners: typeof bindListeners;
+  footer: HTMLDivElement;
   update: typeof updateGarage;
 }
 
-const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
+const handleCreateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void> => {
   e.preventDefault();
-  const { garageSettings, garage } = store;
+  const { container, textInput, colorInput } = garage.garageSettings.createForm;
 
-  if (garageSettings) {
-    const { container, textInput, colorInput } = garageSettings.createForm;
+  if (textInput.value) {
+    const error = await createCar({ name: textInput.value, color: colorInput.value });
 
-    if (textInput.value) {
-      const error = await createCar({ name: textInput.value, color: colorInput.value });
-
-      if (error) {
-        console.error(error);
-      } else {
-        await garage?.update();
-        container.reset();
-      }
+    if (error) {
+      console.error(error);
+    } else {
+      await garage.update();
+      container.reset();
     }
   }
 };
 
-const handleUpdateCar = async (e: SubmitEvent): Promise<void> => {
+const handleUpdateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void> => {
   e.preventDefault();
-  const { garageSettings, garage } = store;
+  const { container, textInput, colorInput, disable } = garage.garageSettings.updateForm;
+  const id = container.dataset.carId;
 
-  if (garageSettings) {
-    const { container, textInput, colorInput, disable } = garageSettings.updateForm;
-    const id = container.dataset.carId;
+  if (id && textInput.value) {
+    await updateCar(+id, {
+      name: textInput.value,
+      color: colorInput.value,
+    });
 
-    if (id && textInput.value) {
-      await updateCar(+id, {
-        name: textInput.value,
-        color: colorInput.value,
-      });
-      await garage?.update();
-      disable();
-    }
+    await garage.update();
+
+    disable();
   }
 };
 
-const handleGenerateCars = async (): Promise<void> => {
+const handleGenerateCars = async (garage: GarageObj): Promise<void> => {
   const cars: CarSettings[] = getRandomCars();
-  const promise = cars.map((car) => createCar(car));
 
+  const promise = cars.map((car) => createCar(car));
   await Promise.all(promise);
-  await store.garage?.update();
+
+  await garage.update();
 };
 
-const bindListeners = (): void => {
-  const { garageSettings } = store;
+const bindListeners = (garage: GarageObj): void => {
+  const { createForm, updateForm, generateCarsBtn } = garage.garageSettings;
 
-  if (garageSettings) {
-    const { createForm, updateForm, generateCarsBtn } = garageSettings;
-
-    createForm.container.addEventListener('submit', handleCreateCar);
-    updateForm.container.addEventListener('submit', handleUpdateCar);
-    generateCarsBtn.addEventListener('click', handleGenerateCars);
-  }
+  createForm.container.addEventListener('submit', (e) => handleCreateCar(e, garage));
+  updateForm.container.addEventListener('submit', (e) => handleUpdateCar(e, garage));
+  generateCarsBtn.addEventListener('click', () => handleGenerateCars(garage));
 };
 
 const updateGarage = async (): Promise<void> => {
@@ -88,46 +79,31 @@ const updateGarage = async (): Promise<void> => {
     } else {
       title.innerText = `Garage (${data?.count})`;
       main.innerHTML = '';
-      data?.cars.map((car) =>
-        GarageSlot({
-          car,
-          garageSelector: '#garage-main',
-          garage,
-        }),
-      );
+      data.cars.map((car) => initGarageSlot(car, garage));
     }
   }
 };
 
-const Garage = (parentSelector: string): GarageObj => {
-  const container = render<HTMLDivElement>('div', s.root, parentSelector);
-  const rootSelector = `.${s.root}`;
+const Garage = (parent: string | HTMLElement): GarageObj => {
+  const container = render<HTMLDivElement>('div', s.root, parent);
+  const garageSettings = initGarageSettings(container);
+  const title = ViewTitle('Garage', container);
+  const main = render<HTMLDivElement>('div', s.main, container);
+  const footer = render<HTMLDivElement>('div', s.footer, container);
 
-  const garageSettings = GarageSettings(rootSelector);
-  store.garageSettings = garageSettings;
-
-  const title = ViewTitle('Garage', rootSelector);
-
-  const main = render<HTMLDivElement>('div', s.main, rootSelector);
-  main.id = 'garage-main';
-
-  render<HTMLDivElement>('div', s.footer, rootSelector);
-
-  const garage: GarageObj = {
+  return {
     container,
     garageSettings,
     title,
     main,
-    bindListeners,
+    footer,
     update: updateGarage,
   };
-
-  return garage;
 };
 
-const initGarage = (): GarageObj => {
-  store.garage = Garage('#main');
-  store.garage.bindListeners();
+const initGarage = (parent: string | HTMLElement): GarageObj => {
+  store.garage = Garage(parent);
+  bindListeners(store.garage);
   store.garage.update();
 
   return store.garage;
