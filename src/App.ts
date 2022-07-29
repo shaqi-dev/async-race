@@ -1,6 +1,7 @@
 import render from './utils/render';
 import ViewSettings from './components/ViewSettings';
 import initGarage from './components/Garage';
+import initWinners from './components/Winners';
 import store from './store';
 
 interface AppObj {
@@ -25,6 +26,9 @@ const App = async (): Promise<AppObj> => {
 
   // Garage
   initGarage();
+
+  // Winners
+  initWinners();
 
   return {
     container,

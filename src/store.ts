@@ -1,11 +1,12 @@
 import type { ViewSettingsObj } from './components/ViewSettings';
 import type { GarageObj } from './components/Garage';
 import type { GarageSettingsObj } from './components/Garage/GarageSettings';
+import type { WinnersObj } from './components/Winners';
 
 interface Store {
   viewSettings: ViewSettingsObj | undefined;
   garage: GarageObj | undefined;
-  winners: undefined;
+  winners: WinnersObj | undefined;
   garageSettings: GarageSettingsObj | undefined;
   view: 'garage' | 'winners';
   garagePage: number;

@@ -1,0 +1,49 @@
+@use '../../scss/variables' as *;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  color: $color-text-light;
+}
+
+.page {
+  font-size: 3.2rem;
+}
+
+.table {
+  width: fit-content;
+  border: $color-button-primary-bg--hover 2px dashed;
+  border-radius: 16px;
+}
+
+.head {
+  &__item {
+    border-left: 2px solid $color-button-primary-bg--hover;
+    border-right: 2px solid $color-button-primary-bg--hover;
+    border-bottom: 2px solid $color-button-primary-bg--hover;
+    padding: 10px 15px;
+
+    &--wins, &--time {
+      cursor: pointer;
+    }
+  }
+}
+
+.item {
+  td {
+    padding: 10px 15px;
+  }
+}
+
+.item {
+  td {
+    border-left: 2px solid $color-button-primary-bg--hover;
+    border-right: 2px solid $color-button-primary-bg--hover;
+  }
+
+  svg {
+    height: 48px;
+    width: fit-content;
+  }
+}

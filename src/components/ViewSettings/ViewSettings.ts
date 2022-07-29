@@ -1,7 +1,6 @@
 import Button from '../Button';
 import render from '../../utils/render';
 import store from '../../store';
-import { getWinners } from '../../services/api';
 import s from './ViewSettings.module.scss';
 
 
@@ -12,19 +11,22 @@ export interface ViewSettingsObj {
 }
 
 const handleGarage = (): void => {
-  store.view = 'garage';
- 
-  console.log(store.garage);
+  const { winners, garage } = store;
+
+  if (winners && garage) {
+    store.view = 'garage';
+    winners.container.style.display = 'none';
+    garage.container.style.display = 'flex';
+  }
 }
 
 const handleWinners = async (): Promise<void> => {
-  const [data, error] = await getWinners();
+  const { winners, garage } = store;
 
-  if (error) {
-    console.error(error)
-  } else {
+  if (winners && garage) {
     store.view = 'winners';
-    console.log(data);
+    winners.container.style.display = 'flex';
+    garage.container.style.display = 'none';
   }
 }
 

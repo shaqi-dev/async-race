@@ -1,20 +1,35 @@
 const render = <T extends HTMLElement>(
   tag: string,
-  className?: string,
-  parentSelector?: string,
+  className?: string | Array<string | undefined> | null,
+  parent?: string | HTMLElement,
+  innerText?: string,
 ): T => {
   const element = document.createElement(tag) as T;
-  let parent: HTMLElement;
+  if (className) {
+    if (typeof className === 'string') {
+      element.classList.add(className);
+    } else {
+      const actual = className.filter((x) => x !== undefined) as string[];
+      if (actual.length > 0) element.classList.add(...actual);
+    }
+  }
+  if (innerText) element.innerText = innerText;
 
-  if (className) element.classList.add(className);
+  let root: HTMLElement;
 
-  if (parentSelector && document.querySelector(parentSelector)) {
-    parent = document.querySelector(parentSelector) as HTMLElement;
+  if (parent) {
+    if (typeof parent === 'string' && document.querySelector(parent)) {
+      root = document.querySelector(parent) as HTMLElement;
+    } else if (parent instanceof HTMLElement) {
+      root = parent;
+    } else {
+      root = document.querySelector('body') as HTMLElement;
+    }
   } else {
-    parent = document.querySelector('body') as HTMLElement;
+    root = document.querySelector('body') as HTMLElement;
   }
 
-  parent.append(element);
+  root.append(element);
 
   return element;
 };

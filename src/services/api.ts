@@ -233,9 +233,9 @@ export const deleteWinner = async (id: number): Promise<void | Error> => {
       method: 'DELETE',
     });
 
-    const fnName = 'Delete Winner'
+    const fnName = 'Delete Winner';
 
-    if (res.status === 200) return
+    if (res.status === 200) return;
     if (res.status === 404) return notFound(fnName);
 
     return unexpectedStatus(fnName);
@@ -254,9 +254,9 @@ export const updateWinner = async (id: number, settings: WinnerSettings): Promis
       body: JSON.stringify(settings),
     });
 
-    const fnName = 'Update Winner'
+    const fnName = 'Update Winner';
 
-    if (res.status === 200) return
+    if (res.status === 200) return;
     if (res.status === 404) return notFound(fnName);
 
     return unexpectedStatus(fnName);

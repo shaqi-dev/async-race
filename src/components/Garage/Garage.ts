@@ -10,7 +10,7 @@ import s from './Garage.module.scss';
 export interface GarageObj {
   container: HTMLDivElement;
   garageSettings: GarageSettingsObj;
-  title: HTMLHeadingElement;
+  title: HTMLParagraphElement;
   main: HTMLDivElement;
   bindListeners: typeof bindListeners;
   update: typeof updateGarage;
@@ -99,7 +99,7 @@ const updateGarage = async (): Promise<void> => {
   }
 };
 
-const Garage = (parentSelector?: string): GarageObj => {
+const Garage = (parentSelector: string): GarageObj => {
   const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
 
@@ -126,7 +126,7 @@ const Garage = (parentSelector?: string): GarageObj => {
 };
 
 const initGarage = (): GarageObj => {
-  store.garage = Garage();
+  store.garage = Garage('#main');
   store.garage.bindListeners();
   store.garage.update();
 
