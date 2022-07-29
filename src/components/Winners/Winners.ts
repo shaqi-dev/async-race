@@ -1,5 +1,4 @@
 import render from '../../utils/render';
-import ViewTitle from '../ViewTitle';
 import type { Winner } from '../../interfaces/shared';
 import s from './Winners.module.scss';
 import { getCar, getWinners } from '../../services/api';
@@ -42,7 +41,7 @@ const renderWinner = async (
     const car = render('td', null, container);
     render('td', null, container, `${wins}`);
     render('td', null, container, `${time}`);
-    
+
     car.innerHTML = getCarSVG(color);
   }
 
@@ -87,13 +86,9 @@ const WinnersTable = (parent: string | HTMLElement): WinnersTableObj => {
 
 const Winners = (parent: string | HTMLElement): WinnersObj => {
   const { winnersPage } = store;
-
   const container = render<HTMLDivElement>('div', s.root, parent);
-  container.style.display = 'none';
-
-  const title = ViewTitle('Winners', container);
+  const title = render<HTMLParagraphElement>('p', s.title, container, `Winners`);
   const page = render<HTMLParagraphElement>('p', s.page, container, `Page #${winnersPage}`);
-
   const table = WinnersTable(container);
 
   return {
@@ -107,6 +102,7 @@ const Winners = (parent: string | HTMLElement): WinnersObj => {
 const initWinners = (parent: string | HTMLElement): WinnersObj => {
   store.winners = Winners(parent);
   store.winners.table.update();
+  store.winners.container.style.display = 'none';
 
   return store.winners;
 };

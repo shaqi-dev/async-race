@@ -1,7 +1,6 @@
 import render from '../../utils/render';
 import initGarageSettings, { GarageSettingsObj } from './GarageSettings';
 import initGarageSlot from './GarageSlot';
-import ViewTitle from '../ViewTitle';
 import getRandomCars from '../../utils/getRandomCars';
 import { CarSettings } from '../../interfaces/shared';
 import { getCars, createCar, updateCar } from '../../services/api';
@@ -11,6 +10,7 @@ export interface GarageObj {
   container: HTMLDivElement;
   garageSettings: GarageSettingsObj;
   title: HTMLParagraphElement;
+  page: HTMLParagraphElement;
   main: HTMLDivElement;
   footer: HTMLDivElement;
   update: typeof updateGarage;
@@ -71,13 +71,14 @@ const updateGarage = async (): Promise<void> => {
 
   if (garage) {
     const { garagePage } = store;
-    const { title, main } = garage;
+    const { title, page, main } = garage;
     const [data, error] = await getCars(garagePage);
 
     if (error) {
       console.error(error.message);
     } else {
       title.innerText = `Garage (${data?.count})`;
+      page.innerText = `Page #${garagePage}`;
       main.innerHTML = '';
       data.cars.map((car) => initGarageSlot(car, garage));
     }
@@ -85,9 +86,12 @@ const updateGarage = async (): Promise<void> => {
 };
 
 const Garage = (parent: string | HTMLElement): GarageObj => {
+  const { garagePage } = store;
+
   const container = render<HTMLDivElement>('div', s.root, parent);
   const garageSettings = initGarageSettings(container);
-  const title = ViewTitle('Garage', container);
+  const title = render<HTMLParagraphElement>('p', s.title, container, 'Garage');
+  const page = render<HTMLParagraphElement>('p', s.page, container, `Page #${garagePage}`);
   const main = render<HTMLDivElement>('div', s.main, container);
   const footer = render<HTMLDivElement>('div', s.footer, container);
 
@@ -95,6 +99,7 @@ const Garage = (parent: string | HTMLElement): GarageObj => {
     container,
     garageSettings,
     title,
+    page,
     main,
     footer,
     update: updateGarage,
