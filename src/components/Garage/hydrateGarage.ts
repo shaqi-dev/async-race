@@ -20,7 +20,7 @@ const update = async (): Promise<void> => {
     garage.slots = data.cars.map((car) => GarageSlot(car, garage));
     hydrateGarageSlots(garage.slots);
 
-    if (data.count / (garagePage * 7) < 1) {
+    if (data.count / (garagePage * 7) <= 1) {
       viewSettings.garageNext.disabled = true;
     } else {
       viewSettings.garageNext.disabled = false;

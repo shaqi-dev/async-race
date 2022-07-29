@@ -54,7 +54,7 @@ const update = async (): Promise<void> => {
     winners.table.body.innerHTML = '';
     data.winners.map((winner, i) => renderWinner(winner, i + 1, winners.table.body));
 
-    if (data.count / (winnersPage * 10) < 1) {
+    if (data.count / (winnersPage * 10) <= 1) {
       viewSettings.winnersNext.disabled = true;
     } else {
       viewSettings.winnersNext.disabled = false;
