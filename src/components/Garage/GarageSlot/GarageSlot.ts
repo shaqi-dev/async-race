@@ -19,11 +19,13 @@ import s from './GarageSlot.module.scss';
 export interface GarageSlotObj {
   container: HTMLDivElement;
   carName: HTMLSpanElement;
+  carImage: HTMLDivElement;
   selectBtn: HTMLButtonElement;
   removeBtn: HTMLButtonElement;
   startBtn: HTMLButtonElement;
   stopBtn: HTMLButtonElement;
   id: number;
+  animate: (time: number) => Animation;
 }
 
 const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
@@ -62,6 +64,7 @@ interface EngineHandlerProps {
   id: number;
   startBtn: HTMLButtonElement;
   stopBtn: HTMLButtonElement;
+  animate: (time: number) => Animation;
 }
 
 const handleSetWinner = async (id: number, time: number): Promise<void> => {
@@ -84,13 +87,18 @@ const handleSetWinner = async (id: number, time: number): Promise<void> => {
   store.winners?.table.update();
 };
 
-const handleStartDriving = async (props: EngineHandlerProps, time: number): Promise<void> => {
+const handleStartDriving = async (
+  props: EngineHandlerProps,
+  animate: (time: number) => Animation,
+  time: number,
+): Promise<void> => {
   const { id, startBtn, stopBtn } = props;
-  const [data, error] = await setCarEngineToDrive(id);
 
-  console.log(data);
+  const animation = animate(time);
+  const [, error] = await setCarEngineToDrive(id);
 
   if (error) {
+    animation.pause();
     console.error(error);
   } else {
     await handleSetWinner(id, +(time / 1000).toFixed(2));
@@ -101,7 +109,7 @@ const handleStartDriving = async (props: EngineHandlerProps, time: number): Prom
 };
 
 const handleStartEngine = async (props: EngineHandlerProps): Promise<void> => {
-  const { id, startBtn, stopBtn } = props;
+  const { id, startBtn, stopBtn, animate } = props;
   const [data, error] = await setCarEngine(id, 'started');
 
   if (error) {
@@ -112,51 +120,82 @@ const handleStartEngine = async (props: EngineHandlerProps): Promise<void> => {
 
     const time = Math.round(data.distance / data.velocity);
 
-    await handleStartDriving(props, time);
+    await handleStartDriving(props, animate, time);
   }
 };
 
 const handleStopEngine = async (props: EngineHandlerProps): Promise<void> => {
-  const { id, startBtn, stopBtn } = props;
+  const { id, startBtn, stopBtn, animate } = props;
   const [, error] = await setCarEngine(id, 'stopped');
 
   if (error) {
     console.error(error);
   } else {
+    const animation = animate(1);
+    animation.pause();
     stopBtn.disabled = true;
     startBtn.disabled = false;
   }
 };
 
 const bindListeners = (garageSlot: GarageSlotObj): void => {
-  const { selectBtn, removeBtn, startBtn, stopBtn, id } = garageSlot;
+  const { selectBtn, removeBtn, startBtn, stopBtn, id, animate } = garageSlot;
 
   selectBtn.addEventListener('click', (e) => handleSelectCar(e, id));
   removeBtn.addEventListener('click', (e) => handleDeleteCar(e, id));
-  startBtn.addEventListener('click', () => handleStartEngine({ id, startBtn, stopBtn }));
-  stopBtn.addEventListener('click', () => handleStopEngine({ id, startBtn, stopBtn }));
+  startBtn.addEventListener('click', () => handleStartEngine({ id, startBtn, stopBtn, animate }));
+  stopBtn.addEventListener('click', () => handleStopEngine({ id, startBtn, stopBtn, animate }));
+};
+
+const animateCar = (time: number, carImage: HTMLDivElement): Animation => {
+  const carStyle = getComputedStyle(carImage);
+  const parentStyle = getComputedStyle(carImage.parentElement as HTMLDivElement);
+  const carWidth = parseInt(carStyle.width);
+  const parentWidth = parseInt(parentStyle.width);
+
+  const svg = carImage.querySelector('svg') as SVGElement;
+
+  const animation = svg.animate(
+    [
+      { transform: 'translateX(0px)' },
+      { transform: `translateX(calc(${parentWidth}px - ${carWidth}px))` },
+    ],
+    {
+      duration: time,
+      easing: 'ease-in-out',
+    },
+  );
+  animation.play();
+  animation.onfinish = (): void => {
+    svg.style.transform = `translateX(0px)`;
+  };
+
+  return animation;
 };
 
 const GarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
   const container = render<HTMLDivElement>('div', s.root, garage.main);
   const main = render<HTMLDivElement>('div', s.main, container);
-  const footer = render<HTMLDivElement>('div', s.footer, container);
   const carName = render<HTMLSpanElement>('span', s.name, main, `${car.name}`);
+  const carImage = render<HTMLDivElement>('div', s.car, main);
+  const footer = render<HTMLDivElement>('div', s.footer, container);
   const selectBtn = Button({ label: 'Select', type: 'button' }, footer);
   const removeBtn = Button({ label: 'Remove', type: 'reset' }, footer);
   const startBtn = Button({ label: 'Start', type: 'button' }, footer);
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footer);
 
-  main.innerHTML += getCarSVG(car.color);
+  carImage.innerHTML += getCarSVG(car.color);
 
   return {
     container,
     carName,
+    carImage,
     selectBtn,
     removeBtn,
     startBtn,
     stopBtn,
     id: car.id,
+    animate: (time: number) => animateCar(time, carImage),
   };
 };
 
