@@ -1,10 +1,7 @@
 @use '../../../scss/variables' as *;
 
 .root {
-  width: fit-content;
-  padding: 20px;
-  border: $color-button-primary-bg--hover 2px dashed;
-  border-radius: 16px;
+  width: 665px;
   text-align: center;
 }
 

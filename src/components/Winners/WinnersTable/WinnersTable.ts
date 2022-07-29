@@ -43,23 +43,21 @@ const renderWinner = async (
 };
 
 const update = async (): Promise<void> => {
-  const { winners, winnersSort, winnersOrder, winnersPage } = store;
+  const { winners, winnersSort, winnersOrder, winnersPage, viewSettings } = store;
   const [data, error] = await getWinners(winnersSort, winnersOrder, winnersPage);
 
   if (error) {
     console.error(error);
   } else {
-    if (winners) {
-      winners.title.innerText = `Winners (${data.count})`;
-      winners.page.innerText = `Page #${winnersPage}`;
-      winners.table.body.innerHTML = '';
-      data.winners.map((winner, i) => renderWinner(winner, i + 1, winners.table.body));
+    viewSettings.winnersTitle.innerText = `Winners (${data.count})`;
+    viewSettings.winnersPage.innerText = `Page #${winnersPage}`;
+    winners.table.body.innerHTML = '';
+    data.winners.map((winner, i) => renderWinner(winner, i + 1, winners.table.body));
 
-      if (data.count / (winnersPage * 10) < 1) {
-        winners.next.disabled = true;
-      } else {
-        winners.next.disabled = false;
-      }
+    if (data.count / (winnersPage * 10) < 1) {
+      viewSettings.winnersNext.disabled = true;
+    } else {
+      viewSettings.winnersNext.disabled = false;
     }
   }
 };

@@ -41,15 +41,15 @@ const handleRace = async (): Promise<void> => {
           console.error(error);
         } else {
           const seconds = +(time / 1000).toFixed(2);
-          const { settings } = store.garage;
+          const { garageSettings } = store;
 
           await handleSetWinner(id, seconds);
 
-          settings.winnerMessage.innerText = `Winner: ${data.name}, time: ${seconds}s.`;
-          settings.winnerMessage.style.display = 'block';
+          garageSettings.winnerMessage.innerText = `Winner: ${data.name}, time: ${seconds}s.`;
+          garageSettings.winnerMessage.style.display = 'block';
 
           setTimeout(() => {
-            settings.winnerMessage.style.display = 'none';
+            garageSettings.winnerMessage.style.display = 'none';
           }, 5000);
         }
       }
@@ -74,19 +74,19 @@ const handleReset = async (): Promise<void> => {
 };
 
 const bindListeners = (): void => {
-  const { raceBtn, resetBtn } = store.garage.settings;
+  const { raceBtn, resetBtn } = store.garageSettings;
 
   raceBtn.addEventListener('click', handleRace);
   resetBtn.addEventListener('click', handleReset);
 };
 
 const hydrateGarageSettings = (): GarageSettingsObj => {
-  const { settings } = store.garage;
+  const { garageSettings } = store;
   bindListeners();
-  settings.updateForm.disable();
-  settings.winnerMessage.style.display = 'none';
+  garageSettings.updateForm.disable();
+  garageSettings.winnerMessage.style.display = 'none';
 
-  return settings;
+  return garageSettings;
 };
 
 export default hydrateGarageSettings;

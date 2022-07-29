@@ -63,6 +63,7 @@ const GarageSettingsForm = (
 
 const GarageSettings = (parent: Parent): GarageSettingsObj => {
   const container = render<HTMLDivElement>('div', s.root, parent);
+  const logo = render<HTMLAnchorElement>('div', s.logo, container, 'ASYNC-RACE');
   const createForm = GarageSettingsForm(container, 'create-form', 'Create');
   const updateForm = GarageSettingsForm(container, 'update-form', 'Update');
   const footer = render<HTMLDivElement>('div', s.footer, container);
@@ -70,6 +71,8 @@ const GarageSettings = (parent: Parent): GarageSettingsObj => {
   const resetBtn = Button({ label: 'Reset' }, footer);
   const generateCarsBtn = Button({ label: 'Generate Cars' }, footer);
   const winnerMessage = render<HTMLSpanElement>('span', s.message, container, 'Winner: ');
+
+  logo.href = '/';
 
   return {
     container,

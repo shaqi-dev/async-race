@@ -19,5 +19,11 @@ body {
 }
 
 main, header {
-  padding: 0 40px;
+  padding: 20px;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }

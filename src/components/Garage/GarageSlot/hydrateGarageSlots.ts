@@ -26,20 +26,17 @@ const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
 const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
 
-  const { settings } = store.garage;
+  const { garageSettings } = store;
+  const { container, textInput, colorInput, enable } = garageSettings.updateForm;
+  const [car, error] = await getCar(id);
 
-  if (settings) {
-    const { container, textInput, colorInput, enable } = settings.updateForm;
-    const [car, error] = await getCar(id);
-
-    if (error) {
-      console.error(error);
-    } else {
-      enable();
-      textInput.value = car.name;
-      colorInput.value = car.color;
-      container.dataset.carId = `${id}`;
-    }
+  if (error) {
+    console.error(error);
+  } else {
+    enable();
+    textInput.value = car.name;
+    colorInput.value = car.color;
+    container.dataset.carId = `${id}`;
   }
 };
 

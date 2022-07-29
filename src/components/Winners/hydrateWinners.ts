@@ -36,45 +36,39 @@ const handleClickPrev = (): void => {
   store.winnersPage = store.winnersPage - 1;
 
   if (store.winnersPage === 1) {
-    const { winners } = store;
-
-    if (winners) {
-      winners.prev.disabled = true;
-
-      winners.table.update();
-    }
-  }
-};
-
-const handleClickNext = (): void => {
-  store.winnersPage = store.winnersPage + 1;
-
-  const { winners } = store;
-
-  if (winners) {
-    winners.prev.disabled = false;
-
+    const { winners, viewSettings } = store;
+    viewSettings.winnersPrev.disabled = true;
     winners.table.update();
   }
 };
 
-const bindListeners = (winners: WinnersObj): void => {
+const handleClickNext = (): void => {
+  const { winners, viewSettings } = store;
+  store.winnersPage = store.winnersPage + 1;
+  viewSettings.winnersPrev.disabled = false;
+  winners.table.update();
+};
+
+const bindListeners = (): void => {
+  const { winners, viewSettings } = store;
   winners.table.wins.addEventListener('click', handleClickWins);
   winners.table.time.addEventListener('click', handleClickTime);
-  winners.prev.addEventListener('click', handleClickPrev);
-  winners.next.addEventListener('click', handleClickNext);
+  viewSettings.winnersPrev.addEventListener('click', handleClickPrev);
+  viewSettings.winnersNext.addEventListener('click', handleClickNext);
 };
 
 const hydrateWinners = (): WinnersObj => {
-  bindListeners(store.winners);
-  store.winners.table.update();
+  bindListeners();
+  const { winners, viewSettings } = store;
+
+  winners.table.update();
 
   if (store.view !== 'winners') {
-    store.winners.hide();
+    winners.hide();
   }
-  
+
   if (store.winnersPage === 1) {
-    store.winners.prev.disabled = true;
+    viewSettings.winnersPrev.disabled = true;
   }
 
   return store.winners;

@@ -30,6 +30,8 @@ const GarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
   const removeBtn = Button({ label: 'Remove', type: 'reset' }, footer);
   const startBtn = Button({ label: 'Start', type: 'button' }, footer);
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footer);
+
+
   carImage.innerHTML += getCarSVG(car.color);
 
   return {

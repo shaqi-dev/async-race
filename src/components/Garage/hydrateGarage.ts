@@ -7,34 +7,30 @@ import GarageSlot from './GarageSlot';
 import hydrateGarageSlots from './GarageSlot/hydrateGarageSlots';
 
 const update = async (): Promise<void> => {
-  const { garage } = store;
+  const { garage, viewSettings, garagePage } = store;
+  const [data, error] = await getCars(garagePage);
 
-  if (garage) {
-    const { garagePage } = store;
-    const { title, page, main } = garage;
-    const [data, error] = await getCars(garagePage);
+  if (error) {
+    console.error(error.message);
+  } else {
+    viewSettings.garageTitle.innerText = `Garage (${data.count})`;
+    viewSettings.garagePage.innerText = `Page #${garagePage}`;
+    garage.main.innerHTML = '';
 
-    if (error) {
-      console.error(error.message);
+    garage.slots = data.cars.map((car) => GarageSlot(car, garage));
+    hydrateGarageSlots(garage.slots);
+
+    if (data.count / (garagePage * 7) < 1) {
+      viewSettings.garageNext.disabled = true;
     } else {
-      title.innerText = `Garage (${data?.count})`;
-      page.innerText = `Page #${garagePage}`;
-      main.innerHTML = '';
-      garage.slots = data.cars.map((car) => GarageSlot(car, garage));
-      hydrateGarageSlots(garage.slots);
-
-      if (data.count / (garagePage * 7) < 1) {
-        garage.next.disabled = true;
-      } else {
-        garage.next.disabled = false;
-      }
+      viewSettings.garageNext.disabled = false;
     }
   }
 };
 
-const handleCreateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void> => {
+const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const { container, textInput, colorInput } = garage.settings.createForm;
+  const { container, textInput, colorInput } = store.garageSettings.createForm;
 
   if (textInput.value) {
     const error = await createCar({ name: textInput.value, color: colorInput.value });
@@ -42,15 +38,15 @@ const handleCreateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void>
     if (error) {
       console.error(error);
     } else {
-      if (garage.update) garage.update();
+      if (store.garage.update) store.garage.update();
       container.reset();
     }
   }
 };
 
-const handleUpdateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void> => {
+const handleUpdateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const { container, textInput, colorInput, disable } = garage.settings.updateForm;
+  const { container, textInput, colorInput, disable } = store.garageSettings.updateForm;
   const id = container.dataset.carId;
 
   if (id && textInput.value) {
@@ -59,7 +55,7 @@ const handleUpdateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void>
       color: colorInput.value,
     });
 
-    if (garage.update) garage.update();
+    if (store.garage.update) store.garage.update();
     await store.winners?.table.update();
 
     disable();
@@ -78,11 +74,11 @@ const handleGenerateCars = async (garage: GarageObj): Promise<void> => {
 const handleClickPrev = (): void => {
   store.garagePage = store.garagePage - 1;
 
-  const { garage } = store;
+  const { garage, viewSettings } = store;
 
-  if (garage && garage.update) {
+  if (garage.update) {
     if (store.garagePage === 1) {
-      garage.prev.disabled = true;
+      viewSettings.garagePrev.disabled = true;
     }
 
     garage.update();
@@ -92,39 +88,43 @@ const handleClickPrev = (): void => {
 const handleClickNext = (): void => {
   store.garagePage = store.garagePage + 1;
 
-  const { garage } = store;
+  const { garage, viewSettings } = store;
 
-  if (garage && garage.update) {
-    garage.prev.disabled = false;
+  if (garage.update) {
+    viewSettings.garagePrev.disabled = false;
 
     garage.update();
   }
 };
 
-const bindListeners = (garage: GarageObj): void => {
-  const { createForm, updateForm, generateCarsBtn } = garage.settings;
+const bindListeners = (): void => {
+  const { createForm, updateForm, generateCarsBtn } = store.garageSettings;
+  const { garage, viewSettings } = store;
 
-  createForm.container.addEventListener('submit', (e) => handleCreateCar(e, garage));
-  updateForm.container.addEventListener('submit', (e) => handleUpdateCar(e, garage));
+  createForm.container.addEventListener('submit', (e) => handleCreateCar(e));
+  updateForm.container.addEventListener('submit', (e) => handleUpdateCar(e));
   generateCarsBtn.addEventListener('click', () => handleGenerateCars(garage));
-  garage.prev.addEventListener('click', handleClickPrev);
-  garage.next.addEventListener('click', handleClickNext);
+  viewSettings.garagePrev.addEventListener('click', handleClickPrev);
+  viewSettings.garageNext.addEventListener('click', handleClickNext);
 };
 
 const hydrateGarage = (): GarageObj => {
-  bindListeners(store.garage);
-  store.garage.update = update;
-  store.garage.update();
+  const { garage, viewSettings } = store;
+  
+  bindListeners();
+  
+  garage.update = update;
+  garage.update();
 
   if (store.view !== 'garage') {
-    store.garage.hide();
+    garage.hide();
   }
 
   if (store.garagePage === 1) {
-    store.garage.prev.disabled = true;
+    viewSettings.garagePrev.disabled = true;
   }
 
-  return store.garage;
+  return garage;
 };
 
 export default hydrateGarage;

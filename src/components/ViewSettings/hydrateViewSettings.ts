@@ -1,37 +1,62 @@
 import { store } from '../../App';
 import type { ViewSettingsObj } from './ViewSettings';
 
-const handleGarageView = (): void => {
-  const { winners, garage } = store;
+const setGarageView = ():void => {
+  const { winners, garage, viewSettings } = store;
 
-  if (winners && garage) {
-    store.view = 'garage';
-    sessionStorage.setItem('view', 'garage');
-    winners.container.style.display = 'none';
-    garage.container.style.display = 'flex';
-  }
+  winners.container.style.display = 'none';
+  garage.container.style.display = 'flex';
+  viewSettings.garageTitle.style.display = 'block';
+  viewSettings.winnersTitle.style.display = 'none';
+  viewSettings.garagePage.style.display = 'block';
+  viewSettings.winnersPage.style.display = 'none';
+  viewSettings.garagePagination.style.display = 'block';
+  viewSettings.winnersPagination.style.display = 'none';
+}
+
+const setWinnersView = ():void => {
+  const { winners, garage, viewSettings } = store;
+
+  winners.container.style.display = 'flex';
+  garage.container.style.display = 'none';
+  viewSettings.garageTitle.style.display = 'none';
+  viewSettings.winnersTitle.style.display = 'block';
+  viewSettings.garagePage.style.display = 'none';
+  viewSettings.winnersPage.style.display = 'block';
+  viewSettings.garagePagination.style.display = 'none';
+  viewSettings.winnersPagination.style.display = 'block';
+}
+
+const handleGarageView = (): void => {
+  store.view = 'garage';
+  sessionStorage.setItem('view', 'garage');
+
+  setGarageView();
 };
 
 const handleWinnersView = async (): Promise<void> => {
-  const { winners, garage } = store;
+  store.view = 'winners';
+  sessionStorage.setItem('view', 'winners');
 
-  if (winners && garage) {
-    store.view = 'winners';
-    sessionStorage.setItem('view', 'winners');
-    winners.container.style.display = 'flex';
-    garage.container.style.display = 'none';
-  }
+  setWinnersView()
 };
 
-const bindListeners = (viewSettings: ViewSettingsObj): void => {
+const bindListeners = (): void => {
+  const { viewSettings } = store;
   const { garageBtn, winnersBtn } = viewSettings;
 
   garageBtn.addEventListener('click', handleGarageView);
   winnersBtn.addEventListener('click', handleWinnersView);
 };
 
-const initViewSettings = (): ViewSettingsObj => {
-  bindListeners(store.viewSettings);
+const initViewSettings = (): ViewSettingsObj => { 
+  bindListeners();
+
+  if (store.view === 'garage') {
+    setGarageView();
+  } else {
+    setWinnersView();
+  }
 
   return store.viewSettings;
 };
