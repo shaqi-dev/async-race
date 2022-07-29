@@ -1,6 +1,7 @@
 import render from '../../utils/render';
 import GarageSettings, { GarageSettingsObj } from './GarageSettings';
 import GarageSlot from './GarageSlot';
+import ViewTitle from '../ViewTitle';
 import getRandomCars from '../../utils/getRandomCars';
 import { CarSettings } from '../../interfaces/shared';
 import { getCars, createCar, updateCar } from '../../services/api';
@@ -105,7 +106,7 @@ const Garage = (parentSelector?: string): GarageObj => {
   const garageSettings = GarageSettings(rootSelector);
   store.garageSettings = garageSettings;
 
-  const title = render<HTMLHeadingElement>('h2', s.title, rootSelector);
+  const title = ViewTitle('Garage', rootSelector);
 
   const main = render<HTMLDivElement>('div', s.main, rootSelector);
   main.id = 'garage-main';
