@@ -72,6 +72,7 @@ const handleUpdateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void>
     });
 
     await garage.update();
+    await store.winners?.table.update();
 
     disable();
   }
