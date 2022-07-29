@@ -14,6 +14,7 @@ const handleGarage = (): void => {
 
   if (winners && garage) {
     store.view = 'garage';
+    sessionStorage.setItem('view', 'garage');
     winners.container.style.display = 'none';
     garage.container.style.display = 'flex';
   }
@@ -24,6 +25,7 @@ const handleWinners = async (): Promise<void> => {
 
   if (winners && garage) {
     store.view = 'winners';
+    sessionStorage.setItem('view', 'winners');
     winners.container.style.display = 'flex';
     garage.container.style.display = 'none';
   }

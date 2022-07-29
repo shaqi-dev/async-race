@@ -16,12 +16,14 @@ interface Store {
   winnersOrder: ORDER,
 }
 
+const view = sessionStorage.getItem('view') as 'garage' | 'winners';
+
 const store: Store = {
   viewSettings: undefined,
   garage: undefined,
   winners: undefined,
   garageSettings: undefined,
-  view: 'garage',
+  view: view ? view : 'garage',
   garagePage: 1,
   winnersPage: 1,
   winnersSort: SORT.ID,

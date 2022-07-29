@@ -110,6 +110,9 @@ const initGarage = (parent: string | HTMLElement): GarageObj => {
   store.garage = Garage(parent);
   bindListeners(store.garage);
   store.garage.update();
+  if (store.view !== 'garage') {
+    store.garage.container.style.display = 'none';
+  }
 
   return store.garage;
 };

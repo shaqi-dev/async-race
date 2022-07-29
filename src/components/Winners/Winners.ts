@@ -138,7 +138,9 @@ const initWinners = (parent: string | HTMLElement): WinnersObj => {
   store.winners = Winners(parent);
   bindListeners(store.winners);
   store.winners.table.update();
-  store.winners.container.style.display = 'none';
+  if (store.view !== 'winners') {
+    store.winners.container.style.display = 'none';
+  }
 
   return store.winners;
 };
