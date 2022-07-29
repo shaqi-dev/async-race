@@ -17,7 +17,7 @@ export interface GarageSlotObj {
   id: number;
 }
 
-const handleRemoveCar = async (e: MouseEvent, id: number): Promise<void> => {
+const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
   const error = await deleteCar(id);
 
@@ -25,6 +25,7 @@ const handleRemoveCar = async (e: MouseEvent, id: number): Promise<void> => {
     console.error(error);
   } else {
     await store.garage?.update();
+    await store.winners?.table.update();
   }
 };
 
@@ -95,7 +96,7 @@ const bindListeners = (garageSlot: GarageSlotObj): void => {
   const { selectBtn, removeBtn, startBtn, stopBtn, id } = garageSlot;
 
   selectBtn.addEventListener('click', (e) => handleSelectCar(e, id));
-  removeBtn.addEventListener('click', (e) => handleRemoveCar(e, id));
+  removeBtn.addEventListener('click', (e) => handleDeleteCar(e, id));
   startBtn.addEventListener('click', () => handleStartEngine({ id, startBtn, stopBtn }));
   stopBtn.addEventListener('click', () => handleStopEngine({ id, startBtn, stopBtn }));
 };
