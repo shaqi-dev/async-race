@@ -5,7 +5,8 @@ import type {
   CarEngine,
   Winner,
   WinnersData,
-  WinnerSettings,
+  SORT,
+  ORDER,
 } from '../interfaces/shared';
 
 const API_BASE = 'http://localhost:3000';
@@ -166,11 +167,15 @@ export const setCarEngineToDrive = async (
 };
 
 export const getWinners = async (
+  sort: SORT,
+  order: ORDER,
   page = 1,
   limit = 10,
 ): Promise<[WinnersData, null] | [null, Error]> => {
   try {
-    const res = await fetch(`${API_WINNERS}?_limit=${limit}&_page=${page}`);
+    const res = await fetch(
+      `${API_WINNERS}?_limit=${limit}&_page=${page}&_sort=${sort}&_order=${order}`,
+    );
 
     if (res.status === 200) {
       const data = {

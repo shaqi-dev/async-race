@@ -1,5 +1,5 @@
 import render from '../../utils/render';
-import type { Winner } from '../../interfaces/shared';
+import { ORDER, SORT, Winner } from '../../interfaces/shared';
 import s from './Winners.module.scss';
 import { getCar, getWinners } from '../../services/api';
 import store from '../../store';
@@ -37,8 +37,8 @@ const renderWinner = async (
     const { name, color } = data;
 
     render('td', null, container, `${position}`);
-    render('td', null, container, name);
     const car = render('td', null, container);
+    render('td', null, container, name);
     render('td', null, container, `${wins}`);
     render('td', null, container, `${time}`);
 
@@ -49,8 +49,8 @@ const renderWinner = async (
 };
 
 const updateWinners = async (): Promise<void> => {
-  const { winners, winnersPage } = store;
-  const [data, error] = await getWinners(winnersPage);
+  const { winners, winnersSort, winnersOrder, winnersPage } = store;
+  const [data, error] = await getWinners(winnersSort, winnersOrder, winnersPage);
 
   if (error) {
     console.error(error);
@@ -62,6 +62,41 @@ const updateWinners = async (): Promise<void> => {
       data.winners.map((winner, i) => renderWinner(winner, i + 1, winners.table.body));
     }
   }
+};
+
+const handleChangeOrder = (): void => {
+  if (store.winnersOrder === ORDER.ASC) {
+    store.winnersOrder = ORDER.DESC;
+  } else {
+    store.winnersOrder = ORDER.ASC;
+  }
+};
+
+const handleClickWins = (): void => {
+  if (store.winnersSort !== SORT.WINS) {
+    store.winnersSort = SORT.WINS;
+    store.winnersOrder = ORDER.DESC;
+  } else {
+    handleChangeOrder();
+  }
+
+  store.winners?.table.update();
+};
+
+const handleClickTime = (): void => {
+  if (store.winnersSort !== SORT.TIME) {
+    store.winnersSort = SORT.TIME;
+    store.winnersOrder = ORDER.ASC;
+  } else {
+    handleChangeOrder();
+  }
+
+  store.winners?.table.update();
+};
+
+const bindListeners = (winners: WinnersObj): void => {
+  winners.table.wins.addEventListener('click', handleClickWins);
+  winners.table.time.addEventListener('click', handleClickTime);
 };
 
 const WinnersTable = (parent: string | HTMLElement): WinnersTableObj => {
@@ -101,6 +136,7 @@ const Winners = (parent: string | HTMLElement): WinnersObj => {
 
 const initWinners = (parent: string | HTMLElement): WinnersObj => {
   store.winners = Winners(parent);
+  bindListeners(store.winners);
   store.winners.table.update();
   store.winners.container.style.display = 'none';
 
