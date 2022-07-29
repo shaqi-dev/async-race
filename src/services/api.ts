@@ -198,7 +198,7 @@ export const getWinner = async (id: number): Promise<[Winner, null] | [null, Err
 
     const fnName = 'Get Winner';
 
-    if (res.status === 400) return [null, notFound(fnName)];
+    if (res.status === 404) return [null, notFound(fnName)];
 
     return [null, unexpectedStatus(fnName)];
   } catch (e) {
@@ -244,14 +244,16 @@ export const deleteWinner = async (id: number): Promise<void | Error> => {
   }
 };
 
-export const updateWinner = async (id: number, settings: WinnerSettings): Promise<void | Error> => {
+export const updateWinner = async (winner: Winner): Promise<void | Error> => {
+  const { id, wins, time } = winner;
+
   try {
     const res = await fetch(`${API_WINNERS}/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-type': 'application/json',
       },
-      body: JSON.stringify(settings),
+      body: JSON.stringify({ wins, time }),
     });
 
     const fnName = 'Update Winner';

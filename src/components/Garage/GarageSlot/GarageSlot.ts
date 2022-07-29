@@ -2,7 +2,16 @@ import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
 import { GarageObj } from '../Garage';
-import { deleteCar, getCar, setCarEngine, setCarEngineToDrive } from '../../../services/api';
+import {
+  createWinner,
+  deleteCar,
+  deleteWinner,
+  getCar,
+  getWinner,
+  setCarEngine,
+  setCarEngineToDrive,
+  updateWinner,
+} from '../../../services/api';
 import store from '../../../store';
 import type { Car } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
@@ -24,6 +33,7 @@ const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
   if (error) {
     console.error(error);
   } else {
+    await deleteWinner(id);
     await store.garage?.update();
     await store.winners?.table.update();
   }
@@ -54,21 +64,45 @@ interface EngineHandlerProps {
   stopBtn: HTMLButtonElement;
 }
 
-const handleStartDriving = async (props: EngineHandlerProps): Promise<void> => {
+const handleSetWinner = async (id: number, time: number): Promise<void> => {
+  const [data, error] = await getWinner(id);
+
+  if (error) {
+    await createWinner({
+      id,
+      wins: 1,
+      time,
+    });
+  } else {
+    await updateWinner({
+      id,
+      wins: data.wins + 1,
+      time: data.time < time ? data.time : time,
+    });
+  }
+
+  store.winners?.table.update();
+};
+
+const handleStartDriving = async (props: EngineHandlerProps, time: number): Promise<void> => {
   const { id, startBtn, stopBtn } = props;
-  const [, error] = await setCarEngineToDrive(id);
+  const [data, error] = await setCarEngineToDrive(id);
+
+  console.log(data);
 
   if (error) {
     console.error(error);
   } else {
-    stopBtn.disabled = true;
-    startBtn.disabled = false;
+    await handleSetWinner(id, +(time / 1000).toFixed(2));
   }
+
+  stopBtn.disabled = true;
+  startBtn.disabled = false;
 };
 
 const handleStartEngine = async (props: EngineHandlerProps): Promise<void> => {
   const { id, startBtn, stopBtn } = props;
-  const [, error] = await setCarEngine(id, 'started');
+  const [data, error] = await setCarEngine(id, 'started');
 
   if (error) {
     console.error(error);
@@ -76,7 +110,9 @@ const handleStartEngine = async (props: EngineHandlerProps): Promise<void> => {
     startBtn.disabled = true;
     stopBtn.disabled = false;
 
-    await handleStartDriving(props);
+    const time = Math.round(data.distance / data.velocity);
+
+    await handleStartDriving(props, time);
   }
 };
 
