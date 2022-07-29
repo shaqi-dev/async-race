@@ -34,6 +34,7 @@ const ControllPanelForm = (
 
   const colorInput = render<HTMLInputElement>('input', s['color-input'], containerSelector);
   colorInput.type = 'color';
+  colorInput.defaultValue = '#000000';
 
   const submitBtn = Button({ label: submitButtonLabel, type: 'submit' }, containerSelector);
 
@@ -43,7 +44,6 @@ const ControllPanelForm = (
     colorInput.disabled = true;
     submitBtn.disabled = true;
   };
-
   const enable = (): void => {
     container.reset();
     textInput.disabled = false;

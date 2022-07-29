@@ -1,4 +1,3 @@
-import handleError from '../utils/handleError';
 import type {
   GarageData,
   Car,
@@ -15,83 +14,110 @@ const API_GARAGE = `${API_BASE}/garage`;
 const API_ENGINE = `${API_BASE}/engine`;
 const API_WINNERS = `${API_BASE}/winners`;
 
-export const getCars = async (page = 1, limit = 7): Promise<GarageData | null | void> => {
+const unexpectedStatus = (fnName: string): Error =>
+  new Error(`Cannot ${fnName}, get: UNEXPECTED_RESPONSE_STATUS`);
+const notFound = (fnName: string): Error => new Error(`Cannot ${fnName}, get: NOT_FOUND`);
+const badRequest = (fnName: string): Error => new Error(`Cannot ${fnName}, get: BAD_REQUEST`);
+const tooManyRequests = (fnName: string): Error =>
+  new Error(`Cannot ${fnName}, get: TOO_MANY_REQUESTS`);
+const internalError = (fnName: string): Error =>
+  new Error(`Cannot ${fnName}, get: INTERNAL_SERVER_ERROR`);
+
+export const getCars = async (page = 1, limit = 7): Promise<[GarageData, null] | [null, Error]> => {
   try {
     const res = await fetch(`${API_GARAGE}?_limit=${limit}&_page=${page}`);
 
     if (res.status === 200) {
-      const cars: Car[] = await res.json();
-      const count = Number(res.headers.get('X-Total-Count')) || 0;
-
-      return {
-        cars,
-        count,
+      const data = {
+        cars: (await res.json()) as Car[],
+        count: Number(res.headers.get('X-Total-Count')) || 0,
       };
+
+      return [data, null];
     }
 
-    return null;
+    return [null, unexpectedStatus('Get Cars')];
   } catch (e) {
-    handleError(e, 'Cannot get garage data from server');
+    return [null, e as Error];
   }
 };
 
-export const getCar = async (id: number): Promise<Car | null | void> => {
+export const getCar = async (id: number): Promise<[Car, null] | [null, Error]> => {
   try {
     const res = await fetch(`${API_GARAGE}/${id}`);
 
     if (res.status === 200) {
-      const car: Car = await res.json();
-      return car;
+      const data: Car = await res.json();
+
+      return [data, null];
     }
 
-    return null;
+    return [null, unexpectedStatus('Get Car')];
   } catch (e) {
-    handleError(e, `Cannot get car (id: ${id}) data from server`);
+    return [null, e as Error];
   }
 };
 
-export const createCar = async (car: CarSettings): Promise<void> => {
+export const createCar = async (car: CarSettings): Promise<void | Error> => {
   try {
-    await fetch(`${API_GARAGE}`, {
+    const res = await fetch(`${API_GARAGE}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(car),
     });
+
+    if (res.status === 201) return;
+
+    return unexpectedStatus('Create Car');
   } catch (e) {
-    handleError(e, 'Cannot create new car');
+    return e as Error;
   }
 };
 
-export const removeCar = async (id: number): Promise<void> => {
+export const deleteCar = async (id: number): Promise<void | Error> => {
   try {
-    await fetch(`${API_GARAGE}/${id}`, {
+    const res = await fetch(`${API_GARAGE}/${id}`, {
       method: 'DELETE',
     });
+
+    const fnName = 'Delete Car';
+
+    if (res.status === 200) return;
+    if (res.status === 404) return notFound(fnName);
+
+    return unexpectedStatus(fnName);
   } catch (e) {
-    handleError(e, 'Cannot create new car');
+    return e as Error;
   }
 };
 
-export const updateCar = async (id: number, car: CarSettings): Promise<void> => {
+export const updateCar = async (id: number, car: CarSettings): Promise<void | Error> => {
   try {
-    await fetch(`${API_BASE}/garage/${id}`, {
+    const res = await fetch(`${API_BASE}/garage/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(car),
     });
+
+    const fnName = 'Update Car';
+
+    if (res.status === 200) return;
+    if (res.status === 404) return notFound(fnName);
+
+    return unexpectedStatus(fnName);
   } catch (e) {
-    handleError(e, `Cannot update car (id: ${id})`);
+    return e as Error;
   }
 };
 
 export const setCarEngine = async (
   id: number,
   status: 'started' | 'stopped',
-): Promise<CarEngine | null | void> => {
+): Promise<[CarEngine, null] | [null, Error]> => {
   try {
     const res = await fetch(`${API_ENGINE}?id=${id}&status=${status}`, {
       method: 'PATCH',
@@ -99,18 +125,23 @@ export const setCarEngine = async (
 
     if (res.status === 200) {
       const data: CarEngine = await res.json();
-      return data;
+      return [data, null];
     }
 
-    return null;
+    const fnName = 'Set Car Engine';
+
+    if (res.status === 400) return [null, badRequest(fnName)];
+    if (res.status === 404) return [null, notFound(fnName)];
+
+    return [null, unexpectedStatus(fnName)];
   } catch (e) {
-    handleError(e, 'Cannot set car engine');
+    return [null, e as Error];
   }
 };
 
 export const setCarEngineToDrive = async (
   id: number,
-): Promise<{ success: boolean } | null | void> => {
+): Promise<[{ success: boolean }, null] | [null, Error]> => {
   try {
     const res = await fetch(`${API_ENGINE}?id=${id}&status=drive`, {
       method: 'PATCH',
@@ -118,84 +149,118 @@ export const setCarEngineToDrive = async (
 
     if (res.status === 200) {
       const data: { success: boolean } = await res.json();
-      return data;
+      return [data, null];
     }
 
-    return null;
+    const fnName = 'Set Car Engine to Drive';
+
+    if (res.status === 400) return [null, badRequest(fnName)];
+    if (res.status === 404) return [null, notFound(fnName)];
+    if (res.status === 429) return [null, tooManyRequests(fnName)];
+    if (res.status === 500) return [null, internalError(fnName)];
+
+    return [null, unexpectedStatus(fnName)];
   } catch (e) {
-    handleError(e, 'Cannot start driving');
+    return [null, e as Error];
   }
 };
 
-export const getWinners = async (page = 1, limit = 10): Promise<WinnersData | null | void> => {
+export const getWinners = async (
+  page = 1,
+  limit = 10,
+): Promise<[WinnersData, null] | [null, Error]> => {
   try {
     const res = await fetch(`${API_WINNERS}?_limit=${limit}&_page=${page}`);
 
     if (res.status === 200) {
-      const winners: Winner[] = await res.json();
-      const count = Number(res.headers.get('X-Total-Count')) || 0;
-
-      return {
-        winners,
-        count,
+      const data = {
+        winners: (await res.json()) as Winner[],
+        count: Number(res.headers.get('X-Total-Count')) || 0,
       };
+
+      return [data, null];
     }
 
-    return null;
+    return [null, unexpectedStatus('Get Winners')];
   } catch (e) {
-    handleError(e, 'Cannot get winners data from server');
+    return [null, e as Error];
   }
 };
 
-export const getWinner = async (id: number): Promise<Winner | null | void> => {
+export const getWinner = async (id: number): Promise<[Winner, null] | [null, Error]> => {
   try {
     const res = await fetch(`${API_WINNERS}/${id}`);
 
     if (res.status === 200) {
-      const winner: Winner = await res.json();
-      return winner;
+      const data: Winner = await res.json();
+      return [data, null];
     }
 
-    return null;
+    const fnName = 'Get Winner';
+
+    if (res.status === 400) return [null, notFound(fnName)];
+
+    return [null, unexpectedStatus(fnName)];
   } catch (e) {
-    handleError(e, `Cannot get winner (id: ${id}) data from server`);
+    return [null, e as Error];
   }
 };
 
-export const createWinner = async (winner: Winner): Promise<void> => {
+export const createWinner = async (winner: Winner): Promise<void | Error> => {
   try {
-    await fetch(`${API_WINNERS}`, {
+    const res = await fetch(`${API_WINNERS}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(winner),
     });
+
+    const fnName = 'Create Winner';
+
+    if (res.status === 201) return;
+    if (res.status === 500) return internalError(fnName);
+
+    return unexpectedStatus(fnName);
   } catch (e) {
-    handleError(e, 'Cannot create new winner');
+    return e as Error;
   }
 };
 
-export const removeWinner = async (id: number): Promise<void> => {
+export const deleteWinner = async (id: number): Promise<void | Error> => {
   try {
-    await fetch(`${API_WINNERS}/${id}`, {
+    const res = await fetch(`${API_WINNERS}/${id}`, {
       method: 'DELETE',
     });
+
+    const fnName = 'Delete Winner'
+
+    if (res.status === 200) return
+    if (res.status === 404) return notFound(fnName);
+
+    return unexpectedStatus(fnName);
   } catch (e) {
-    handleError(e, `Cannot delete winner ${id}`);
+    return e as Error;
   }
 };
 
-export const updateWinner = async (id: number, settings: WinnerSettings): Promise<void> => {
+export const updateWinner = async (id: number, settings: WinnerSettings): Promise<void | Error> => {
   try {
-    await fetch(`${API_WINNERS}/${id}`, {
+    const res = await fetch(`${API_WINNERS}/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-type': 'application/json',
       },
       body: JSON.stringify(settings),
     });
+
+    const fnName = 'Update Winner'
+
+    if (res.status === 200) return
+    if (res.status === 404) return notFound(fnName);
+
+    return unexpectedStatus(fnName);
   } catch (e) {
-    handleError(e, `Cannot delete winner ${id}`);
+    return e as Error;
   }
 };

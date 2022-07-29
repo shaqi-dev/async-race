@@ -23,9 +23,14 @@ const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
     const { container, textInput, colorInput } = controllPanel.createForm;
 
     if (textInput.value) {
-      await createCar({ name: textInput.value, color: colorInput.value });
-      await garage?.update();
-      container.reset();
+      const error = await createCar({ name: textInput.value, color: colorInput.value });
+
+      if (error) {
+        console.error(error);
+      } else {
+        await garage?.update();
+        container.reset();
+      }
     }
   }
 };
@@ -73,18 +78,23 @@ const updateGarage = async (): Promise<void> => {
   const { garage } = store;
 
   if (garage) {
+    const { garagePage } = store;
     const { title, main } = garage;
-    const data = await getCars(1);
-    title.innerText = `Garage (${data?.count})`;
-    main.innerHTML = '';
-    console.log(main.classList);
-    data?.cars.map((car) =>
-      GarageSlot({
-        car,
-        garageSelector: '#garage-main',
-        garage,
-      }),
-    );
+    const [data, error] = await getCars(garagePage);
+
+    if (error) {
+      console.error(error.message);
+    } else {
+      title.innerText = `Garage (${data?.count})`;
+      main.innerHTML = '';
+      data?.cars.map((car) =>
+        GarageSlot({
+          car,
+          garageSelector: '#garage-main',
+          garage,
+        }),
+      );
+    }
   }
 };
 

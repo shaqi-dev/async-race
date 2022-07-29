@@ -18,10 +18,14 @@ const handleGarage = (): void => {
 }
 
 const handleWinners = async (): Promise<void> => {
-  store.view = 'winners';
-  const winners = await getWinners();
+  const [data, error] = await getWinners();
 
-  console.log(winners);
+  if (error) {
+    console.error(error)
+  } else {
+    store.view = 'winners';
+    console.log(data);
+  }
 }
 
 const ViewPanel = (parentSelector?: string): ViewPanelObj => {
