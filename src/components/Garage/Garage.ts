@@ -1,6 +1,6 @@
 import render from '../../utils/render';
 import initGarageSettings, { GarageSettingsObj } from './GarageSettings';
-import initGarageSlot from './GarageSlot';
+import initGarageSlot, { GarageSlotObj } from './GarageSlot';
 import getRandomCars from '../../utils/getRandomCars';
 import { CarSettings } from '../../interfaces/shared';
 import { getCars, createCar, updateCar } from '../../services/api';
@@ -15,6 +15,7 @@ export interface GarageObj {
   main: HTMLDivElement;
   prev: HTMLButtonElement;
   next: HTMLButtonElement;
+  slots: GarageSlotObj[] | undefined;
   update: typeof updateGarage;
 }
 
@@ -32,7 +33,7 @@ const updateGarage = async (): Promise<void> => {
       title.innerText = `Garage (${data?.count})`;
       page.innerText = `Page #${garagePage}`;
       main.innerHTML = '';
-      data.cars.map((car) => initGarageSlot(car, garage));
+      garage.slots = data.cars.map((car) => initGarageSlot(car, garage));
 
       if (data.count / (garagePage * 7) < 1) {
         garage.next.disabled = true;
@@ -141,6 +142,7 @@ const Garage = (parent: string | HTMLElement): GarageObj => {
     main,
     prev,
     next,
+    slots: undefined,
     update: updateGarage,
   };
 };

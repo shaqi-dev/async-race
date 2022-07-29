@@ -1,3 +1,4 @@
+import { getCar } from '../../../services/api';
 import store from '../../../store';
 import render from '../../../utils/render';
 import Button from '../../Button';
@@ -10,6 +11,7 @@ export interface GarageSettingsObj {
   raceBtn: HTMLButtonElement;
   resetBtn: HTMLButtonElement;
   generateCarsBtn: HTMLButtonElement;
+  winnerMessage: HTMLSpanElement;
 }
 
 interface GarageSettingsFormObj {
@@ -30,7 +32,7 @@ const GarageSettingsForm = (
   const textInput = render<HTMLInputElement>('input', s['text-input'], container);
   const colorInput = render<HTMLInputElement>('input', s['color-input'], container);
   const submitBtn = Button({ label: buttonLabel, type: 'submit' }, container);
-  
+
   container.id = formId;
   textInput.type = 'text';
   colorInput.type = 'color';
@@ -60,6 +62,58 @@ const GarageSettingsForm = (
   };
 };
 
+const handleRace = async (): Promise<void> => {
+  const { garage } = store;
+
+  if (garage) {
+    const { slots } = garage;
+
+    if (slots) {
+      const promise = slots.map((slot) => slot.start());
+      const [id, time] = await Promise.any(promise);
+
+      if (time) {
+        const [data, error] = await getCar(id);
+        if (error) {
+          console.error(error);
+        } else {
+          const seconds = +(time / 1000).toFixed(2);
+          const { garageSettings } = store;
+
+          if (garageSettings) {
+            garageSettings.winnerMessage.innerText = `Winner: ${data.name}, time: ${seconds}s.`;
+            garageSettings.winnerMessage.style.display = 'block';
+
+            setTimeout(() => {
+              garageSettings.winnerMessage.style.display = 'none';
+            }, 5000);
+          }
+        }
+      }
+    }
+  }
+};
+
+const handleReset = async (): Promise<void> => {
+  const { garage } = store;
+
+  if (garage) {
+    const { slots } = garage;
+
+    if (slots) {
+      const promise = slots.map((slot) => slot.stop());
+      await Promise.all(promise);
+    }
+  }
+};
+
+const bindListeners = (garageSettings: GarageSettingsObj): void => {
+  const { raceBtn, resetBtn } = garageSettings;
+
+  raceBtn.addEventListener('click', handleRace);
+  resetBtn.addEventListener('click', handleReset);
+};
+
 const GarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
   const container = render<HTMLDivElement>('div', s.root, parent);
   const createForm = GarageSettingsForm(container, 'create-form', 'Create');
@@ -68,6 +122,7 @@ const GarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
   const raceBtn = Button({ label: 'Race' }, footer);
   const resetBtn = Button({ label: 'Reset' }, footer);
   const generateCarsBtn = Button({ label: 'Generate Cars' }, footer);
+  const winnerMessage = render<HTMLSpanElement>('span', s.message, container, 'Winner: ');
 
   return {
     container,
@@ -76,12 +131,15 @@ const GarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
     raceBtn,
     resetBtn,
     generateCarsBtn,
+    winnerMessage,
   };
 };
 
 const initGarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
   store.garageSettings = GarageSettings(parent);
+  bindListeners(store.garageSettings);
   store.garageSettings.updateForm.disable();
+  store.garageSettings.winnerMessage.style.display = 'none';
 
   return store.garageSettings;
 };

@@ -59,3 +59,14 @@
   display: flex;
   gap: 10px;
 }
+
+.message {
+  position: absolute;
+  width: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: $color-text-winner;
+  font-size: 6.4rem;
+  text-align: center;
+}
