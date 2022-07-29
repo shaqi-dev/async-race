@@ -1,8 +1,16 @@
-import { createWinner, getCar, getWinner, updateWinner } from '../../../services/api';
-import store from '../../../store';
 import render from '../../../utils/render';
 import Button from '../../Button';
+import type { Parent } from '../../../utils/render';
 import s from './GarageSettings.module.scss';
+
+interface GarageSettingsFormObj {
+  container: HTMLFormElement;
+  textInput: HTMLInputElement;
+  colorInput: HTMLInputElement;
+  submitBtn: HTMLButtonElement;
+  disable: () => void;
+  enable: () => void;
+}
 
 export interface GarageSettingsObj {
   container: HTMLDivElement;
@@ -14,17 +22,8 @@ export interface GarageSettingsObj {
   winnerMessage: HTMLSpanElement;
 }
 
-interface GarageSettingsFormObj {
-  container: HTMLFormElement;
-  textInput: HTMLInputElement;
-  colorInput: HTMLInputElement;
-  submitBtn: HTMLButtonElement;
-  disable: () => void;
-  enable: () => void;
-}
-
 const GarageSettingsForm = (
-  parent: string | HTMLElement,
+  parent: Parent,
   formId: string,
   buttonLabel: string,
 ): GarageSettingsFormObj => {
@@ -62,81 +61,7 @@ const GarageSettingsForm = (
   };
 };
 
-const handleSetWinner = async (id: number, time: number): Promise<void> => {
-  const [data, error] = await getWinner(id);
-
-  if (error) {
-    await createWinner({
-      id,
-      wins: 1,
-      time,
-    });
-  } else {
-    await updateWinner({
-      id,
-      wins: data.wins + 1,
-      time: data.time < time ? data.time : time,
-    });
-  }
-
-  store.winners?.table.update();
-};
-
-const handleRace = async (): Promise<void> => {
-  const { garage } = store;
-
-  if (garage) {
-    const { slots } = garage;
-
-    if (slots) {
-      const promise = slots.map((slot) => slot.start());
-      const [id, time] = await Promise.any(promise);
-
-      if (time) {
-        const [data, error] = await getCar(id);
-        if (error) {
-          console.error(error);
-        } else {
-          const seconds = +(time / 1000).toFixed(2);
-          const { garageSettings } = store;
-
-          await handleSetWinner(id, seconds);
-
-          if (garageSettings) {
-            garageSettings.winnerMessage.innerText = `Winner: ${data.name}, time: ${seconds}s.`;
-            garageSettings.winnerMessage.style.display = 'block';
-
-            setTimeout(() => {
-              garageSettings.winnerMessage.style.display = 'none';
-            }, 5000);
-          }
-        }
-      }
-    }
-  }
-};
-
-const handleReset = async (): Promise<void> => {
-  const { garage } = store;
-
-  if (garage) {
-    const { slots } = garage;
-
-    if (slots) {
-      const promise = slots.map((slot) => slot.stop());
-      await Promise.all(promise);
-    }
-  }
-};
-
-const bindListeners = (garageSettings: GarageSettingsObj): void => {
-  const { raceBtn, resetBtn } = garageSettings;
-
-  raceBtn.addEventListener('click', handleRace);
-  resetBtn.addEventListener('click', handleReset);
-};
-
-const GarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
+const GarageSettings = (parent: Parent): GarageSettingsObj => {
   const container = render<HTMLDivElement>('div', s.root, parent);
   const createForm = GarageSettingsForm(container, 'create-form', 'Create');
   const updateForm = GarageSettingsForm(container, 'update-form', 'Update');
@@ -157,13 +82,4 @@ const GarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
   };
 };
 
-const initGarageSettings = (parent: string | HTMLElement): GarageSettingsObj => {
-  store.garageSettings = GarageSettings(parent);
-  bindListeners(store.garageSettings);
-  store.garageSettings.updateForm.disable();
-  store.garageSettings.winnerMessage.style.display = 'none';
-
-  return store.garageSettings;
-};
-
-export default initGarageSettings;
+export default GarageSettings;

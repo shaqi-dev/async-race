@@ -1,4 +1,6 @@
-import initGarageSettings, { GarageSettingsObj } from './GarageSettings';
+import GarageSettings, { GarageSettingsObj } from './GarageSettings';
+import hydrateGarageSettings from './hydrateGarageSettings';
 
-export default initGarageSettings;
-export { GarageSettingsObj };
+export default GarageSettings;
+
+export { GarageSettingsObj, hydrateGarageSettings };

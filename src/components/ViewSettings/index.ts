@@ -1,4 +1,6 @@
-import initViewSettings, { ViewSettingsObj } from './ViewSettings';
+import ViewSettings, { ViewSettingsObj } from './ViewSettings';
+import hydrateViewSettings from './hydrateViewSettings';
 
-export default initViewSettings;
-export { ViewSettingsObj };
+export default ViewSettings;
+
+export { ViewSettingsObj, hydrateViewSettings };

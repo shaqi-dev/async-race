@@ -1,4 +1,6 @@
-import initWinners, { WinnersObj } from './Winners';
+import Winners, { WinnersObj } from './Winners';
+import hydrateWinners from './hydrateWinners';
 
-export default initWinners;
-export { WinnersObj };
+export default Winners;
+
+export { WinnersObj, hydrateWinners };

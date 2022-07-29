@@ -15,42 +15,6 @@
   font-size: 3.2rem;
 }
 
-.table {
-  width: fit-content;
-  padding: 20px;
-  border: $color-button-primary-bg--hover 2px dashed;
-  border-radius: 16px;
-  text-align: center;
-}
-
-.head {
-  &__item {
-    border: 2px solid $color-button-primary-bg--hover;
-    padding: 10px 15px;
-
-    &--wins, &--time {
-      cursor: pointer;
-    }
-  }
-}
-
-.item {
-  td {
-    padding: 10px 15px;
-  }
-}
-
-.item {
-  td {
-    border: 2px solid $color-button-primary-bg--hover;
-  }
-
-  svg {
-    height: 48px;
-    width: fit-content;
-  }
-}
-
 .pagination {
   display: flex;
   gap: 10px;

@@ -1,3 +1,5 @@
+export type Parent = string | HTMLElement;
+
 const render = <T extends HTMLElement>(
   tag: keyof HTMLElementTagNameMap,
   className?: string | Array<string | undefined> | null,

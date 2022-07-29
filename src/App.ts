@@ -1,7 +1,6 @@
 import render from './utils/render';
-import initViewSettings from './components/ViewSettings';
-import initGarage from './components/Garage';
-import initWinners from './components/Winners';
+import createStore, { Store } from './store';
+import hydrateComponents from './utils/hydrateComponents';
 
 interface AppObj {
   container: HTMLDivElement;
@@ -9,24 +8,19 @@ interface AppObj {
   main: HTMLElement;
 }
 
-const App = async (): Promise<AppObj> => {
-  // App container
-  const container = render<HTMLDivElement>('div', null, 'body');
-  container.id = 'app';
+export let store: Store;
 
-  // Header & Main layouts
+const App = async (): Promise<AppObj> => {
+  const container = render<HTMLDivElement>('div', null, 'body');
   const header = render<HTMLElement>('header', null, container);
   const main = render<HTMLElement>('main', null, container);
 
-  // Garage & Winners view panel
-  initViewSettings(header);
+  container.id = 'app';
 
-  // Garage
-  initGarage(main);
+  store = createStore(header, main, main);
 
-  // Winners
-  initWinners(main);
-
+  hydrateComponents();
+  
   return {
     container,
     header,
