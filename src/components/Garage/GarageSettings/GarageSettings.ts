@@ -1,4 +1,4 @@
-import { getCar } from '../../../services/api';
+import { createWinner, getCar, getWinner, updateWinner } from '../../../services/api';
 import store from '../../../store';
 import render from '../../../utils/render';
 import Button from '../../Button';
@@ -62,6 +62,26 @@ const GarageSettingsForm = (
   };
 };
 
+const handleSetWinner = async (id: number, time: number): Promise<void> => {
+  const [data, error] = await getWinner(id);
+
+  if (error) {
+    await createWinner({
+      id,
+      wins: 1,
+      time,
+    });
+  } else {
+    await updateWinner({
+      id,
+      wins: data.wins + 1,
+      time: data.time < time ? data.time : time,
+    });
+  }
+
+  store.winners?.table.update();
+};
+
 const handleRace = async (): Promise<void> => {
   const { garage } = store;
 
@@ -79,6 +99,8 @@ const handleRace = async (): Promise<void> => {
         } else {
           const seconds = +(time / 1000).toFixed(2);
           const { garageSettings } = store;
+
+          await handleSetWinner(id, seconds);
 
           if (garageSettings) {
             garageSettings.winnerMessage.innerText = `Winner: ${data.name}, time: ${seconds}s.`;

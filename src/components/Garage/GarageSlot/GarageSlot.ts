@@ -3,14 +3,11 @@ import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
 import { GarageObj } from '../Garage';
 import {
-  createWinner,
   deleteCar,
   deleteWinner,
   getCar,
-  getWinner,
   setCarEngine,
   setCarEngineToDrive,
-  updateWinner,
 } from '../../../services/api';
 import store from '../../../store';
 import type { Car } from '../../../interfaces/shared';
@@ -69,26 +66,6 @@ interface EngineHandlerProps {
   animate: (time: number) => Animation;
 }
 
-const handleSetWinner = async (id: number, time: number): Promise<void> => {
-  const [data, error] = await getWinner(id);
-
-  if (error) {
-    await createWinner({
-      id,
-      wins: 1,
-      time,
-    });
-  } else {
-    await updateWinner({
-      id,
-      wins: data.wins + 1,
-      time: data.time < time ? data.time : time,
-    });
-  }
-
-  store.winners?.table.update();
-};
-
 const handleStartDriving = async (
   props: EngineHandlerProps,
   animate: (time: number) => Animation,
@@ -108,9 +85,6 @@ const handleStartDriving = async (
 
     return error;
   } else {
-    const seconds = +(time / 1000).toFixed(2);
-    await handleSetWinner(id, seconds);
-
     return data;
   }
 };
@@ -164,9 +138,7 @@ const animateCar = (time: number, carImage: HTMLDivElement): Animation => {
   const carWidth = parseInt(carStyle.width);
   const parentWidth = parseInt(parentStyle.width);
 
-  const svg = carImage.querySelector('svg') as SVGElement;
-
-  const animation = svg.animate(
+  const animation = carImage.animate(
     [
       { transform: 'translateX(0px)' },
       { transform: `translateX(calc(${parentWidth}px - ${carWidth}px))` },
@@ -178,7 +150,7 @@ const animateCar = (time: number, carImage: HTMLDivElement): Animation => {
   );
   animation.play();
   animation.onfinish = (): void => {
-    svg.style.transform = `translateX(0px)`;
+    carImage.style.transform = '';
   };
 
   return animation;
