@@ -1,17 +1,17 @@
 import render from '../../../utils/render';
 import Button from '../../Button';
-import s from './ControllPanel.module.scss';
+import s from './GarageSettings.module.scss';
 
-export interface ControllPanelObj {
+export interface GarageSettingsObj {
   container: HTMLDivElement;
-  createForm: ControllPanelFormObj;
-  updateForm: ControllPanelFormObj;
+  createForm: GarageSettingsFormObj;
+  updateForm: GarageSettingsFormObj;
   raceBtn: HTMLButtonElement;
   resetBtn: HTMLButtonElement;
   generateCarsBtn: HTMLButtonElement;
 }
 
-interface ControllPanelFormObj {
+interface GarageSettingsFormObj {
   container: HTMLFormElement;
   textInput: HTMLInputElement;
   colorInput: HTMLInputElement;
@@ -20,11 +20,11 @@ interface ControllPanelFormObj {
   enable: () => void;
 }
 
-const ControllPanelForm = (
+const GarageSettingsForm = (
   parentSelector: string,
   formId: string,
   submitButtonLabel: string,
-): ControllPanelFormObj => {
+): GarageSettingsFormObj => {
   const container = render<HTMLFormElement>('form', s.form, parentSelector);
   const containerSelector = `#${formId}`;
   container.id = formId;
@@ -61,12 +61,12 @@ const ControllPanelForm = (
   };
 };
 
-const ControllPanel = (parentSelector?: string): ControllPanelObj => {
+const GarageSettings = (parentSelector?: string): GarageSettingsObj => {
   const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
 
-  const createForm = ControllPanelForm(rootSelector, 'create-form', 'Create');
-  const updateForm = ControllPanelForm(rootSelector, 'update-form', 'Update');
+  const createForm = GarageSettingsForm(rootSelector, 'create-form', 'Create');
+  const updateForm = GarageSettingsForm(rootSelector, 'update-form', 'Update');
 
   updateForm.disable();
 
@@ -87,4 +87,4 @@ const ControllPanel = (parentSelector?: string): ControllPanelObj => {
   };
 };
 
-export default ControllPanel;
+export default GarageSettings;

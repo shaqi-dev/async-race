@@ -34,10 +34,10 @@ const handleRemoveCar = async (e: MouseEvent, id: number): Promise<void> => {
 
 const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
-  const { controllPanel } = store;
+  const { garageSettings } = store;
 
-  if (controllPanel) {
-    const { container, textInput, colorInput, enable } = controllPanel.updateForm;
+  if (garageSettings) {
+    const { container, textInput, colorInput, enable } = garageSettings.updateForm;
     const [car, error] = await getCar(id);
 
     if (error) {

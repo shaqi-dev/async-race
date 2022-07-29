@@ -1,5 +1,5 @@
 import render from '../../utils/render';
-import ControllPanel, { ControllPanelObj } from './ControllPanel';
+import GarageSettings, { GarageSettingsObj } from './GarageSettings';
 import GarageSlot from './GarageSlot';
 import getRandomCars from '../../utils/getRandomCars';
 import { CarSettings } from '../../interfaces/shared';
@@ -8,7 +8,7 @@ import store from '../../store';
 import s from './Garage.module.scss';
 export interface GarageObj {
   container: HTMLDivElement;
-  controllPanel: ControllPanelObj;
+  garageSettings: GarageSettingsObj;
   title: HTMLHeadingElement;
   main: HTMLDivElement;
   bindListeners: typeof bindListeners;
@@ -17,10 +17,10 @@ export interface GarageObj {
 
 const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const { controllPanel, garage } = store;
+  const { garageSettings, garage } = store;
 
-  if (controllPanel) {
-    const { container, textInput, colorInput } = controllPanel.createForm;
+  if (garageSettings) {
+    const { container, textInput, colorInput } = garageSettings.createForm;
 
     if (textInput.value) {
       const error = await createCar({ name: textInput.value, color: colorInput.value });
@@ -37,10 +37,10 @@ const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
 
 const handleUpdateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const { controllPanel, garage } = store;
+  const { garageSettings, garage } = store;
 
-  if (controllPanel) {
-    const { container, textInput, colorInput, disable } = controllPanel.updateForm;
+  if (garageSettings) {
+    const { container, textInput, colorInput, disable } = garageSettings.updateForm;
     const id = container.dataset.carId;
 
     if (id && textInput.value) {
@@ -63,10 +63,10 @@ const handleGenerateCars = async (): Promise<void> => {
 };
 
 const bindListeners = (): void => {
-  const { controllPanel } = store;
+  const { garageSettings } = store;
 
-  if (controllPanel) {
-    const { createForm, updateForm, generateCarsBtn } = controllPanel;
+  if (garageSettings) {
+    const { createForm, updateForm, generateCarsBtn } = garageSettings;
 
     createForm.container.addEventListener('submit', handleCreateCar);
     updateForm.container.addEventListener('submit', handleUpdateCar);
@@ -102,8 +102,8 @@ const Garage = (parentSelector?: string): GarageObj => {
   const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
 
-  const controllPanel = ControllPanel(rootSelector);
-  store.controllPanel = controllPanel;
+  const garageSettings = GarageSettings(rootSelector);
+  store.garageSettings = garageSettings;
 
   const title = render<HTMLHeadingElement>('h2', s.title, rootSelector);
 
@@ -114,7 +114,7 @@ const Garage = (parentSelector?: string): GarageObj => {
 
   const garage: GarageObj = {
     container,
-    controllPanel,
+    garageSettings,
     title,
     main,
     bindListeners,

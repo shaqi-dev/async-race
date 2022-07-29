@@ -2,10 +2,10 @@ import Button from '../Button';
 import render from '../../utils/render';
 import store from '../../store';
 import { getWinners } from '../../services/api';
-import s from './ViewPanel.module.scss';
+import s from './ViewSettings.module.scss';
 
 
-export interface ViewPanelObj {
+export interface ViewSettingsObj {
   container: HTMLDivElement;
   garageBtn: HTMLButtonElement;
   winnersBtn: HTMLButtonElement;
@@ -28,7 +28,7 @@ const handleWinners = async (): Promise<void> => {
   }
 }
 
-const ViewPanel = (parentSelector?: string): ViewPanelObj => {
+const ViewSettings = (parentSelector?: string): ViewSettingsObj => {
   const container = render<HTMLDivElement>('div', s.root, parentSelector);
   const rootSelector = `.${s.root}`;
 
@@ -44,4 +44,4 @@ const ViewPanel = (parentSelector?: string): ViewPanelObj => {
   };
 };
 
-export default ViewPanel;
+export default ViewSettings;

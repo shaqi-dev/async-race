@@ -1,5 +1,5 @@
 import render from './utils/render';
-import ViewPanel from './components/ViewPanel';
+import ViewSettings from './components/ViewSettings';
 import initGarage from './components/Garage';
 import store from './store';
 
@@ -21,7 +21,7 @@ const App = async (): Promise<AppObj> => {
   main.id = 'main';
 
   // Garage & Winners view panel
-  store.viewPanel = ViewPanel('#header');
+  store.viewSettings = ViewSettings('#header');
 
   // Garage
   initGarage();

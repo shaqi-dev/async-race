@@ -1,22 +1,22 @@
-import type { ViewPanelObj } from './components/ViewPanel';
+import type { ViewSettingsObj } from './components/ViewSettings';
 import type { GarageObj } from './components/Garage';
-import type { ControllPanelObj } from './components/Garage/ControllPanel';
+import type { GarageSettingsObj } from './components/Garage/GarageSettings';
 
 interface Store {
-  viewPanel: ViewPanelObj | undefined;
+  viewSettings: ViewSettingsObj | undefined;
   garage: GarageObj | undefined;
   winners: undefined;
-  controllPanel: ControllPanelObj | undefined;
+  garageSettings: GarageSettingsObj | undefined;
   view: 'garage' | 'winners';
   garagePage: number;
   winnersPage: number;
 }
 
 const store: Store = {
-  viewPanel: undefined,
+  viewSettings: undefined,
   garage: undefined,
   winners: undefined,
-  controllPanel: undefined,
+  garageSettings: undefined,
   view: 'garage',
   garagePage: 1,
   winnersPage: 1,
