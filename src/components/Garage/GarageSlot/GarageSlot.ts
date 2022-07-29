@@ -24,7 +24,7 @@ export interface GarageSlotObj {
   id: number;
   start: () => Promise<[number, number] | [number, null]>;
   stop: () => Promise<void>;
-  animate: (time: number) => Animation;
+  animation: Animation | undefined;
 }
 
 const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
@@ -59,79 +59,6 @@ const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   }
 };
 
-interface EngineHandlerProps {
-  id: number;
-  startBtn: HTMLButtonElement;
-  stopBtn: HTMLButtonElement;
-  animate: (time: number) => Animation;
-}
-
-const handleStartDriving = async (
-  props: EngineHandlerProps,
-  animate: (time: number) => Animation,
-  time: number,
-): Promise<{ success: boolean } | Error> => {
-  const { id, startBtn, stopBtn } = props;
-
-  const animation = animate(time);
-  const [data, error] = await setCarEngineToDrive(id);
-
-  stopBtn.disabled = true;
-  startBtn.disabled = false;
-
-  if (error) {
-    animation.pause();
-    console.error(error);
-
-    return error;
-  } else {
-    return data;
-  }
-};
-
-const handleStartEngine = async (props: EngineHandlerProps): Promise<[number, number] | [number, null]> => {
-  const { id, startBtn, stopBtn, animate } = props;
-  const [data, error] = await setCarEngine(id, 'started');
-
-  if (error) {
-    console.error(error);
-    return new Promise((_, reject) => reject([id, null]));
-  } else {
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
-
-    const time = Math.round(data.distance / data.velocity);
-
-    const res = await handleStartDriving(props, animate, time);
-
-    if (res instanceof Error) return new Promise((_, reject) => reject([id, null]));
-    return new Promise((resolve) => resolve([id, time]));
-  }
-};
-
-const handleStopEngine = async (props: EngineHandlerProps): Promise<void> => {
-  const { id, startBtn, stopBtn, animate } = props;
-  const [, error] = await setCarEngine(id, 'stopped');
-
-  if (error) {
-    console.error(error);
-  } else {
-    const animation = animate(1);
-    animation.pause();
-    stopBtn.disabled = true;
-    startBtn.disabled = false;
-  }
-};
-
-const bindListeners = (garageSlot: GarageSlotObj): void => {
-  const { selectBtn, removeBtn, startBtn, stopBtn, id, animate } = garageSlot;
-
-  selectBtn.addEventListener('click', (e) => handleSelectCar(e, id));
-  removeBtn.addEventListener('click', (e) => handleDeleteCar(e, id));
-  startBtn.addEventListener('click', () => handleStartEngine({ id, startBtn, stopBtn, animate }));
-  stopBtn.addEventListener('click', () => handleStopEngine({ id, startBtn, stopBtn, animate }));
-};
-
 const animateCar = (time: number, carImage: HTMLDivElement): Animation => {
   const carStyle = getComputedStyle(carImage);
   const parentStyle = getComputedStyle(carImage.parentElement as HTMLDivElement);
@@ -150,10 +77,86 @@ const animateCar = (time: number, carImage: HTMLDivElement): Animation => {
   );
   animation.play();
   animation.onfinish = (): void => {
-    carImage.style.transform = '';
+    carImage.style.transform = `translateX(0px))`;
   };
 
   return animation;
+};
+
+const handleStartDriving = async (id: number, time: number): Promise<{ success: boolean } | Error> => {
+  if (store.garage && store.garage.slots) {
+    const garageSlot: GarageSlotObj = store.garage.slots.filter((slot) => slot.id === id)[0]
+    const { startBtn, stopBtn, carImage } = garageSlot;
+
+    garageSlot.animation = animateCar(time, carImage);
+    const [data, error] = await setCarEngineToDrive(id);
+
+    stopBtn.disabled = true;
+    startBtn.disabled = false;
+
+    if (error) {
+      garageSlot.animation.pause();
+      console.error(error);
+
+      return error;
+    } else {
+      return data;
+    }
+  }
+
+  return new Error('');
+};
+
+const handleStartEngine = async (id: number): Promise<[number, number] | [number, null]> => {
+  if (store.garage && store.garage.slots) {
+    const { startBtn, stopBtn, animation } = store.garage.slots.filter((slot) => slot.id === id)[0];
+
+    if (animation) animation.cancel();
+
+    const [data, error] = await setCarEngine(id, 'started');
+
+    if (error) {
+      console.error(error);
+      return new Promise((_, reject) => reject([id, null]));
+    } else {
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+
+      const time = Math.round(data.distance / data.velocity);
+
+      const res = await handleStartDriving(id, time);
+
+      if (res instanceof Error) return new Promise((_, reject) => reject([id, null]));
+      return new Promise((resolve) => resolve([id, time]));
+    }
+  }
+
+  return new Promise((_, reject) => reject([id, null]));
+};
+
+const handleStopEngine = async (id: number): Promise<void> => {
+  if (store.garage && store.garage.slots) {
+    const { startBtn, stopBtn, animation } = store.garage.slots.filter((slot) => slot.id === id)[0];
+
+    const [, error] = await setCarEngine(id, 'stopped');
+
+    if (error) {
+      console.error(error);
+    } else {
+      animation?.cancel();
+      stopBtn.disabled = true;
+      startBtn.disabled = false;
+    }
+  }
+};
+
+const bindListeners = (garageSlot: GarageSlotObj): void => {
+  const { selectBtn, removeBtn, startBtn, stopBtn, id } = garageSlot;
+
+  selectBtn.addEventListener('click', (e) => handleSelectCar(e, id));
+  removeBtn.addEventListener('click', (e) => handleDeleteCar(e, id));
+  startBtn.addEventListener('click', () => handleStartEngine(id));
+  stopBtn.addEventListener('click', () => handleStopEngine(id));
 };
 
 const GarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
@@ -167,20 +170,10 @@ const GarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
   const removeBtn = Button({ label: 'Remove', type: 'reset' }, footer);
   const startBtn = Button({ label: 'Start', type: 'button' }, footer);
   const stopBtn = Button({ label: 'Stop', type: 'reset' }, footer);
-
   carImage.innerHTML += getCarSVG(car.color);
 
-  const animate = (time: number): Animation => animateCar(time, carImage);
-
-  const engineProps: EngineHandlerProps = {
-    id,
-    startBtn,
-    stopBtn,
-    animate,
-  };
-
-  const start = (): Promise<[number, number] | [number, null]> => handleStartEngine(engineProps);
-  const stop = (): Promise<void> => handleStopEngine(engineProps);
+  const start = (): Promise<[number, number] | [number, null]> => handleStartEngine(id);
+  const stop = (): Promise<void> => handleStopEngine(id);
 
   return {
     container,
@@ -193,7 +186,7 @@ const GarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
     id,
     start,
     stop,
-    animate,
+    animation: undefined,
   };
 };
 
