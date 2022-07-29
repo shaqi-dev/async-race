@@ -6,15 +6,42 @@ import { CarSettings } from '../../interfaces/shared';
 import { getCars, createCar, updateCar } from '../../services/api';
 import store from '../../store';
 import s from './Garage.module.scss';
+import Button from '../Button';
 export interface GarageObj {
   container: HTMLDivElement;
   garageSettings: GarageSettingsObj;
   title: HTMLParagraphElement;
   page: HTMLParagraphElement;
   main: HTMLDivElement;
-  footer: HTMLDivElement;
+  prev: HTMLButtonElement;
+  next: HTMLButtonElement;
   update: typeof updateGarage;
 }
+
+const updateGarage = async (): Promise<void> => {
+  const { garage } = store;
+
+  if (garage) {
+    const { garagePage } = store;
+    const { title, page, main } = garage;
+    const [data, error] = await getCars(garagePage);
+
+    if (error) {
+      console.error(error.message);
+    } else {
+      title.innerText = `Garage (${data?.count})`;
+      page.innerText = `Page #${garagePage}`;
+      main.innerHTML = '';
+      data.cars.map((car) => initGarageSlot(car, garage));
+
+      if (data.count / (garagePage * 7) < 1) {
+        garage.next.disabled = true;
+      } else {
+        garage.next.disabled = false;
+      }
+    }
+  }
+};
 
 const handleCreateCar = async (e: SubmitEvent, garage: GarageObj): Promise<void> => {
   e.preventDefault();
@@ -58,31 +85,40 @@ const handleGenerateCars = async (garage: GarageObj): Promise<void> => {
   await garage.update();
 };
 
+const handleClickPrev = (): void => {
+  store.garagePage = store.garagePage - 1;
+
+  const { garage } = store;
+
+  if (garage) {
+    if (store.garagePage === 1) {
+      garage.prev.disabled = true;
+    }
+
+    garage.update();
+  }
+};
+
+const handleClickNext = (): void => {
+  store.garagePage = store.garagePage + 1;
+
+  const { garage } = store;
+
+  if (garage) {
+    garage.prev.disabled = false;
+
+    garage.update();
+  }
+};
+
 const bindListeners = (garage: GarageObj): void => {
   const { createForm, updateForm, generateCarsBtn } = garage.garageSettings;
 
   createForm.container.addEventListener('submit', (e) => handleCreateCar(e, garage));
   updateForm.container.addEventListener('submit', (e) => handleUpdateCar(e, garage));
   generateCarsBtn.addEventListener('click', () => handleGenerateCars(garage));
-};
-
-const updateGarage = async (): Promise<void> => {
-  const { garage } = store;
-
-  if (garage) {
-    const { garagePage } = store;
-    const { title, page, main } = garage;
-    const [data, error] = await getCars(garagePage);
-
-    if (error) {
-      console.error(error.message);
-    } else {
-      title.innerText = `Garage (${data?.count})`;
-      page.innerText = `Page #${garagePage}`;
-      main.innerHTML = '';
-      data.cars.map((car) => initGarageSlot(car, garage));
-    }
-  }
+  garage.prev.addEventListener('click', handleClickPrev);
+  garage.next.addEventListener('click', handleClickNext);
 };
 
 const Garage = (parent: string | HTMLElement): GarageObj => {
@@ -93,7 +129,9 @@ const Garage = (parent: string | HTMLElement): GarageObj => {
   const title = render<HTMLParagraphElement>('p', s.title, container, 'Garage');
   const page = render<HTMLParagraphElement>('p', s.page, container, `Page #${garagePage}`);
   const main = render<HTMLDivElement>('div', s.main, container);
-  const footer = render<HTMLDivElement>('div', s.footer, container);
+  const pagination = render<HTMLDivElement>('div', s.pagination, container);
+  const prev = Button({ label: 'Prev' }, pagination);
+  const next = Button({ label: 'Next' }, pagination);
 
   return {
     container,
@@ -101,7 +139,8 @@ const Garage = (parent: string | HTMLElement): GarageObj => {
     title,
     page,
     main,
-    footer,
+    prev,
+    next,
     update: updateGarage,
   };
 };
@@ -110,8 +149,13 @@ const initGarage = (parent: string | HTMLElement): GarageObj => {
   store.garage = Garage(parent);
   bindListeners(store.garage);
   store.garage.update();
+
   if (store.view !== 'garage') {
     store.garage.container.style.display = 'none';
+  }
+
+  if (store.garagePage === 1) {
+    store.garage.prev.disabled = true;
   }
 
   return store.garage;

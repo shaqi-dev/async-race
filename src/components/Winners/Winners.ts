@@ -4,12 +4,15 @@ import s from './Winners.module.scss';
 import { getCar, getWinners } from '../../services/api';
 import store from '../../store';
 import getCarSVG from '../../utils/getCarSVG';
+import Button from '../Button';
 
 export interface WinnersObj {
   container: HTMLDivElement;
   title: HTMLParagraphElement;
   page: HTMLParagraphElement;
   table: WinnersTableObj;
+  prev: HTMLButtonElement;
+  next: HTMLButtonElement;
 }
 
 export interface WinnersTableObj {
@@ -60,6 +63,12 @@ const updateWinners = async (): Promise<void> => {
       winners.page.innerText = `Page #${winnersPage}`;
       winners.table.body.innerHTML = '';
       data.winners.map((winner, i) => renderWinner(winner, i + 1, winners.table.body));
+
+      if (data.count / (winnersPage * 10) < 1) {
+        winners.next.disabled = true;
+      } else {
+        winners.next.disabled = false;
+      }
     }
   }
 };
@@ -94,9 +103,37 @@ const handleClickTime = (): void => {
   store.winners?.table.update();
 };
 
+const handleClickPrev = (): void => {
+  store.winnersPage = store.winnersPage - 1;
+
+  if (store.winnersPage === 1) {
+    const { winners } = store;
+
+    if (winners) {
+      winners.prev.disabled = true;
+
+      winners.table.update();
+    }
+  }
+};
+
+const handleClickNext = (): void => {
+  store.winnersPage = store.winnersPage + 1;
+
+  const { winners } = store;
+
+  if (winners) {
+    winners.prev.disabled = false;
+
+    winners.table.update();
+  }
+};
+
 const bindListeners = (winners: WinnersObj): void => {
   winners.table.wins.addEventListener('click', handleClickWins);
   winners.table.time.addEventListener('click', handleClickTime);
+  winners.prev.addEventListener('click', handleClickPrev);
+  winners.next.addEventListener('click', handleClickNext);
 };
 
 const WinnersTable = (parent: string | HTMLElement): WinnersTableObj => {
@@ -125,12 +162,17 @@ const Winners = (parent: string | HTMLElement): WinnersObj => {
   const title = render<HTMLParagraphElement>('p', s.title, container, `Winners`);
   const page = render<HTMLParagraphElement>('p', s.page, container, `Page #${winnersPage}`);
   const table = WinnersTable(container);
+  const pagination = render<HTMLDivElement>('div', s.pagination, container);
+  const prev = Button({ label: 'Prev' }, pagination);
+  const next = Button({ label: 'Next' }, pagination);
 
   return {
     container,
     title,
     page,
     table,
+    prev,
+    next,
   };
 };
 
@@ -140,6 +182,10 @@ const initWinners = (parent: string | HTMLElement): WinnersObj => {
   store.winners.table.update();
   if (store.view !== 'winners') {
     store.winners.container.style.display = 'none';
+  }
+
+  if (store.winnersPage === 1) {
+    store.winners.prev.disabled = true;
   }
 
   return store.winners;
