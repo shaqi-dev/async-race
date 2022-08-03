@@ -35,7 +35,7 @@ const view = sessionStorage.getItem('view') as 'garage' | 'winners';
 
 const createStore = (header: HTMLElement, main: HTMLElement): Store => {
   const viewSettings = ViewSettings(header);
-  const garage = Garage(view === 'garage' ? main : undefined);
+  const garage = Garage((view === null || view === 'garage') ? main : undefined);
   const garageSettings = GarageSettings(header);
   const winners = Winners(view === 'winners' ? main : undefined);
 
