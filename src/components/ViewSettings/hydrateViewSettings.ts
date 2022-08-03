@@ -57,8 +57,6 @@ const handleChangePage = async (value: number): Promise<void> => {
 
     if (store.garage.update) {
       await store.garage.update();
-
-      console.log('updating garage', store);
     }
 
     update();
