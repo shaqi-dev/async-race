@@ -27,17 +27,21 @@ const update = async (): Promise<void> => {
   if (error) {
     console.error(error.message);
   } else {
-    viewSettings.garageTitle.innerText = `Garage (${data.count})`;
-    viewSettings.garagePage.innerText = `Page #${garagePage}`;
-    garage.main.innerHTML = '';
+    store.garageViewTitle = `Garage (${data.count})`;
+    store.garagePageTitle = `Page #${garagePage}`;
 
+    garage.main.innerHTML = '';
     garage.slots = data.cars.map((car) => GarageSlot(car, garage));
     hydrateGarageSlots(garage.slots);
 
     const [prev, next] = getPaginatorButtonsStatus(data.count, garagePage, garagePerPage);
 
-    viewSettings.garagePrev.disabled = prev;
-    viewSettings.garageNext.disabled = next;
+    store.garagePrevBtnStatus = prev;
+    store.garageNextBtnStatus = next;
+
+    if (viewSettings.update) {
+      viewSettings.update();
+    }
   }
 };
 
@@ -111,14 +115,6 @@ const handleGenerateCars = async (): Promise<void> => {
   }
 };
 
-const handleChangePage = async (value: number): Promise<void> => {
-  store.garagePage = store.garagePage + value;
-
-  if (store.garage.update) {
-    await store.garage.update();
-  }
-};
-
 const bindListeners = (): void => {
   const {
     createForm,
@@ -130,28 +126,18 @@ const bindListeners = (): void => {
     generateCarsBtn: HTMLButtonElement;
   } = store.garageSettings;
 
-  const { viewSettings }: { viewSettings: ViewSettingsObj } = store;
-
   createForm.container.addEventListener('submit', (e) => handleCreateCar(e));
   updateForm.container.addEventListener('submit', (e) => handleUpdateCar(e));
   generateCarsBtn.addEventListener('click', () => handleGenerateCars());
-  viewSettings.garagePrev.addEventListener('click', () => handleChangePage(-1));
-  viewSettings.garageNext.addEventListener('click', () => handleChangePage(1));
 };
 
 const hydrateGarage = async (): Promise<GarageObj> => {
-  const { garage }: { garage: GarageObj } = store;
-
   bindListeners();
 
-  garage.update = update;
-  await garage.update();
+  store.garage.update = update;
+  await store.garage.update();
 
-  if (store.view !== 'garage') {
-    garage.hide();
-  }
-
-  return garage;
+  return store.garage;
 };
 
 export default hydrateGarage;

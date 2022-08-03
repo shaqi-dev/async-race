@@ -3,39 +3,66 @@ import { GarageObj } from '../Garage';
 import { WinnersObj } from '../Winners';
 import type { ViewSettingsObj } from './ViewSettings';
 
-const setView = (view: 'garage' | 'winners'): void => {
+const update = (): void => {
+  const { view, viewSettings }: { view: 'garage' | 'winners'; viewSettings: ViewSettingsObj } =
+    store;
+
+  viewSettings.garageBtn.disabled = view === 'winners' ? false : true;
+  viewSettings.winnersBtn.disabled = view === 'winners' ? true : false;
+  viewSettings.title.innerText =
+    view === 'winners' ? store.winnersViewTitle : store.garageViewTitle;
+  viewSettings.page.innerText = view === 'winners' ? store.winnersPageTitle : store.garagePageTitle;
+  viewSettings.prev.disabled =
+    view === 'winners' ? store.winnersPrevBtnStatus : store.garagePrevBtnStatus;
+  viewSettings.next.disabled =
+    view === 'winners' ? store.winnersNextBtnStatus : store.garageNextBtnStatus;
+};
+
+const handleSetView = (view: 'garage' | 'winners'): void => {
   const {
+    main,
     winners,
     garage,
-    viewSettings,
-  }: { winners: WinnersObj; garage: GarageObj; viewSettings: ViewSettingsObj } = store;
+  }: {
+    main: HTMLElement;
+    winners: WinnersObj;
+    garage: GarageObj;
+    viewSettings: ViewSettingsObj;
+  } = store;
 
-  winners.container.style.display = view === 'winners' ? 'flex' : 'none';
-  garage.container.style.display = view === 'winners' ? 'none' : 'flex';
-  viewSettings.garageTitle.style.display = view === 'winners' ? 'none' : 'block';
-  viewSettings.winnersTitle.style.display = view === 'winners' ? 'block' : 'none';
-  viewSettings.garagePage.style.display = view === 'winners' ? 'none' : 'block';
-  viewSettings.winnersPage.style.display = view === 'winners' ? 'block' : 'none';
-  viewSettings.garagePagination.style.display = view === 'winners' ? 'none' : 'block';
-  viewSettings.winnersPagination.style.display = view === 'winners' ? 'block' : 'none';
+  store.view = view;
+
+  sessionStorage.setItem('view', view);
+
+  main.innerHTML = '';
+
+  if (view === 'garage') {
+    main.append(garage.container);
+  } else {
+    main.append(winners.container);
+  }
+
+  update();
 };
 
-const updateView = (): void => {
-  sessionStorage.setItem('view', store.view);
+const handleChangePage = async (value: number): Promise<void> => {
+  if (store.view === 'winners') {
+    store.winnersPage = store.winnersPage + value;
 
-  setView(store.view);
-};
+    await store.winners.table.update();
 
-const handleGarageView = (): void => {
-  store.view = 'garage';
+    update();
+  } else {
+    store.garagePage = store.garagePage + value;
 
-  updateView();
-};
+    if (store.garage.update) {
+      await store.garage.update();
 
-const handleWinnersView = (): void => {
-  store.view = 'winners';
+      console.log('updating garage', store);
+    }
 
-  updateView();
+    update();
+  }
 };
 
 const bindListeners = (): void => {
@@ -43,16 +70,20 @@ const bindListeners = (): void => {
   const { garageBtn, winnersBtn }: { garageBtn: HTMLButtonElement; winnersBtn: HTMLButtonElement } =
     viewSettings;
 
-  garageBtn.addEventListener('click', handleGarageView);
-  winnersBtn.addEventListener('click', handleWinnersView);
+  garageBtn.addEventListener('click', () => handleSetView('garage'));
+  winnersBtn.addEventListener('click', () => handleSetView('winners'));
+
+  viewSettings.prev.addEventListener('click', () => handleChangePage(-1));
+  viewSettings.next.addEventListener('click', () => handleChangePage(+1));
 };
 
-const initViewSettings = (): ViewSettingsObj => {
+const hydrateViewSettings = (): ViewSettingsObj => {
   bindListeners();
 
-  updateView();
+  store.viewSettings.update = update;
+  store.viewSettings.update();
 
   return store.viewSettings;
 };
 
-export default initViewSettings;
+export default hydrateViewSettings;

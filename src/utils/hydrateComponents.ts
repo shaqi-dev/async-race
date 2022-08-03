@@ -4,10 +4,10 @@ import { hydrateGarage } from '../components/Garage/';
 import { hydrateGarageSettings } from '../components/Garage/GarageSettings';
 
 const hydrateComponents = async (): Promise<void> => {
-  hydrateViewSettings();
   await hydrateGarage();
-  hydrateGarageSettings();
   await hydrateWinners();
+  hydrateViewSettings();
+  hydrateGarageSettings();
 }
 
 export default hydrateComponents;

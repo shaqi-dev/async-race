@@ -41,11 +41,11 @@ const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   if (error) {
     console.error(error);
   } else {
+    enable();
+
     textInput.value = car.name;
     colorInput.value = car.color;
     container.dataset.carId = `${id}`;
-
-    enable();
   }
 };
 

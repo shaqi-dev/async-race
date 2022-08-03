@@ -1,6 +1,5 @@
 import { store } from '../../App';
 import { ORDER, SORT } from '../../interfaces/shared';
-import { ViewSettingsObj } from '../ViewSettings';
 import type { WinnersObj } from './Winners';
 
 const handleChangeOrder = (): void => {
@@ -33,23 +32,15 @@ const handleClickTime = (): void => {
   store.winners.table.update();
 };
 
-const handleChangePage = async (value: number): Promise<void> => {
-  store.winnersPage = store.winnersPage + value;
-
-  await store.winners.table.update();
-};
-
 const bindListeners = (): void => {
-  const { winners, viewSettings }: { winners: WinnersObj; viewSettings: ViewSettingsObj } = store;
+  const { winners }: { winners: WinnersObj } = store;
   winners.table.wins.addEventListener('click', handleClickWins);
   winners.table.time.addEventListener('click', handleClickTime);
-  viewSettings.winnersPrev.addEventListener('click', () => handleChangePage(-1));
-  viewSettings.winnersNext.addEventListener('click', () => handleChangePage(+1));
 };
 
 const hydrateWinners = async (): Promise<WinnersObj> => {
   bindListeners();
-  
+
   await store.winners.table.update();
 
   return store.winners;

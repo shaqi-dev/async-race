@@ -3,7 +3,7 @@ export type Parent = string | HTMLElement;
 const render = <T extends HTMLElement>(
   tag: keyof HTMLElementTagNameMap,
   className?: string | Array<string | undefined> | null,
-  parent?: string | HTMLElement,
+  parent?: string | HTMLElement | undefined,
   innerText?: string,
 ): T => {
   const element = document.createElement(tag) as T;
@@ -19,21 +19,17 @@ const render = <T extends HTMLElement>(
     }
   }
 
-  let root: HTMLElement;
-
   if (parent) {
+    let root: HTMLElement;
+
     if (typeof parent === 'string' && document.querySelector(parent)) {
       root = document.querySelector(parent) as HTMLElement;
+      root.append(element);
     } else if (parent instanceof HTMLElement) {
       root = parent;
-    } else {
-      root = document.querySelector('body') as HTMLElement;
+      root.append(element);
     }
-  } else {
-    root = document.querySelector('body') as HTMLElement;
   }
-
-  root.append(element);
 
   return element;
 };

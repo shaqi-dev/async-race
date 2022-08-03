@@ -17,7 +17,7 @@ const App = async (): Promise<AppObj> => {
 
   container.id = 'app';
 
-  store = createStore(header, main, header, main);
+  store = createStore(header, main);
 
   await hydrateComponents();
   

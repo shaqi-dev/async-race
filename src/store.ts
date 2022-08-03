@@ -5,15 +5,24 @@ import GarageSettings, { GarageSettingsObj } from './components/Garage/GarageSet
 import type { ViewSettingsObj } from './components/ViewSettings';
 import type { GarageObj } from './components/Garage';
 import type { WinnersObj } from './components/Winners';
-import { Parent } from './utils/render';
 import { SORT, ORDER } from './interfaces/shared';
 
 export interface Store {
+  header: HTMLElement;
+  main: HTMLElement;
+  view: 'garage' | 'winners';
   viewSettings: ViewSettingsObj;
   garage: GarageObj;
+  garageViewTitle: string;
+  garagePageTitle: string;
+  garagePrevBtnStatus: boolean,
+  garageNextBtnStatus: boolean,
   garageSettings: GarageSettingsObj;
   winners: WinnersObj;
-  view: 'garage' | 'winners';
+  winnersViewTitle: string;
+  winnersPageTitle: string;
+  winnersPrevBtnStatus: boolean,
+  winnersNextBtnStatus: boolean,
   garagePage: number;
   garagePerPage: number;
   winnersPage: number;
@@ -24,23 +33,28 @@ export interface Store {
 
 const view = sessionStorage.getItem('view') as 'garage' | 'winners';
 
-const createStore = (
-  viewSettingsParent: Parent,
-  garageParent: Parent,
-  garageSettingsParent: Parent,
-  winnersParent: Parent,
-): Store => {
-  const viewSettings = ViewSettings(viewSettingsParent);
-  const garage = Garage(garageParent);
-  const garageSettings = GarageSettings(garageSettingsParent);
-  const winners = Winners(winnersParent);
+const createStore = (header: HTMLElement, main: HTMLElement): Store => {
+  const viewSettings = ViewSettings(header);
+  const garage = Garage(view === 'garage' ? main : undefined);
+  const garageSettings = GarageSettings(header);
+  const winners = Winners(view === 'winners' ? main : undefined);
 
   return {
+    header,
+    main,
+    view: view ? view : 'garage',
     viewSettings,
     garage,
+    garageViewTitle: 'Garage (4)',
+    garagePageTitle: 'Page #1',
+    garagePrevBtnStatus: false,
+    garageNextBtnStatus: false,
     garageSettings,
     winners,
-    view: view ? view : 'garage',
+    winnersViewTitle: 'Winners (1)',
+    winnersPageTitle: 'Page #1',
+    winnersPrevBtnStatus: false,
+    winnersNextBtnStatus: false,
     garagePage: 1,
     garagePerPage: 7,
     winnersPage: 1,

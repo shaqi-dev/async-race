@@ -93,14 +93,9 @@ const bindListeners = (): void => {
 };
 
 const hydrateGarageSettings = (): GarageSettingsObj => {
-  const { garageSettings }: { garageSettings: GarageSettingsObj } = store;
-
   bindListeners();
 
-  garageSettings.updateForm.disable();
-  garageSettings.winnerMessage.style.display = 'none';
-
-  return garageSettings;
+  return store.garageSettings;
 };
 
 export default hydrateGarageSettings;

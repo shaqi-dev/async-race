@@ -2,11 +2,9 @@ import { getCar, GetCarReturn, getWinners, GetWinnersReturn } from '../../../ser
 import { store } from '../../../App';
 import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
-import type { Car, ORDER, SORT, Winner } from '../../../interfaces/shared';
+import type { Car, Winner } from '../../../interfaces/shared';
 import type { Parent } from '../../../utils/render';
 import s from './WinnersTable.module.scss';
-import { WinnersObj } from '../Winners';
-import { ViewSettingsObj } from '../../ViewSettings';
 import getPaginatorButtonsStatus from '../../../utils/getPaginatorButtonsStatus';
 
 export interface WinnersTableObj {
@@ -53,15 +51,8 @@ const update = async (): Promise<void> => {
     winnersPage,
     winnersPerPage,
     viewSettings,
-  }: {
-    winners: WinnersObj;
-    winnersSort: SORT;
-    winnersOrder: ORDER;
-    winnersPage: number;
-    winnersPerPage: number;
-    viewSettings: ViewSettingsObj;
   } = store;
-  
+
   const [data, error]: Awaited<GetWinnersReturn> = await getWinners(
     winnersSort,
     winnersOrder,
@@ -71,15 +62,24 @@ const update = async (): Promise<void> => {
   if (error) {
     console.error(error);
   } else {
-    viewSettings.winnersTitle.innerText = `Winners (${data.count})`;
-    viewSettings.winnersPage.innerText = `Page #${winnersPage}`;
+    store.winnersViewTitle = `Winners (${data.count})`;
+    store.winnersPageTitle = `Page #${winnersPage}`;
+
     winners.table.body.innerHTML = '';
     data.winners.map((winner, i) => renderWinner(winner, i + 1, winners.table.body));
 
-    const [prev, next]: [boolean, boolean] = getPaginatorButtonsStatus(data.count, winnersPage, winnersPerPage);
+    const [prev, next]: [boolean, boolean] = getPaginatorButtonsStatus(
+      data.count,
+      winnersPage,
+      winnersPerPage,
+    );
 
-    viewSettings.winnersPrev.disabled = prev;
-    viewSettings.winnersNext.disabled = next;
+    store.winnersPrevBtnStatus = prev;
+    store.winnersNextBtnStatus = next;
+  }
+
+  if (viewSettings.update) {
+    viewSettings.update();
   }
 };
 

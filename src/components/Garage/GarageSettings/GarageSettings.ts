@@ -74,6 +74,10 @@ const GarageSettings = (parent: Parent): GarageSettingsObj => {
 
   logo.href = '/';
 
+  updateForm.disable();
+
+  winnerMessage.style.display = 'none';
+
   return {
     container,
     createForm,
