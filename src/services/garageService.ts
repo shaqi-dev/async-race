@@ -1,7 +1,7 @@
-import { Car, CarSettings } from "../interfaces/shared/car";
-import { GarageData } from "../interfaces/shared/garage";
-import API_BASE from "./apiBase";
-import { unexpectedStatus, notFound } from "./errors";
+import { Car, CarSettings } from '../interfaces/shared/car';
+import { GarageData } from '../interfaces/shared/garage';
+import API_BASE from './apiBase';
+import { unexpectedStatus, notFound } from './errors';
 
 const API_GARAGE = `${API_BASE}/garage`;
 

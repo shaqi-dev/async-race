@@ -1,18 +1,7 @@
 import Button from '../Button';
 import render from '../../utils/render';
 import s from './ViewSettings.module.scss';
-
-export interface ViewSettingsObj {
-  container: HTMLDivElement;
-  garageBtn: HTMLButtonElement;
-  winnersBtn: HTMLButtonElement;
-  title: HTMLParagraphElement;
-  page: HTMLParagraphElement;
-  pagination: HTMLDivElement;
-  prev: HTMLButtonElement;
-  next: HTMLButtonElement;
-  update: (() => void) | undefined;
-}
+import { ViewSettingsObj } from '../../interfaces/ViewSettings';
 
 const ViewSettings = (parent: string | HTMLElement): ViewSettingsObj => {
   const container = render<HTMLDivElement>('div', s.root, parent);

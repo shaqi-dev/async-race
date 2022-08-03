@@ -1,11 +1,7 @@
+import { WinnersObj, WinnersTableObj } from '../../interfaces/Winners';
 import render, { Parent } from '../../utils/render';
-import WinnersTable, { WinnersTableObj } from './WinnersTable';
 import s from './Winners.module.scss';
-
-export interface WinnersObj {
-  container: HTMLDivElement;
-  table: WinnersTableObj;
-}
+import WinnersTable from './WinnersTable';
 
 const Winners = (parent: Parent | undefined): WinnersObj => {
   const container = render<HTMLDivElement>('div', s.root, parent);

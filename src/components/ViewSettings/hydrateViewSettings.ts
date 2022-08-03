@@ -1,7 +1,7 @@
 import { store } from '../../App';
-import { GarageObj } from '../Garage';
-import { WinnersObj } from '../Winners';
-import type { ViewSettingsObj } from './ViewSettings';
+import { GarageObj } from '../../interfaces/Garage';
+import { ViewSettingsObj } from '../../interfaces/ViewSettings';
+import { WinnersObj } from '../../interfaces/Winners';
 
 const update = (): void => {
   const { view, viewSettings }: { view: 'garage' | 'winners'; viewSettings: ViewSettingsObj } =

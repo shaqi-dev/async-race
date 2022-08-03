@@ -1,6 +1,4 @@
 import { store } from '../../../App';
-import { GarageSettingsObj } from './GarageSettings';
-import { GarageSlotObj } from '../GarageSlot';
 import {
   createWinner,
   getWinner,
@@ -8,6 +6,7 @@ import {
   updateWinner,
 } from '../../../services/winnersService';
 import { GetCarReturn, getCar } from '../../../services/garageService';
+import { GarageSlotObj, GarageSettingsObj } from '../../../interfaces/Garage';
 
 const handleSetWinner = async (id: number, time: number): Promise<void> => {
   const [data, error]: Awaited<GetWinnerReturn> = await getWinner(id);

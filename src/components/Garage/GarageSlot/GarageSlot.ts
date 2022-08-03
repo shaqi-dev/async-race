@@ -1,23 +1,9 @@
 import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
-import { GarageObj } from '../Garage';
 import s from './GarageSlot.module.scss';
 import { Car } from '../../../interfaces/shared/car';
-
-export interface GarageSlotObj {
-  container: HTMLDivElement;
-  carName: HTMLSpanElement;
-  carImage: HTMLDivElement;
-  selectBtn: HTMLButtonElement;
-  removeBtn: HTMLButtonElement;
-  startBtn: HTMLButtonElement;
-  stopBtn: HTMLButtonElement;
-  id: number;
-  start: (() => Promise<[number, number] | [number, null]>) | undefined;
-  stop: (() => Promise<void>) | undefined;
-  animation: Animation | undefined;
-}
+import { GarageObj, GarageSlotObj } from '../../../interfaces/Garage';
 
 const GarageSlot = (car: Car, garage: GarageObj): GarageSlotObj => {
   const { id, name } = car;

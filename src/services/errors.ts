@@ -8,6 +8,6 @@ export const badRequest = (fnName: string): Error =>
 
 export const tooManyRequests = (fnName: string): Error =>
   new Error(`Cannot ${fnName}, get: TOO_MANY_REQUESTS`);
-  
+
 export const internalError = (fnName: string): Error =>
   new Error(`Cannot ${fnName}, get: INTERNAL_SERVER_ERROR`);

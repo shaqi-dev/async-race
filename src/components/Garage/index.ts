@@ -1,6 +1,6 @@
-import Garage, { GarageObj } from './Garage';
+import Garage from './Garage';
 import hydrateGarage from './hydrateGarage';
 
 export default Garage;
 
-export { GarageObj, hydrateGarage };
+export { hydrateGarage };

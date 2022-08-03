@@ -1,5 +1,3 @@
-import WinnersTable, { WinnersTableObj } from './WinnersTable';
+import WinnersTable from './WinnersTable';
 
 export default WinnersTable;
-
-export { WinnersTableObj };

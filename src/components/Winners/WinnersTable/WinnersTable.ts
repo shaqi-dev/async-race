@@ -8,15 +8,7 @@ import { GetCarReturn, getCar } from '../../../services/garageService';
 import { GetWinnersReturn, getWinners } from '../../../services/winnersService';
 import { Car } from '../../../interfaces/shared/car';
 import { Winner } from '../../../interfaces/shared/winners';
-
-export interface WinnersTableObj {
-  container: HTMLTableElement;
-  head: HTMLTableSectionElement;
-  body: HTMLTableSectionElement;
-  wins: HTMLElement;
-  time: HTMLElement;
-  update: () => Promise<void>;
-}
+import { WinnersTableObj } from '../../../interfaces/Winners';
 
 const renderWinner = async (
   winner: Winner,

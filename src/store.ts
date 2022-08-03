@@ -1,11 +1,11 @@
 import ViewSettings from './components/ViewSettings';
 import Winners from './components/Winners';
 import Garage from './components/Garage';
-import GarageSettings, { GarageSettingsObj } from './components/Garage/GarageSettings';
-import type { ViewSettingsObj } from './components/ViewSettings';
-import type { GarageObj } from './components/Garage';
-import type { WinnersObj } from './components/Winners';
-import { SORT, ORDER } from './interfaces/shared/winnersSorting';
+import { SORT, ORDER } from './interfaces/shared/winnersFilters';
+import GarageSettings from './components/Garage/GarageSettings';
+import { GarageObj, GarageSettingsObj } from './interfaces/Garage';
+import { ViewSettingsObj } from './interfaces/ViewSettings';
+import { WinnersObj } from './interfaces/Winners';
 
 export interface Store {
   header: HTMLElement;

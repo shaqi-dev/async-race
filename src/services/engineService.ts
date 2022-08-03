@@ -1,10 +1,10 @@
-import { CarEngine } from "../interfaces/shared/engine";
-import API_BASE from "./apiBase";
-import { badRequest, notFound, unexpectedStatus, tooManyRequests, internalError } from "./errors";
+import { CarEngine } from '../interfaces/shared/engine';
+import API_BASE from './apiBase';
+import { badRequest, notFound, unexpectedStatus, tooManyRequests, internalError } from './errors';
 
 const API_ENGINE = `${API_BASE}/engine`;
 
-export type SetCarEngineReturn = Promise<[CarEngine, null] | [null, Error]>
+export type SetCarEngineReturn = Promise<[CarEngine, null] | [null, Error]>;
 
 export const setCarEngine = async (
   id: number,

@@ -2,64 +2,8 @@ import render from '../../../utils/render';
 import Button from '../../Button';
 import type { Parent } from '../../../utils/render';
 import s from './GarageSettings.module.scss';
-
-export interface GarageSettingsFormObj {
-  container: HTMLFormElement;
-  textInput: HTMLInputElement;
-  colorInput: HTMLInputElement;
-  submitBtn: HTMLButtonElement;
-  disable: () => void;
-  enable: () => void;
-}
-
-export interface GarageSettingsObj {
-  container: HTMLDivElement;
-  createForm: GarageSettingsFormObj;
-  updateForm: GarageSettingsFormObj;
-  raceBtn: HTMLButtonElement;
-  resetBtn: HTMLButtonElement;
-  generateCarsBtn: HTMLButtonElement;
-  winnerMessage: HTMLSpanElement;
-}
-
-const GarageSettingsForm = (
-  parent: Parent,
-  formId: string,
-  buttonLabel: string,
-): GarageSettingsFormObj => {
-  const container = render<HTMLFormElement>('form', s.form, parent);
-  const textInput = render<HTMLInputElement>('input', s['text-input'], container);
-  const colorInput = render<HTMLInputElement>('input', s['color-input'], container);
-  const submitBtn = Button({ label: buttonLabel, type: 'submit' }, container);
-
-  container.id = formId;
-  textInput.type = 'text';
-  colorInput.type = 'color';
-  colorInput.defaultValue = '#000000';
-
-  const disable = (): void => {
-    container.reset();
-    textInput.disabled = true;
-    colorInput.disabled = true;
-    submitBtn.disabled = true;
-  };
-
-  const enable = (): void => {
-    container.reset();
-    textInput.disabled = false;
-    colorInput.disabled = false;
-    submitBtn.disabled = false;
-  };
-
-  return {
-    container,
-    textInput,
-    colorInput,
-    submitBtn,
-    disable,
-    enable,
-  };
-};
+import GarageSettingsForm from './GarageSettingsForm';
+import { GarageSettingsObj } from '../../../interfaces/Garage';
 
 const GarageSettings = (parent: Parent): GarageSettingsObj => {
   const container = render<HTMLDivElement>('div', s.root, parent);

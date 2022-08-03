@@ -1,0 +1,41 @@
+@use '../../../../scss/variables' as *;
+
+.form {
+  height: 44px;
+  display: flex;
+}
+
+.text-input {
+  width: 223px;
+  height: 44px;
+  padding: 10px 15px;
+  background-color: $color-input-bg-dark;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.6rem;
+
+  &:focus {
+    outline: 1px $color-border-dark--focus solid;
+    background-color: $color-input-bg-dark--focus;
+  }
+
+  &:disabled {
+    background-color: $color-input-bg-dark--disabled;
+    pointer-events: none;
+  }
+}
+
+.color-input {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  width: 42px;
+  height: 42px;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    pointer-events: none;
+  }
+}

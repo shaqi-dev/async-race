@@ -1,7 +1,7 @@
-import { WinnersData, Winner } from "../interfaces/shared/winners";
-import { SORT, ORDER } from "../interfaces/shared/winnersSorting";
-import API_BASE from "./apiBase";
-import { unexpectedStatus, notFound, internalError } from "./errors";
+import { SORT, ORDER } from '../interfaces/shared/winnersFilters';
+import { WinnersData, Winner } from '../interfaces/shared/winners';
+import API_BASE from './apiBase';
+import { unexpectedStatus, notFound, internalError } from './errors';
 
 const API_WINNERS = `${API_BASE}/winners`;
 

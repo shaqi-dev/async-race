@@ -1,4 +1,5 @@
 import { store } from '../../../App';
+import { GarageSettingsObj, GarageSlotObj } from '../../../interfaces/Garage';
 import {
   SetCarEngineToDriveReturn,
   setCarEngineToDrive,
@@ -8,8 +9,6 @@ import {
 import { deleteCar, GetCarReturn, getCar } from '../../../services/garageService';
 import { deleteWinner } from '../../../services/winnersService';
 import animateCar from '../../../utils/animateCar';
-import { GarageSettingsObj } from '../GarageSettings';
-import { GarageSlotObj } from './GarageSlot';
 
 const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();

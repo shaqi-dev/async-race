@@ -1,6 +1,6 @@
 import { store } from '../../App';
-import { ORDER, SORT } from '../../interfaces/shared/winnersSorting';
-import type { WinnersObj } from './Winners';
+import { ORDER, SORT } from '../../interfaces/shared/winnersFilters';
+import { WinnersObj } from '../../interfaces/Winners';
 
 const handleChangeOrder = (): void => {
   if (store.winnersOrder === ORDER.ASC) {

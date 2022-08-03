@@ -1,4 +1,3 @@
-import initGarageSlot, { GarageSlotObj } from './GarageSlot';
+import initGarageSlot from './GarageSlot';
 
 export default initGarageSlot;
-export { GarageSlotObj };
