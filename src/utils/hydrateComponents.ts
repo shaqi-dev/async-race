@@ -3,11 +3,11 @@ import { hydrateWinners } from '../components/Winners';
 import { hydrateGarage } from '../components/Garage/';
 import { hydrateGarageSettings } from '../components/Garage/GarageSettings';
 
-const hydrateComponents = (): void => {
+const hydrateComponents = async (): Promise<void> => {
   hydrateViewSettings();
-  hydrateGarage();
+  await hydrateGarage();
   hydrateGarageSettings();
-  hydrateWinners();
+  await hydrateWinners();
 }
 
 export default hydrateComponents;

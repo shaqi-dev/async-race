@@ -3,7 +3,7 @@ import Button from '../../Button';
 import type { Parent } from '../../../utils/render';
 import s from './GarageSettings.module.scss';
 
-interface GarageSettingsFormObj {
+export interface GarageSettingsFormObj {
   container: HTMLFormElement;
   textInput: HTMLInputElement;
   colorInput: HTMLInputElement;

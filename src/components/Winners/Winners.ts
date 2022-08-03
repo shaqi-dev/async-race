@@ -13,7 +13,7 @@ export interface WinnersObj {
 
 const Winners = (parent: Parent): WinnersObj => {
   const container = render<HTMLDivElement>('div', s.root, parent);
-  const table = WinnersTable(container);
+  const table: WinnersTableObj = WinnersTable(container);
 
   const hide = (): void => {
     container.style.display = 'none';

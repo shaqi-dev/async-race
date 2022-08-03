@@ -1,9 +1,17 @@
-import { getWinner, createWinner, updateWinner, getCar } from '../../../services/api';
+import {
+  getWinner,
+  GetWinnerReturn,
+  createWinner,
+  updateWinner,
+  getCar,
+  GetCarReturn,
+} from '../../../services/api';
 import { store } from '../../../App';
 import { GarageSettingsObj } from './GarageSettings';
+import { GarageSlotObj } from '../GarageSlot';
 
 const handleSetWinner = async (id: number, time: number): Promise<void> => {
-  const [data, error] = await getWinner(id);
+  const [data, error]: Awaited<GetWinnerReturn> = await getWinner(id);
 
   if (error) {
     await createWinner({
@@ -12,77 +20,83 @@ const handleSetWinner = async (id: number, time: number): Promise<void> => {
       time,
     });
   } else {
+    const updatedWins: number = data.wins + 1;
+    const shortestTime: number = data.time < time ? data.time : time;
+
     await updateWinner({
       id,
-      wins: data.wins + 1,
-      time: data.time < time ? data.time : time,
+      wins: updatedWins,
+      time: shortestTime,
     });
   }
 
-  store.winners?.table.update();
+  await store.winners.table.update();
 };
 
 const handleRace = async (): Promise<void> => {
-  const { slots } = store.garage;
+  const { slots }: { slots: GarageSlotObj[] | undefined } = store.garage;
 
   if (slots) {
-    const promise = slots.map((slot) => {
-      if (slot.start) return slot.start();
-    });
-    const res = await Promise.any(promise);
+    const promise: (Promise<[number, number] | [number, null]> | undefined)[] = slots.map(
+      (slot) => {
+        if (slot.start) return slot.start();
+      },
+    );
 
-    if (res) {
-      const [id, time] = res;
+    const res: [number, number] | [number, null] | undefined = await Promise.any(promise);
 
-      if (time) {
-        const [data, error] = await getCar(id);
+    if (res && res[0] && res[1]) {
+      const [id, time]: [number, number] = res;
+      const [data, error]: Awaited<GetCarReturn> = await getCar(id);
 
-        if (error) {
-          console.error(error);
-        } else {
-          const seconds = +(time / 1000).toFixed(2);
-          const { garageSettings } = store;
+      if (error) {
+        console.error(error);
+      } else {
+        const seconds: number = +(time / 1000).toFixed(2);
+        const { winnerMessage }: { winnerMessage: HTMLSpanElement } = store.garageSettings;
 
-          await handleSetWinner(id, seconds);
+        await handleSetWinner(id, seconds);
 
-          garageSettings.winnerMessage.innerText = `Winner: ${data.name}, time: ${seconds}s.`;
-          garageSettings.winnerMessage.style.display = 'block';
+        winnerMessage.innerText = `Winner: ${data.name}, time: ${seconds}s.`;
+        winnerMessage.style.display = 'block';
 
-          setTimeout(() => {
-            garageSettings.winnerMessage.style.display = 'none';
-          }, 5000);
-        }
+        const messageVisibleTime = 5000;
+
+        setTimeout(() => {
+          winnerMessage.style.display = 'none';
+        }, messageVisibleTime);
       }
     }
   }
 };
 
 const handleReset = async (): Promise<void> => {
-  const { garage } = store;
+  const { slots }: { slots: GarageSlotObj[] | undefined } = store.garage;
 
-  if (garage) {
-    const { slots } = garage;
+  if (slots) {
+    const promise: (Promise<void> | undefined)[] = slots.map((slot) => {
+      if (slot.stop) {
+        return slot.stop();
+      }
+    });
 
-    if (slots) {
-      const promise = slots.map((slot) => {
-        if (slot.stop) return slot.stop();
-      });
-
-      await Promise.all(promise);
-    }
+    await Promise.all(promise);
   }
 };
 
 const bindListeners = (): void => {
-  const { raceBtn, resetBtn } = store.garageSettings;
+  const { raceBtn, resetBtn }: { raceBtn: HTMLButtonElement; resetBtn: HTMLButtonElement } =
+    store.garageSettings;
 
   raceBtn.addEventListener('click', handleRace);
   resetBtn.addEventListener('click', handleReset);
 };
 
 const hydrateGarageSettings = (): GarageSettingsObj => {
-  const { garageSettings } = store;
+  const { garageSettings }: { garageSettings: GarageSettingsObj } = store;
+
   bindListeners();
+
   garageSettings.updateForm.disable();
   garageSettings.winnerMessage.style.display = 'none';
 

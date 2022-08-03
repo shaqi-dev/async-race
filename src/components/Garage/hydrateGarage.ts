@@ -1,14 +1,28 @@
 import { CarSettings } from '../../interfaces/shared';
-import { createCar, getCars, updateCar } from '../../services/api';
+import { createCar, getCars, GetCarsReturn, updateCar } from '../../services/api';
 import { store } from '../../App';
 import getRandomCars from '../../utils/getRandomCars';
 import { GarageObj } from './Garage';
 import GarageSlot from './GarageSlot';
 import hydrateGarageSlots from './GarageSlot/hydrateGarageSlots';
+import { ViewSettingsObj } from '../ViewSettings';
+import { GarageSettingsFormObj } from './GarageSettings';
+import getPaginatorButtonsStatus from '../../utils/getPaginatorButtonsStatus';
 
 const update = async (): Promise<void> => {
-  const { garage, viewSettings, garagePage } = store;
-  const [data, error] = await getCars(garagePage);
+  const {
+    garage,
+    viewSettings,
+    garagePage,
+    garagePerPage,
+  }: {
+    garage: GarageObj;
+    viewSettings: ViewSettingsObj;
+    garagePage: number;
+    garagePerPage: number;
+  } = store;
+
+  const [data, error]: Awaited<GetCarsReturn> = await getCars(garagePage);
 
   if (error) {
     console.error(error.message);
@@ -20,25 +34,34 @@ const update = async (): Promise<void> => {
     garage.slots = data.cars.map((car) => GarageSlot(car, garage));
     hydrateGarageSlots(garage.slots);
 
-    if (data.count / (garagePage * 7) <= 1) {
-      viewSettings.garageNext.disabled = true;
-    } else {
-      viewSettings.garageNext.disabled = false;
-    }
+    const [prev, next] = getPaginatorButtonsStatus(data.count, garagePage, garagePerPage);
+
+    viewSettings.garagePrev.disabled = prev;
+    viewSettings.garageNext.disabled = next;
   }
 };
 
 const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const { container, textInput, colorInput } = store.garageSettings.createForm;
+  const {
+    container,
+    textInput,
+    colorInput,
+  }: { container: HTMLFormElement; textInput: HTMLInputElement; colorInput: HTMLInputElement } =
+    store.garageSettings.createForm;
 
-  if (textInput.value) {
-    const error = await createCar({ name: textInput.value, color: colorInput.value });
+  const isTextInputFilled: string = textInput.value;
+
+  if (isTextInputFilled) {
+    const error: void | Error = await createCar({ name: textInput.value, color: colorInput.value });
 
     if (error) {
       console.error(error);
     } else {
-      if (store.garage.update) store.garage.update();
+      if (store.garage.update) {
+        await store.garage.update();
+      }
+
       container.reset();
     }
   }
@@ -46,82 +69,86 @@ const handleCreateCar = async (e: SubmitEvent): Promise<void> => {
 
 const handleUpdateCar = async (e: SubmitEvent): Promise<void> => {
   e.preventDefault();
-  const { container, textInput, colorInput, disable } = store.garageSettings.updateForm;
-  const id = container.dataset.carId;
+  const {
+    container,
+    textInput,
+    colorInput,
+    disable,
+  }: {
+    container: HTMLFormElement;
+    textInput: HTMLInputElement;
+    colorInput: HTMLInputElement;
+    disable: () => void;
+  } = store.garageSettings.updateForm;
 
-  if (id && textInput.value) {
-    await updateCar(+id, {
+  const currentCarId: string | undefined = container.dataset.carId;
+  const isTextInputFilled: string = textInput.value;
+
+  if (currentCarId && isTextInputFilled) {
+    await updateCar(+currentCarId, {
       name: textInput.value,
       color: colorInput.value,
     });
 
-    if (store.garage.update) store.garage.update();
-    await store.winners?.table.update();
+    if (store.garage.update) {
+      await store.garage.update();
+    }
+
+    await store.winners.table.update();
 
     disable();
   }
 };
 
-const handleGenerateCars = async (garage: GarageObj): Promise<void> => {
+const handleGenerateCars = async (): Promise<void> => {
   const cars: CarSettings[] = getRandomCars();
 
-  const promise = cars.map((car) => createCar(car));
+  const promise: Promise<void | Error>[] = cars.map((car) => createCar(car));
   await Promise.all(promise);
 
-  if (garage.update) garage.update();
-};
-
-const handleClickPrev = (): void => {
-  store.garagePage = store.garagePage - 1;
-
-  const { garage, viewSettings } = store;
-
-  if (garage.update) {
-    if (store.garagePage === 1) {
-      viewSettings.garagePrev.disabled = true;
-    }
-
-    garage.update();
+  if (store.garage.update) {
+    await store.garage.update();
   }
 };
 
-const handleClickNext = (): void => {
-  store.garagePage = store.garagePage + 1;
+const handleChangePage = async (value: number): Promise<void> => {
+  store.garagePage = store.garagePage + value;
 
-  const { garage, viewSettings } = store;
-
-  if (garage.update) {
-    viewSettings.garagePrev.disabled = false;
-
-    garage.update();
+  if (store.garage.update) {
+    await store.garage.update();
   }
 };
 
 const bindListeners = (): void => {
-  const { createForm, updateForm, generateCarsBtn } = store.garageSettings;
-  const { garage, viewSettings } = store;
+  const {
+    createForm,
+    updateForm,
+    generateCarsBtn,
+  }: {
+    createForm: GarageSettingsFormObj;
+    updateForm: GarageSettingsFormObj;
+    generateCarsBtn: HTMLButtonElement;
+  } = store.garageSettings;
+
+  const { viewSettings }: { viewSettings: ViewSettingsObj } = store;
 
   createForm.container.addEventListener('submit', (e) => handleCreateCar(e));
   updateForm.container.addEventListener('submit', (e) => handleUpdateCar(e));
-  generateCarsBtn.addEventListener('click', () => handleGenerateCars(garage));
-  viewSettings.garagePrev.addEventListener('click', handleClickPrev);
-  viewSettings.garageNext.addEventListener('click', handleClickNext);
+  generateCarsBtn.addEventListener('click', () => handleGenerateCars());
+  viewSettings.garagePrev.addEventListener('click', () => handleChangePage(-1));
+  viewSettings.garageNext.addEventListener('click', () => handleChangePage(1));
 };
 
-const hydrateGarage = (): GarageObj => {
-  const { garage, viewSettings } = store;
-  
+const hydrateGarage = async (): Promise<GarageObj> => {
+  const { garage }: { garage: GarageObj } = store;
+
   bindListeners();
-  
+
   garage.update = update;
-  garage.update();
+  await garage.update();
 
   if (store.view !== 'garage') {
     garage.hide();
-  }
-
-  if (store.garagePage === 1) {
-    viewSettings.garagePrev.disabled = true;
   }
 
   return garage;

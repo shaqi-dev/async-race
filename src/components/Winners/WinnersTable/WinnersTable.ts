@@ -1,10 +1,13 @@
-import { getCar, getWinners } from '../../../services/api';
+import { getCar, GetCarReturn, getWinners, GetWinnersReturn } from '../../../services/api';
 import { store } from '../../../App';
 import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
-import type { Winner } from '../../../interfaces/shared';
+import type { Car, ORDER, SORT, Winner } from '../../../interfaces/shared';
 import type { Parent } from '../../../utils/render';
 import s from './WinnersTable.module.scss';
+import { WinnersObj } from '../Winners';
+import { ViewSettingsObj } from '../../ViewSettings';
+import getPaginatorButtonsStatus from '../../../utils/getPaginatorButtonsStatus';
 
 export interface WinnersTableObj {
   container: HTMLTableElement;
@@ -21,14 +24,14 @@ const renderWinner = async (
   parent: Parent,
 ): Promise<HTMLTableRowElement> => {
   const { id, wins, time } = winner;
-  const [data, error] = await getCar(id);
+  const [data, error]: Awaited<GetCarReturn> = await getCar(id);
 
   const container = render<HTMLTableRowElement>('tr', s.winner, parent);
 
   if (error) {
     console.error(error);
   } else {
-    const { name, color } = data;
+    const { name, color }: Car = data;
 
     render('td', null, container, `${position}`);
     const car = render('td', null, container);
@@ -43,8 +46,27 @@ const renderWinner = async (
 };
 
 const update = async (): Promise<void> => {
-  const { winners, winnersSort, winnersOrder, winnersPage, viewSettings } = store;
-  const [data, error] = await getWinners(winnersSort, winnersOrder, winnersPage);
+  const {
+    winners,
+    winnersSort,
+    winnersOrder,
+    winnersPage,
+    winnersPerPage,
+    viewSettings,
+  }: {
+    winners: WinnersObj;
+    winnersSort: SORT;
+    winnersOrder: ORDER;
+    winnersPage: number;
+    winnersPerPage: number;
+    viewSettings: ViewSettingsObj;
+  } = store;
+  
+  const [data, error]: Awaited<GetWinnersReturn> = await getWinners(
+    winnersSort,
+    winnersOrder,
+    winnersPage,
+  );
 
   if (error) {
     console.error(error);
@@ -54,11 +76,10 @@ const update = async (): Promise<void> => {
     winners.table.body.innerHTML = '';
     data.winners.map((winner, i) => renderWinner(winner, i + 1, winners.table.body));
 
-    if (data.count / (winnersPage * 10) <= 1) {
-      viewSettings.winnersNext.disabled = true;
-    } else {
-      viewSettings.winnersNext.disabled = false;
-    }
+    const [prev, next]: [boolean, boolean] = getPaginatorButtonsStatus(data.count, winnersPage, winnersPerPage);
+
+    viewSettings.winnersPrev.disabled = prev;
+    viewSettings.winnersNext.disabled = next;
   }
 };
 

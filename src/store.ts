@@ -15,7 +15,9 @@ export interface Store {
   winners: WinnersObj;
   view: 'garage' | 'winners';
   garagePage: number;
+  garagePerPage: number;
   winnersPage: number;
+  winnersPerPage: number;
   winnersSort: SORT;
   winnersOrder: ORDER;
 }
@@ -40,7 +42,9 @@ const createStore = (
     winners,
     view: view ? view : 'garage',
     garagePage: 1,
+    garagePerPage: 7,
     winnersPage: 1,
+    winnersPerPage: 10,
     winnersSort: SORT.ID,
     winnersOrder: ORDER.ASC,
   };

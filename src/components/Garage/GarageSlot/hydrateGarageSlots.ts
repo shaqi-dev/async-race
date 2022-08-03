@@ -5,20 +5,28 @@ import {
   getCar,
   setCarEngineToDrive,
   setCarEngine,
+  GetCarReturn,
+  SetCarEngineToDriveReturn,
+  SetCarEngineReturn,
 } from '../../../services/api';
 import animateCar from '../../../utils/animateCar';
+import { GarageSettingsObj } from '../GarageSettings';
 import { GarageSlotObj } from './GarageSlot';
 
 const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
 
-  const error = await deleteCar(id);
+  const error: void | Error = await deleteCar(id);
 
   if (error) {
     console.error(error);
   } else {
     await deleteWinner(id);
-    if (store.garage.update) store.garage?.update();
+
+    if (store.garage.update) {
+      await store.garage?.update();
+    }
+
     await store.winners?.table.update();
   }
 };
@@ -26,17 +34,18 @@ const handleDeleteCar = async (e: MouseEvent, id: number): Promise<void> => {
 const handleSelectCar = async (e: MouseEvent, id: number): Promise<void> => {
   e.preventDefault();
 
-  const { garageSettings } = store;
+  const { garageSettings }: { garageSettings: GarageSettingsObj } = store;
   const { container, textInput, colorInput, enable } = garageSettings.updateForm;
-  const [car, error] = await getCar(id);
+  const [car, error]: Awaited<GetCarReturn> = await getCar(id);
 
   if (error) {
     console.error(error);
   } else {
-    enable();
     textInput.value = car.name;
     colorInput.value = car.color;
     container.dataset.carId = `${id}`;
+
+    enable();
   }
 };
 
@@ -44,18 +53,29 @@ const handleStartDriving = async (
   id: number,
   time: number,
 ): Promise<{ success: boolean } | Error> => {
-  if (store.garage.slots) {
-    const garageSlot: GarageSlotObj = store.garage.slots.filter((slot) => slot.id === id)[0];
-    const { startBtn, stopBtn, carImage } = garageSlot;
+  const { slots }: { slots: GarageSlotObj[] | undefined } = store.garage;
 
-    garageSlot.animation = animateCar(time, carImage);
-    const [data, error] = await setCarEngineToDrive(id);
+  if (slots) {
+    const currentSlot: GarageSlotObj = slots.filter((slot) => slot.id === id)[0];
+    const {
+      startBtn,
+      stopBtn,
+      carImage,
+    }: {
+      startBtn: HTMLButtonElement;
+      stopBtn: HTMLButtonElement;
+      carImage: HTMLDivElement;
+    } = slots.filter((slot) => slot.id === id)[0];
+
+    currentSlot.animation = animateCar(time, carImage);
+
+    const [data, error]: Awaited<SetCarEngineToDriveReturn> = await setCarEngineToDrive(id);
 
     stopBtn.disabled = true;
     startBtn.disabled = false;
 
     if (error) {
-      garageSlot.animation.pause();
+      currentSlot.animation.pause();
       console.error(error);
 
       return error;
@@ -68,16 +88,28 @@ const handleStartDriving = async (
 };
 
 const handleStartEngine = async (id: number): Promise<[number, number] | [number, null]> => {
-  if (store.garage.slots) {
-    const { startBtn, stopBtn, animation } = store.garage.slots.filter((slot) => slot.id === id)[0];
+  const { slots }: { slots: GarageSlotObj[] | undefined } = store.garage;
 
-    if (animation) animation.cancel();
+  if (slots) {
+    const {
+      startBtn,
+      stopBtn,
+      animation,
+    }: {
+      startBtn: HTMLButtonElement;
+      stopBtn: HTMLButtonElement;
+      animation: Animation | undefined;
+    } = slots.filter((slot) => slot.id === id)[0];
 
-    const [data, error] = await setCarEngine(id, 'started');
+    if (animation) {
+      animation.cancel();
+    }
+
+    const [data, error]: Awaited<SetCarEngineReturn> = await setCarEngine(id, 'started');
 
     if (error) {
       console.error(error);
-      return new Promise((_, reject) => reject([id, null]));
+      return Promise.reject([id, null]);
     } else {
       startBtn.disabled = true;
       stopBtn.disabled = false;
@@ -86,24 +118,37 @@ const handleStartEngine = async (id: number): Promise<[number, number] | [number
 
       const res = await handleStartDriving(id, time);
 
-      if (res instanceof Error) return new Promise((_, reject) => reject([id, null]));
-      return new Promise((resolve) => resolve([id, time]));
+      if (res instanceof Error) return Promise.reject([id, null]);
+      return Promise.resolve([id, time]);
     }
   }
 
-  return new Promise((_, reject) => reject([id, null]));
+  return Promise.reject([id, null]);
 };
 
 const handleStopEngine = async (id: number): Promise<void> => {
-  if (store.garage.slots) {
-    const { startBtn, stopBtn, animation } = store.garage.slots.filter((slot) => slot.id === id)[0];
+  const { slots }: { slots: GarageSlotObj[] | undefined } = store.garage;
 
-    const [, error] = await setCarEngine(id, 'stopped');
+  if (slots) {
+    const {
+      startBtn,
+      stopBtn,
+      animation,
+    }: {
+      startBtn: HTMLButtonElement;
+      stopBtn: HTMLButtonElement;
+      animation: Animation | undefined;
+    } = slots.filter((slot) => slot.id === id)[0];
+
+    const [, error]: Awaited<SetCarEngineReturn> = await setCarEngine(id, 'stopped');
 
     if (error) {
       console.error(error);
     } else {
-      animation?.cancel();
+      if (animation) {
+        animation.cancel();
+      }
+
       stopBtn.disabled = true;
       startBtn.disabled = false;
     }
@@ -111,7 +156,19 @@ const handleStopEngine = async (id: number): Promise<void> => {
 };
 
 const bindListeners = (garageSlot: GarageSlotObj): void => {
-  const { selectBtn, removeBtn, startBtn, stopBtn, id } = garageSlot;
+  const {
+    selectBtn,
+    removeBtn,
+    startBtn,
+    stopBtn,
+    id,
+  }: {
+    selectBtn: HTMLButtonElement;
+    removeBtn: HTMLButtonElement;
+    startBtn: HTMLButtonElement;
+    stopBtn: HTMLButtonElement;
+    id: number;
+  } = garageSlot;
 
   selectBtn.addEventListener('click', (e) => handleSelectCar(e, id));
   removeBtn.addEventListener('click', (e) => handleDeleteCar(e, id));

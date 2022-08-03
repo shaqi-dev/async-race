@@ -1,5 +1,6 @@
 import { store } from '../../App';
 import { ORDER, SORT } from '../../interfaces/shared';
+import { ViewSettingsObj } from '../ViewSettings';
 import type { WinnersObj } from './Winners';
 
 const handleChangeOrder = (): void => {
@@ -18,7 +19,7 @@ const handleClickWins = (): void => {
     handleChangeOrder();
   }
 
-  store.winners?.table.update();
+  store.winners.table.update();
 };
 
 const handleClickTime = (): void => {
@@ -29,47 +30,27 @@ const handleClickTime = (): void => {
     handleChangeOrder();
   }
 
-  store.winners?.table.update();
+  store.winners.table.update();
 };
 
-const handleClickPrev = (): void => {
-  store.winnersPage = store.winnersPage - 1;
+const handleChangePage = async (value: number): Promise<void> => {
+  store.winnersPage = store.winnersPage + value;
 
-  if (store.winnersPage === 1) {
-    const { winners, viewSettings } = store;
-    viewSettings.winnersPrev.disabled = true;
-    winners.table.update();
-  }
-};
-
-const handleClickNext = (): void => {
-  const { winners, viewSettings } = store;
-  store.winnersPage = store.winnersPage + 1;
-  viewSettings.winnersPrev.disabled = false;
-  winners.table.update();
+  await store.winners.table.update();
 };
 
 const bindListeners = (): void => {
-  const { winners, viewSettings } = store;
+  const { winners, viewSettings }: { winners: WinnersObj; viewSettings: ViewSettingsObj } = store;
   winners.table.wins.addEventListener('click', handleClickWins);
   winners.table.time.addEventListener('click', handleClickTime);
-  viewSettings.winnersPrev.addEventListener('click', handleClickPrev);
-  viewSettings.winnersNext.addEventListener('click', handleClickNext);
+  viewSettings.winnersPrev.addEventListener('click', () => handleChangePage(-1));
+  viewSettings.winnersNext.addEventListener('click', () => handleChangePage(+1));
 };
 
-const hydrateWinners = (): WinnersObj => {
+const hydrateWinners = async (): Promise<WinnersObj> => {
   bindListeners();
-  const { winners, viewSettings } = store;
-
-  winners.table.update();
-
-  if (store.view !== 'winners') {
-    winners.hide();
-  }
-
-  if (store.winnersPage === 1) {
-    viewSettings.winnersPrev.disabled = true;
-  }
+  
+  await store.winners.table.update();
 
   return store.winners;
 };

@@ -19,7 +19,7 @@ const App = async (): Promise<AppObj> => {
 
   store = createStore(header, main, header, main);
 
-  hydrateComponents();
+  await hydrateComponents();
   
   return {
     container,

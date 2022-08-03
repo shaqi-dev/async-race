@@ -1,62 +1,56 @@
 import { store } from '../../App';
+import { GarageObj } from '../Garage';
+import { WinnersObj } from '../Winners';
 import type { ViewSettingsObj } from './ViewSettings';
 
-const setGarageView = ():void => {
-  const { winners, garage, viewSettings } = store;
+const setView = (view: 'garage' | 'winners'): void => {
+  const {
+    winners,
+    garage,
+    viewSettings,
+  }: { winners: WinnersObj; garage: GarageObj; viewSettings: ViewSettingsObj } = store;
 
-  winners.container.style.display = 'none';
-  garage.container.style.display = 'flex';
-  viewSettings.garageTitle.style.display = 'block';
-  viewSettings.winnersTitle.style.display = 'none';
-  viewSettings.garagePage.style.display = 'block';
-  viewSettings.winnersPage.style.display = 'none';
-  viewSettings.garagePagination.style.display = 'block';
-  viewSettings.winnersPagination.style.display = 'none';
-}
+  winners.container.style.display = view === 'winners' ? 'flex' : 'none';
+  garage.container.style.display = view === 'winners' ? 'none' : 'flex';
+  viewSettings.garageTitle.style.display = view === 'winners' ? 'none' : 'block';
+  viewSettings.winnersTitle.style.display = view === 'winners' ? 'block' : 'none';
+  viewSettings.garagePage.style.display = view === 'winners' ? 'none' : 'block';
+  viewSettings.winnersPage.style.display = view === 'winners' ? 'block' : 'none';
+  viewSettings.garagePagination.style.display = view === 'winners' ? 'none' : 'block';
+  viewSettings.winnersPagination.style.display = view === 'winners' ? 'block' : 'none';
+};
 
-const setWinnersView = ():void => {
-  const { winners, garage, viewSettings } = store;
+const updateView = (): void => {
+  sessionStorage.setItem('view', store.view);
 
-  winners.container.style.display = 'flex';
-  garage.container.style.display = 'none';
-  viewSettings.garageTitle.style.display = 'none';
-  viewSettings.winnersTitle.style.display = 'block';
-  viewSettings.garagePage.style.display = 'none';
-  viewSettings.winnersPage.style.display = 'block';
-  viewSettings.garagePagination.style.display = 'none';
-  viewSettings.winnersPagination.style.display = 'block';
-}
+  setView(store.view);
+};
 
 const handleGarageView = (): void => {
   store.view = 'garage';
-  sessionStorage.setItem('view', 'garage');
 
-  setGarageView();
+  updateView();
 };
 
-const handleWinnersView = async (): Promise<void> => {
+const handleWinnersView = (): void => {
   store.view = 'winners';
-  sessionStorage.setItem('view', 'winners');
 
-  setWinnersView()
+  updateView();
 };
 
 const bindListeners = (): void => {
-  const { viewSettings } = store;
-  const { garageBtn, winnersBtn } = viewSettings;
+  const { viewSettings }: { viewSettings: ViewSettingsObj } = store;
+  const { garageBtn, winnersBtn }: { garageBtn: HTMLButtonElement; winnersBtn: HTMLButtonElement } =
+    viewSettings;
 
   garageBtn.addEventListener('click', handleGarageView);
   winnersBtn.addEventListener('click', handleWinnersView);
 };
 
-const initViewSettings = (): ViewSettingsObj => { 
+const initViewSettings = (): ViewSettingsObj => {
   bindListeners();
 
-  if (store.view === 'garage') {
-    setGarageView();
-  } else {
-    setWinnersView();
-  }
+  updateView();
 
   return store.viewSettings;
 };

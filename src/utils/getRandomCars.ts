@@ -1,6 +1,6 @@
 import { CarSettings } from '../interfaces/shared';
 
-const brands = [
+const brands: string[] = [
   'Aston Martin',
   'Audi',
   'Bentley',
@@ -47,7 +47,7 @@ const brands = [
   'Volvo',
 ];
 
-const models = [
+const models: string[] = [
   'Corolla',
   'Camry',
   'RAV4',
@@ -69,19 +69,21 @@ const models = [
   '7 Series',
   'X3',
   'M340i',
-  'M4 Competition'
+  'M4 Competition',
 ];
 
 const getRandomCarName = (): string => {
-  const brand = brands[Math.floor(Math.random() * brands.length)];
-  const model = models[Math.floor(Math.random() * models.length)];
+  const brand: string = brands[Math.floor(Math.random() * brands.length)];
+  const model: string = models[Math.floor(Math.random() * models.length)];
 
   return `${brand} ${model}`;
-}
+};
 
-const getRandomColor = (): string => `#${Math.floor(Math.random()*16777215).toString(16)}`;
+const getRandomColor = (): string => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
-const getRandomCars = (count = 100): CarSettings[] => 
-  Array(count).fill(null).map(() => ({ name: getRandomCarName(), color: getRandomColor()}));
+const getRandomCars = (count = 100): CarSettings[] =>
+  Array(count)
+    .fill(null)
+    .map(() => ({ name: getRandomCarName(), color: getRandomColor() }));
 
 export default getRandomCars;

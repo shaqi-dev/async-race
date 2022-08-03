@@ -10,7 +10,6 @@ import type {
 } from '../interfaces/shared';
 
 const API_BASE = 'http://localhost:3000';
-
 const API_GARAGE = `${API_BASE}/garage`;
 const API_ENGINE = `${API_BASE}/engine`;
 const API_WINNERS = `${API_BASE}/winners`;
@@ -24,14 +23,19 @@ const tooManyRequests = (fnName: string): Error =>
 const internalError = (fnName: string): Error =>
   new Error(`Cannot ${fnName}, get: INTERNAL_SERVER_ERROR`);
 
-export const getCars = async (page = 1, limit = 7): Promise<[GarageData, null] | [null, Error]> => {
+export type GetCarsReturn = Promise<[GarageData, null] | [null, Error]>;
+
+export const getCars = async (page = 1, limit = 7): GetCarsReturn => {
   try {
     const res = await fetch(`${API_GARAGE}?_limit=${limit}&_page=${page}`);
 
     if (res.status === 200) {
-      const data = {
-        cars: (await res.json()) as Car[],
-        count: Number(res.headers.get('X-Total-Count')) || 0,
+      const cars: Car[] = await res.json();
+      const count: number = Number(res.headers.get('X-Total-Count')) || 0;
+
+      const data: GarageData = {
+        cars,
+        count,
       };
 
       return [data, null];
@@ -43,7 +47,9 @@ export const getCars = async (page = 1, limit = 7): Promise<[GarageData, null] |
   }
 };
 
-export const getCar = async (id: number): Promise<[Car, null] | [null, Error]> => {
+export type GetCarReturn = Promise<[Car, null] | [null, Error]>;
+
+export const getCar = async (id: number): GetCarReturn => {
   try {
     const res = await fetch(`${API_GARAGE}/${id}`);
 
@@ -115,10 +121,12 @@ export const updateCar = async (id: number, car: CarSettings): Promise<void | Er
   }
 };
 
+export type SetCarEngineReturn = Promise<[CarEngine, null] | [null, Error]>
+
 export const setCarEngine = async (
   id: number,
   status: 'started' | 'stopped',
-): Promise<[CarEngine, null] | [null, Error]> => {
+): SetCarEngineReturn => {
   try {
     const res = await fetch(`${API_ENGINE}?id=${id}&status=${status}`, {
       method: 'PATCH',
@@ -140,9 +148,9 @@ export const setCarEngine = async (
   }
 };
 
-export const setCarEngineToDrive = async (
-  id: number,
-): Promise<[{ success: boolean }, null] | [null, Error]> => {
+export type SetCarEngineToDriveReturn = Promise<[{ success: boolean }, null] | [null, Error]>;
+
+export const setCarEngineToDrive = async (id: number): SetCarEngineToDriveReturn => {
   try {
     const res = await fetch(`${API_ENGINE}?id=${id}&status=drive`, {
       method: 'PATCH',
@@ -166,12 +174,14 @@ export const setCarEngineToDrive = async (
   }
 };
 
+export type GetWinnersReturn = Promise<[WinnersData, null] | [null, Error]>;
+
 export const getWinners = async (
   sort: SORT,
   order: ORDER,
   page = 1,
   limit = 10,
-): Promise<[WinnersData, null] | [null, Error]> => {
+): GetWinnersReturn => {
   try {
     const res = await fetch(
       `${API_WINNERS}?_limit=${limit}&_page=${page}&_sort=${sort}&_order=${order}`,
@@ -192,7 +202,9 @@ export const getWinners = async (
   }
 };
 
-export const getWinner = async (id: number): Promise<[Winner, null] | [null, Error]> => {
+export type GetWinnerReturn = Promise<[Winner, null] | [null, Error]>;
+
+export const getWinner = async (id: number): GetWinnerReturn => {
   try {
     const res = await fetch(`${API_WINNERS}/${id}`);
 
