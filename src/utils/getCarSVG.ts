@@ -19,8 +19,8 @@ const shadeColor = (color: string, percent: number): string => {
 };
 
 const getCarSVG = (color: string): string => {
-  const wheelColor = shadeColor(color, -75);
-  const diskColor = shadeColor(color, 50);
+  const wheelColor = shadeColor(color, -40);
+  const diskColor = shadeColor(color, 40);
 
   return `
   <svg version="1.2" baseProfile="tiny-ps" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 569" width="1280" height="569">

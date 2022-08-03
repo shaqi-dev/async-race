@@ -1,7 +1,7 @@
 @use '../../../scss/variables' as *;
 
 .root {
-  width: 665px;
+  width: 672px;
   text-align: center;
 }
 
@@ -14,7 +14,7 @@
   }
 }
 
-.winner {
+.winner { 
   td {
     padding: 10px 15px;
     border: 2px solid $color-button-primary-bg--hover;

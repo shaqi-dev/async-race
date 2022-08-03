@@ -11,6 +11,8 @@
 
 .header {
   height: 44px;
+  display: flex;
+  gap: 5px;
 }
 
 .title, .page {
@@ -19,4 +21,9 @@
   line-height: 4.4rem;
   font-size: 2.4rem;
   text-align: center;
+}
+
+.pagination {
+  display: flex;
+  gap: 5px;
 }

@@ -3,11 +3,14 @@
 .root {
   display: inline-block;
   min-width: 120px;
+  max-height: 44px;
   padding: 10px 15px;
   font-size: 1.6rem;
   background: $color-button-primary-bg;
   color: $color-button-primary-text;
-  border-radius: 8px;
+  border-radius: 6px;
+  border: none;
+  border-bottom: $color-button-primary-border 4px solid;
   cursor: pointer;
   transition: $transition-main;
 
@@ -17,6 +20,8 @@
 
   &:disabled {
     background: $color-button-primary--disabled;
+    color: $color-button-primary-text--disabled;
+    border: none;
     pointer-events: none;
   }
 }
