@@ -1,4 +1,5 @@
-import { Car, CarSettings, GarageData } from "../interfaces/shared";
+import { Car, CarSettings } from "../interfaces/shared/car";
+import { GarageData } from "../interfaces/shared/garage";
 import API_BASE from "./apiBase";
 import { unexpectedStatus, notFound } from "./errors";
 

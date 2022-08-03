@@ -2,8 +2,8 @@ import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
 import Button from '../../Button';
 import { GarageObj } from '../Garage';
-import type { Car } from '../../../interfaces/shared';
 import s from './GarageSlot.module.scss';
+import { Car } from '../../../interfaces/shared/car';
 
 export interface GarageSlotObj {
   container: HTMLDivElement;

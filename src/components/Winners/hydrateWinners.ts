@@ -1,5 +1,5 @@
 import { store } from '../../App';
-import { ORDER, SORT } from '../../interfaces/shared';
+import { ORDER, SORT } from '../../interfaces/shared/winnersSorting';
 import type { WinnersObj } from './Winners';
 
 const handleChangeOrder = (): void => {

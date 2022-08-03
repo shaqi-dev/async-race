@@ -1,4 +1,4 @@
-import { CarSettings } from '../interfaces/shared';
+import { CarSettings } from '../interfaces/shared/car';
 
 const brands: string[] = [
   'Aston Martin',

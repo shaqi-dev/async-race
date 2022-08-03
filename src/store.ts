@@ -5,7 +5,7 @@ import GarageSettings, { GarageSettingsObj } from './components/Garage/GarageSet
 import type { ViewSettingsObj } from './components/ViewSettings';
 import type { GarageObj } from './components/Garage';
 import type { WinnersObj } from './components/Winners';
-import { SORT, ORDER } from './interfaces/shared';
+import { SORT, ORDER } from './interfaces/shared/winnersSorting';
 
 export interface Store {
   header: HTMLElement;

@@ -1,12 +1,13 @@
 import { store } from '../../../App';
 import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
-import type { Car, Winner } from '../../../interfaces/shared';
 import type { Parent } from '../../../utils/render';
 import s from './WinnersTable.module.scss';
 import getPaginatorButtonsStatus from '../../../utils/getPaginatorButtonsStatus';
 import { GetCarReturn, getCar } from '../../../services/garageService';
 import { GetWinnersReturn, getWinners } from '../../../services/winnersService';
+import { Car } from '../../../interfaces/shared/car';
+import { Winner } from '../../../interfaces/shared/winners';
 
 export interface WinnersTableObj {
   container: HTMLTableElement;

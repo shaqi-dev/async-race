@@ -1,4 +1,5 @@
-import { WinnersData, SORT, ORDER, Winner } from "../interfaces/shared";
+import { WinnersData, Winner } from "../interfaces/shared/winners";
+import { SORT, ORDER } from "../interfaces/shared/winnersSorting";
 import API_BASE from "./apiBase";
 import { unexpectedStatus, notFound, internalError } from "./errors";
 

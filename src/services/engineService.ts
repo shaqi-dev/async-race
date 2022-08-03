@@ -1,4 +1,4 @@
-import { CarEngine } from "../interfaces/shared";
+import { CarEngine } from "../interfaces/shared/engine";
 import API_BASE from "./apiBase";
 import { badRequest, notFound, unexpectedStatus, tooManyRequests, internalError } from "./errors";
 
