@@ -1,4 +1,3 @@
-import { getCar, GetCarReturn, getWinners, GetWinnersReturn } from '../../../services/api';
 import { store } from '../../../App';
 import render from '../../../utils/render';
 import getCarSVG from '../../../utils/getCarSVG';
@@ -6,6 +5,8 @@ import type { Car, Winner } from '../../../interfaces/shared';
 import type { Parent } from '../../../utils/render';
 import s from './WinnersTable.module.scss';
 import getPaginatorButtonsStatus from '../../../utils/getPaginatorButtonsStatus';
+import { GetCarReturn, getCar } from '../../../services/garageService';
+import { GetWinnersReturn, getWinners } from '../../../services/winnersService';
 
 export interface WinnersTableObj {
   container: HTMLTableElement;
@@ -44,14 +45,7 @@ const renderWinner = async (
 };
 
 const update = async (): Promise<void> => {
-  const {
-    winners,
-    winnersSort,
-    winnersOrder,
-    winnersPage,
-    winnersPerPage,
-    viewSettings,
-  } = store;
+  const { winners, winnersSort, winnersOrder, winnersPage, winnersPerPage, viewSettings } = store;
 
   const [data, error]: Awaited<GetWinnersReturn> = await getWinners(
     winnersSort,

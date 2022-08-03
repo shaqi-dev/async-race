@@ -1,14 +1,12 @@
 import { store } from '../../../App';
 import {
-  deleteCar,
-  deleteWinner,
-  getCar,
-  setCarEngineToDrive,
-  setCarEngine,
-  GetCarReturn,
   SetCarEngineToDriveReturn,
+  setCarEngineToDrive,
   SetCarEngineReturn,
-} from '../../../services/api';
+  setCarEngine,
+} from '../../../services/engineService';
+import { deleteCar, GetCarReturn, getCar } from '../../../services/garageService';
+import { deleteWinner } from '../../../services/winnersService';
 import animateCar from '../../../utils/animateCar';
 import { GarageSettingsObj } from '../GarageSettings';
 import { GarageSlotObj } from './GarageSlot';

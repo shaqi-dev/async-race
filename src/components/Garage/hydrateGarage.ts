@@ -1,5 +1,4 @@
 import { CarSettings } from '../../interfaces/shared';
-import { createCar, getCars, GetCarsReturn, updateCar } from '../../services/api';
 import { store } from '../../App';
 import getRandomCars from '../../utils/getRandomCars';
 import { GarageObj } from './Garage';
@@ -8,6 +7,7 @@ import hydrateGarageSlots from './GarageSlot/hydrateGarageSlots';
 import { ViewSettingsObj } from '../ViewSettings';
 import { GarageSettingsFormObj } from './GarageSettings';
 import getPaginatorButtonsStatus from '../../utils/getPaginatorButtonsStatus';
+import { GetCarsReturn, getCars, createCar, updateCar } from '../../services/garageService';
 
 const update = async (): Promise<void> => {
   const {
