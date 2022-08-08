@@ -18,12 +18,41 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
 main, header {
   padding: 20px;
+}
+
+main {
+  flex-grow: 1;
 }
 
 header {
   display: flex;
   align-items: center;
   gap: 40px;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+  height: 80px;
+
+  .gh-logo, .rs-logo {
+    height: 48px;
+    width: auto;
+  }
+}
+
+.footer-info {
+  font-size: 2.4rem;
+  color: $color-text-light;
 }
